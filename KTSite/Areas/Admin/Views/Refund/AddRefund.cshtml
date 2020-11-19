@@ -1,0 +1,101 @@
+﻿
+
+@model KTSite.Models.RefundVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Issue Refund";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="refund.OrderId">Order</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.refund.OrderId, Model.OrdersList,
+                       new { @class = "form-control" })
+                        <span asp-validation-for="refund.OrderId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="refund.RefundQuantity"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="refund.RefundQuantity" class="form-control" />
+                        <span asp-validation-for="refund.RefundQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="refund.FullRefund">Full Refund</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="refund.FullRefund" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="refund.ChargeWarehouse">Charge Warehouse</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="refund.ChargeWarehouse" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.RefundedBy" class="form-control" value="@ViewBag.uName" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.RefundDate" class="form-control" value=@DateTime.Now />
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Issue Refund</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (ViewBag.errAmount == false)
+        {
+            <script>
+                swal("Success!", "Refund Issued!", "success")
+                    .then((value) => { window.location.href = '/Admin/Refund'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                var val =document.getElementById('refund_OrderId')
+                var selVal = val.options[val.selectedIndex].value
+                swal("Error!", "Amount Is Not Valid!", "error")
+                    .then((value) => { window.location.href = '/Admin/Refund/AddRefund/'+selVal.ToString()})
+            </script>
+        }
+
+    }
+}

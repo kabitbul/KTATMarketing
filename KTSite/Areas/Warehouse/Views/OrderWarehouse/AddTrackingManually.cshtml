@@ -1,0 +1,136 @@
+﻿
+
+@model KTSite.Models.OrderVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Order"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Orders.CustName">Customer Name</label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Orders.CustName" class="form-control" />
+                        <span asp-validation-for="Orders.CustName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Orders.TrackingNumber">Tracking Number</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Orders.TrackingNumber" class="form-control" />
+                        <span asp-validation-for="Orders.TrackingNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.ProductId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.Cost" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.UserNameId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.StoreNameId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.Quantity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustStreet1" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustStreet2" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustCity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustState" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustZipCode" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CustPhone" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.Carrier" class="form-control" value="USPS" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.UsDate" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.Id" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" />
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+@if (ViewBag.emptyTracking)
+{
+<script>
+    swal("Pay Attention: Tracking number can't be Empty!", "Error", "error")
+        .then((value) => { })
+</script>
+ }
+else if (ViewBag.failed)
+{
+<script>
+    swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "error")
+        .then((value) => { })
+</script> }
+                    else
+                    {
+<script>
+    swal("Success!", "Tracking Number Added Successfully!", "success")
+        .then((value) => { window.location.href = '/Warehouse/OrderWarehouse'; })
+</script>                    }}
+}
+
+
+

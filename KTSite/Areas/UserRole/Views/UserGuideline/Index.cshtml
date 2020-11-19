@@ -1,0 +1,33 @@
+﻿@model IEnumerable<UserGuideline>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">User Guideline</h2>
+        </div>
+    </div>
+
+    <br />
+    <div class="p-4 border rounded">
+        @foreach (UserGuideline userGuideline in Model)
+        {
+        <div class="p-4 border rounded">
+            <h1 style="font-size:20px">@userGuideline.Guideline</h1>
+            &nbsp;
+        </div>
+            }
+     </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({ "order": [[0, "desc"]] });
+        });</script>
+}
+
+

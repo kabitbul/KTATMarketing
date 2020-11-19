@@ -1,0 +1,103 @@
+﻿
+
+@model KTSite.Models.ComplaintsVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Add a Ticket"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row" id="orderDiv">
+                    <div class="col-4" >
+                        <label asp-for="complaints.OrderId">Order</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
+                                      new { @class = "form-control" })
+                        <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row" id="storeDiv" >
+                    <div class="col-4">
+                        <label asp-for="complaints.StoreId">Store</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
+                                      new { @class = "form-control" })
+                        <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="GeneralNotOrderRelated">General Issue(Not Order Related)</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="GeneralNotOrderRelated" class="form-control" onclick="checkboxclick()" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="complaints.Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea asp-for="complaints.Description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.UserNameId" class="form-control" value="@ViewBag.uNameId"/>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.Id" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.IsAdmin" class="form-control" value="true" />
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        window.onload = function () { $("#storeDiv").hide(0);}
+        function checkboxclick() {
+            
+            if ($("#GeneralNotOrderRelated").is(':checked')) {
+                $("#storeDiv").show(500);
+                $("#orderDiv").hide(500);
+            }
+            else {
+                $("#storeDiv").hide(500);
+                $("#orderDiv").show(500);
+            }
+        }
+    </script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+            <script>
+                swal("Success!", "Complaint Added!", "success")
+                    .then((value) => { window.location.href = '/VAs/Complaints'; })
+    </script>}
+}

@@ -1,0 +1,138 @@
+﻿
+@model KTSite.Models.ProductVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Create Product";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.Product.Id != 0)
+            {
+                //edit
+                title = "Add/Modify Weight";
+                <input type="hidden" asp-for="Product.Id" />
+            }
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.ProductName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Product.ProductName" class="form-control" />
+                        <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.ProductDesc"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea readonly asp-for="Product.ProductDesc" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.Cost" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.SellersCost" class="form-control" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Weight"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Weight" class="form-control" />
+                        <span asp-validation-for="Product.Weight" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.InventoryCount"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Product.InventoryCount" class="form-control" />
+                        <span asp-validation-for="Product.InventoryCount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.OnTheWayInventory"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Product.OnTheWayInventory" class="form-control" />
+                        <span asp-validation-for="Product.OnTheWayInventory" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.OwnByWarehouse"></label>
+                    </div>
+                    <div class="col-8">
+                        <input disabled type="checkbox" asp-for="Product.OwnByWarehouse" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.ReStock"></label>
+                    </div>
+                    <div class="col-8">
+                        <input disabled type="checkbox" asp-for="Product.ReStock" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.OOSForSellers" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.CategoryId" class="form-control" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        @if (Model.Product.Id != 0)
+                        {
+                            <partial name="_EditAndBackToListButton" model="Model.Product.Id" />
+                        }
+                        else
+                        {
+                            <partial name="_CreateAndBackToListButton" />
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (Model.Product.Id != 0)
+            {
+                <div class="col-3 offset-1 pt-4">
+                    <img src="@Model.Product.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
+                </div>
+            }
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (ViewBag.InvalidWeight == 1)
+        {
+            <script>
+                swal("Error!", "Weight Can't Be 0 Or Less!", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("Success!", "Weight Updated!", "success")
+                    .then((value) => { window.location.href = '/Warehouse/Product'; })
+            </script>
+        }
+    }
+}

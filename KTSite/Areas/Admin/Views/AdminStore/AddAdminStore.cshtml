@@ -1,0 +1,79 @@
+﻿
+
+@model KTSite.Models.UserStoreName
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Admin Store";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="StoreName"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="StoreName" class="form-control" />
+                    <span asp-validation-for="StoreName" class="text-danger"></span>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="UserNameId" class="form-control" value="@ViewBag.UNameId" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="IsAdminStore" class="form-control" value=true />
+                </div>
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (!ViewBag.storeExist)
+        {
+            <script>
+                swal("Success!", "Store Added To your List!", "success")
+                    .then((value) => { window.location.href = '/Admin/AdminStore'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("Store Already Exists In Your List!", "Store Exists", "error")
+                    .then((value) => { window.location.href = '/Admin/AdminStore/AddAdminStore'; })
+            </script>
+
+        }
+
+    }
+}

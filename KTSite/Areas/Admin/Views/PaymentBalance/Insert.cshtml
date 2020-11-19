@@ -1,0 +1,63 @@
+﻿
+@model KTSite.Models.PaymentBalanceVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add User To Payment Balance";
+}
+
+<form method="post">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="paymentBalances.UserNameId">User Name</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.paymentBalances.UserNameId, Model.UsersList,
+                       new { @class = "form-control" })
+                        <span asp-validation-for="paymentBalances.UserNameId" class="text-danger"></span>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="paymentBalances.Balance" class="form-control" value=0 />
+                    </div>
+                </div>
+                &nbsp;
+                <div class="form-group row">
+                    <div class="col-4"></div>
+                    <div class="col-8">
+                        <partial name="_CreateAndBackToListButton" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    @if (ViewBag.ShowMsg)
+    {
+        @if (ViewBag.Success)
+        {
+            <script>
+                swal("Success!", "Added Successfully!", "success")
+                    .then((value) => { window.location.href = '/Admin/PaymentBalance'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("There Was a problem saving the user!", "Please Contact Admin. ", "error")
+                    .then((value) => { })
+            </script>
+
+        }
+
+    }
+}

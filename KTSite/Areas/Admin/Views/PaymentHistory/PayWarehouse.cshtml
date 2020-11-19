@@ -1,0 +1,78 @@
+﻿
+@model KTSite.Models.PaymentHistoryVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Pay Warehouse";
+}
+
+<form method="post">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistory.SentFromAddressId">Sent From Address</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.PaymentHistory.SentFromAddressId, Model.PaymentAddress,
+                       new { @class = "form-control" })
+                        <span asp-validation-for="PaymentHistory.SentFromAddressId" class="text-danger"></span>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistory.Amount">Amount</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PaymentHistory.Amount" class="form-control" value=0 />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistory.UserNameId" class="form-control" value="@ViewBag.uNameIdWarehouse" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistory.PayDate" class="form-control" value=@DateTime.Now />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistory.Status" class="form-control" value="Approved" />
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4"></div>
+                    <div class="col-8">
+                        <partial name="_CreateAndBackToListButton" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    @if (ViewBag.ShowMsg)
+    {
+        @if (ViewBag.Success)
+        {
+            <script>
+                swal("Success!", "Added To balance Successfully!", "success")
+                    .then((value) => { window.location.href = '/Admin/PaymentHistory/ShowWarehousePayment'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("There Was a problem Updating The Balance!", "Please Contact Admin. ", "error")
+                    .then((value) => { })
+            </script>
+
+        }
+
+    }
+}

@@ -1,0 +1,202 @@
+﻿
+
+@model KTSite.Models.OrderVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Order";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="row p-3 border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.OrderStatus">Order Status</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Orders.OrderStatus, Model.StatusList,
+                   new { @class = "form-control" })
+                    <span asp-validation-for="Orders.OrderStatus" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.ProductId">Product</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
+                   new { @class = "form-control", @disabled = "disabled" })
+                    <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.StoreNameId">My Store</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
+                   new { @class = "form-control", @disabled = "disabled" })
+                    <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.Quantity"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.Quantity" class="form-control" />
+                    <span asp-validation-for="Orders.Quantity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.UsDate">Purchase Date (In US)</label>
+                </div>
+                <div class="col-8">
+                    <input type="date" asp-for="Orders.UsDate" class="form-control" />
+
+                    <span asp-validation-for="Orders.UsDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustName">Customer Name</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustName" class="form-control" />
+                    <span asp-validation-for="Orders.CustName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustStreet1">Street Address</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustStreet1" class="form-control" />
+                    <span asp-validation-for="Orders.CustStreet1" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustStreet2">Street Address (Optional)</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustStreet2" class="form-control" />
+                    <span asp-validation-for="Orders.CustStreet2" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustCity">City</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustCity" class="form-control" />
+                    <span asp-validation-for="Orders.CustCity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustState">State</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
+                   new { @class = "form-control" })
+                    <span asp-validation-for="Orders.CustState" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustZipCode">Zip Code</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustZipCode" class="form-control" />
+                    <span asp-validation-for="Orders.CustZipCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Orders.CustPhone">Phone Number</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Orders.CustPhone" class="form-control" />
+                    <span asp-validation-for="Orders.CustPhone" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.UserNameId" class="form-control" value="@ViewBag.uNameId" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" value=@KTSite.Utility.SD.OrderStatusAccepted />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" value=true />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.Id" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.StoreNameId" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.ProductId" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.Cost" class="form-control" />
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (!ViewBag.failed)
+        {
+            <script>
+                swal("Success!", "Your Order Got Saved Successfully!", "success")
+                    .then((value) => { window.location.href = '/Admin/OrderAdmin'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "warning")
+                    .then((value) => { })
+            </script>
+
+        }
+
+    }
+}
+
+
+

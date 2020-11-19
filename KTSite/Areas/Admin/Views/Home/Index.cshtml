@@ -1,0 +1,144 @@
+﻿@{ ViewData["Title"] = "Home Page Admin"; }
+
+
+    <div class="row">
+        <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
+        <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
+        Warehouse Balance :@ViewBag.WarehouseBalanceLow.ToString("0.00")$</h1>
+    </div>
+<div class="col-12" style="font:message-box">
+    <div class="text-left display-3 p-4 border rounded col-5">
+        <h1 style="font-size: 20px">
+            <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+            Total Value Of Inventory: <span style="color:seagreen">@ViewBag.totalInventoryValue$</span>
+        </h1>
+    </div>
+    @if (ViewBag.OrdersFromChina == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/ChinaOrder">There Is one Product Ordered more then 45 days ago.</a>
+    </h1>
+</div>}
+else if (ViewBag.OrdersFromChina > 1)
+{
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
+    </h1>
+</div>}
+    @if (ViewBag.WarehouseBalanceLow <= 1000)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/PaymentHistory/PayWarehouse">Warehouse Balance is Low!(@ViewBag.WarehouseBalanceLow.ToString("0.00")$)</a>
+    </h1>
+</div>}
+    @if (ViewBag.CountPendingPayments == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/PaymentHistory">There is a Pending Payments waiting for your approval!</a>
+    </h1>
+</div>}
+else
+if (ViewBag.CountPendingPayments > 1)
+{
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/PaymentHistory">There are @ViewBag.CountPendingPayments Pending Payments waiting for your approval!</a>
+    </h1>
+</div>}
+    @if (ViewBag.CountArrivingFromChina == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/ArrivingFromChinaAdmin">A New Shipment Arrived And Is Waiting Your Update!</a>
+    </h1>
+</div>}
+else
+if (ViewBag.CountArrivingFromChina > 1)
+{
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="Admin/ArrivingFromChinaAdmin">There are @ViewBag.CountArrivingFromChina Shipments Arrived And Waiting Your Update!</a>
+    </h1>
+</div>}
+    <div>
+        <div id="chartContainer" style="height: 370px; width: 70%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+    &nbsp;
+    &nbsp;
+    &nbsp;
+    <div>
+        <div id="chartContainer2" style="height: 370px; width: 70%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Last Month sales(Admin And users)"
+                },
+                axisY: {
+                    title: "Quantity",
+                },
+                data: [
+                {
+                    type: "stackedColumn",
+                    legendText: "Admin",
+                    showInLegend: "true",
+                        dataPoints: @Html.Raw(ViewBag.DataPointsAdmin),
+                }, {
+                    type: "stackedColumn",
+                    legendText: "Users",
+                    showInLegend: "true",
+                    indexLabel: "#total",
+                    indexLabelPlacement: "outside",
+
+                    dataPoints: @Html.Raw(ViewBag.DataPointsUser),
+                }
+                ]
+            });
+              var chart2 = new CanvasJS.Chart("chartContainer2", {
+                animationEnabled: true,
+                title: {
+                    text: "Last Month sales(Quantity Vs Sales Num)"
+                },
+                axisY: {
+                    title: "Quantity",
+                },
+                data: [
+                {
+                    type: "stackedColumn",
+                    legendText: "Quantity",
+                    showInLegend: "true",
+                        dataPoints: @Html.Raw(ViewBag.DataPointsQuantity),
+                }, {
+                    type: "stackedColumn",
+                    legendText: "Sales Num",
+                    showInLegend: "true",
+                    indexLabel: "#total",
+                    indexLabelPlacement: "outside",
+
+                    dataPoints: @Html.Raw(ViewBag.DataPointssalesNum),
+                }
+                ]
+            });
+            chart.render();
+            chart2.render();
+        };
+    </script>
+
+}

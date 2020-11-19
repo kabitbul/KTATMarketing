@@ -1,0 +1,61 @@
+﻿@model KTSite.Models.UserStoreName
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Update Store Name";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="StoreName"> Store Name</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="StoreName" class="form-control" />
+                        <span asp-validation-for="StoreName" class="text-danger"></span>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="UserNameId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="UserName" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Edit</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg)
+    {
+            <script>
+                swal("Success!", "Updated Successfully!", "success")
+                    .then((value) => { window.location.href = '/UserRole/UserStoreName'; })
+            </script>
+
+    }
+}

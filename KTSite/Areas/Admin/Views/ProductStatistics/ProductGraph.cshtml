@@ -1,0 +1,52 @@
+﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">@ViewBag.ProductName </h2>
+        </div>
+    </div>
+    <div>
+        <div id="chartContainer" style="height: 370px; width: 70%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    <div class="col-4 offset-2">
+        <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Last Month sales(Admin And users)"
+                },
+                axisY: {
+                    title: "Quantity",
+                },
+                data: [
+                {
+                    type: "stackedColumn",
+                    legendText: "Admin",
+                    showInLegend: "true",
+                        dataPoints: @Html.Raw(ViewBag.DataPointsAdmin),
+                }, {
+                    type: "stackedColumn",
+                    legendText: "Users",
+                    showInLegend: "true",
+                    indexLabel: "#total",
+                    indexLabelPlacement: "outside",
+
+                    dataPoints: @Html.Raw(ViewBag.DataPointsUser),
+                }
+                ]
+            });
+            chart.render();
+        };
+    </script>
+}
+
+

@@ -1,0 +1,185 @@
+﻿
+@model KTSite.Models.ProductVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Create Product"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.Product.Id != 0)
+        {
+            //edit
+            title = "Edit Product";
+<input type="hidden" asp-for="Product.Id" />}
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductName">Product Name</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductName" class="form-control" />
+                    <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductDesc">Product Details</label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Product.ProductDesc" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductASIN">Product ASIN</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductASIN" class="form-control" />
+                    <span asp-validation-for="Product.ProductASIN" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductURL">Product Url</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductURL" class="form-control" />
+                    <span asp-validation-for="Product.ProductURL" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.Cost">Price</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.Cost" class="form-control"/>
+                    <span asp-validation-for="Product.Cost" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.SellersCost">Seller's Price</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.SellersCost" class="form-control" />
+                    <span asp-validation-for="Product.SellersCost" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.Weight">Weight</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.Weight" class="form-control" />
+                    <span asp-validation-for="Product.Weight" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.InventoryCount" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.OnTheWayInventory" class="form-control" />
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.OwnByWarehouse">Product Own By Warehouse</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="Product.OwnByWarehouse" class="form-control" />If Owned by Warehouse Is Checked, value of "Price" Will Be:
+                    China Cost + Profit for warehouse.
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ReStock">Restock Product</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="Product.ReStock" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.OOSForSellers">OOS For Sellers</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="Product.OOSForSellers" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.AvailableForSellers">Available For Sellers</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="Product.AvailableForSellers" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Category
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "Select a Category",
+                                  new { @class = "form-control" })
+                    <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Made In
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.MadeIn, Model.MadeInList,
+                                  new { @class = "form-control" })
+                    <span asp-validation-for="Product.MadeIn" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Image
+                </div>
+                <div class="col-8">
+                    <input type="file" name="files" id="uploadBox" multiple class="form-control" />
+                    <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Product.Id != 0)
+                    {
+        <partial name="_EditAndBackToListButton" model="Model.Product.Id" /> }
+    else
+    {
+<partial name="_CreateAndBackToListButton" />}
+                </div>
+            </div>
+        </div>
+        @if (Model.Product.Id != 0)
+        {
+<div class="col-3 offset-1 pt-4">
+    <img src="@Model.Product.ImageUrl" style="border-radius:5px; border:1px solid #bbb9b9" />
+</div>}
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    @if (ViewBag.ShowMsg)
+    {
+@if (ViewBag.existProd)
+{
+<script>
+    swal("Error!", "Product Name Already Exist In Your Inventory!", "error")
+        .then((value) => { })
+</script> }
+                    else
+                    {
+<script>
+    swal("Success!", "Product Added!", "success")
+        .then((value) => { window.location.href = '/Admin/Product'; })
+</script>}}
+}

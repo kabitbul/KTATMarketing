@@ -1,0 +1,133 @@
+﻿@model KTSite.Models.ReturnLabelVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Request a Label";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="returnLabel.OrderId">Order</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.returnLabel.OrderId, Model.OrderList,
+                                 new { @class = "form-control", @disabled = "disabled" })
+                        <span asp-validation-for="returnLabel.OrderId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="returnLabel.ReturnQuantity">Return Quantity</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="returnLabel.ReturnQuantity" class="form-control" />
+                        <span asp-validation-for="returnLabel.ReturnQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="returnLabel.CommentsToWarehouse">Comments to Warehouse</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="returnLabel.CommentsToWarehouse" class="form-control" />
+                        <span asp-validation-for="returnLabel.CommentsToWarehouse" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="returnLabel.ReturnDelivered">Return Delivered</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="returnLabel.ReturnDelivered" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="returnLabel.ReturnTracking">Return tracking Number</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="returnLabel.ReturnTracking" class="form-control" />
+                        <span asp-validation-for="returnLabel.ReturnTracking" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.DateCreated" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.UserNameId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.OrderId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.Id" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.FileName" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.FileURL" class="form-control" />
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Edit</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    @if (ViewBag.ShowMsg)
+    {
+        @if (ViewBag.deliveredButNoTracking)
+        {
+            <script>
+                swal("Error!", "Status cannot be delivered with empty Tracking number, please update!", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else if (ViewBag.InvalidQuantity)
+        {
+            <script>
+                swal("Error!", "Returned Quantity Is Bigger Then Actual Quantity of the order!", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("Success!", "Updated Successfully!", "success")
+                    .then((value) => { window.location.href = '/UserRole/ReturnLabel'; })
+            </script>
+        }
+
+    }
+}

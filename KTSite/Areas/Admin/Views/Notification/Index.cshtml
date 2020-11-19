@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Notification>
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">Notifications List </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-right">
+            <a class="btn btn-primary" asp-action="UpsertNotification" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; New Notification</a>
+        </div>
+    </div>
+    &nbsp;
+
+    <br />
+    <div class="p-4 border rounded">
+        <div id="Visible">
+            <input type="checkbox" id="pos" value=true />  Show Visible To User Only
+        </div>
+        <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+            <thead class="thead-dark">
+                <tr class="table-info">
+                    <th>Notification Id</th>
+                    <th>Message</th>
+                    <th>Visible</th>
+                    <th>Last Updated By</th>
+                    <th>Last Update Date</th>
+                    <th></th>
+            </thead>
+
+            @foreach (Notification notification in Model)
+            {
+<tr>
+    <td>@notification.Id</td>
+    <td><textarea readonly>@notification.Message</textarea></td>
+    @if (@notification.Visible)
+    {
+       <td>Yes</td>
+    }
+    else
+    {
+      <td>No</td>
+    }
+    <td>@ViewBag.getName(notification.HandledBy)</td>
+    <td>@notification.DateMsg</td>
+    <td>
+        <div class="text-center">
+            <a href="/Admin/Notification/UpsertNotification/@notification.Id" class="btn btn-success text-white" style="cursor:pointer">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a onclick=Delete("/Admin/Notification/Delete/@notification.Id") class="btn btn-danger text-white" style="cursor:pointer">
+                <i class="fas fa-trash-alt"></i>&nbsp;
+            </a>
+        </div>
+    </td>
+</tr>            }
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({ "order": [[0, "desc"]] });
+        });</script>
+    <script>
+        function Delete(url) {
+            swal({
+                title: "Are you sure you want to delete?",
+                text: "You will not be able to restore the data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                location.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+    <script>
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var visible = data[2];
+                if ($('#pos').prop("checked") == true && visible == "Yes") {
+                    return true;
+                } else if ($('#pos').prop("checked") == false) {
+                    return true;
+                }
+                else { return false; }
+            }
+        );
+        $('input:checkbox').on('change', function () {
+            var table = $('#tblData').DataTable();
+            table.draw();
+        });</script>
+}
+
+

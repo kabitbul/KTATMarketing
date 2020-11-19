@@ -1,0 +1,115 @@
+﻿@model KTSite.Models.PaymentHistoryVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add New Payment";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="PaymentHistory.SentFromAddressId">Payment Address</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.PaymentHistory.SentFromAddressId, Model.PaymentAddress,
+                   new { @class = "form-control" })
+                    <span asp-validation-for="PaymentHistory.SentFromAddressId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="PaymentHistory.Amount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="PaymentHistory.Amount" class="form-control" />
+                    <span asp-validation-for="PaymentHistory.Amount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="PaymentHistory.Id" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="PaymentHistory.Status" class="form-control" value="Pending" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="PaymentHistory.UserNameId" class="form-control" value="@ViewBag.uNameId" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="PaymentHistory.PayDate" class="form-control" value="@DateTime.Now" />
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Create</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div class="row">
+            <p style="color:orangered;font-size:25px;">Pay Attention: When Paid with paypal, 4.4% + 0.3$ Fees will apply.</p>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @*<script type="text/javascript">
+        function ApprovePayment(paymentHistoryVM) {
+            var val = document.getElementById("PaymentHistory_SentFromAddressId");
+            var selectedText = val.options[val.selectedIndex].text;
+            var amount = document.getElementById("PaymentHistory_Amount");
+            var value = parseFloat(amount.value);
+            var max = parseFloat(amount.getAttribute("data-val-range-max"));
+            var min = parseFloat(amount.getAttribute("data-val-range-min"));
+            if (!(value < min || value > max)) {
+                window.alert("amount validated");
+                if (selectedText.includes("- Paypal")) {
+                    window.alert("in paypal")
+                }
+                else {
+                    var pdata = new FormData();
+                    }
+                    $.ajax({
+                        url: "PaymentHistory/UpsertPayment",
+                        type: "POST",
+                        data: '{EquipmentTires: ' + JSON.stringify(paymentHistoryVM) + '}',
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            swal("Success!", {
+                                icon: "success",
+                            });
+                            setTimeout(function () {
+                                location.reload()
+                            }, 100);
+                            window.location.href = '/UserRole/PaymentHistory';
+                        }
+                    });*@
+              @if(ViewBag.ShowMsg == 1)
+              {
+<script>
+    swal("Success!", "Payment Added To Your List, Admin will Approve once Payment Received!", "success")
+        .then((value) => { window.location.href = '/UserRole/PaymentHistory'; });
+</script>
+                }
+            }
+}

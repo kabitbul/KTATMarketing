@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20201003105113_addUsersStore.cs" />
+    <Compile Remove="Migrations\20201003105113_addUsersStore.Designer.cs" />
+    <Compile Remove="Migrations\20201003112606_addUserStoreName2.cs" />
+    <Compile Remove="Migrations\20201003112606_addUserStoreName2.Designer.cs" />
+    <Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.cs" />
+    <Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.Designer.cs" />
+    <Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.cs" />
+    <Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.Designer.cs" />
+    <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.cs" />
+    <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KTSite.Models\KTSite.Models.csproj" />
+    <ProjectReference Include="..\KTSite.Utility\KTSite.Utility.csproj" />
+  </ItemGroup>
+
+</Project>

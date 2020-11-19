@@ -1,0 +1,93 @@
+﻿
+
+@model KTSite.Models.PaymentSentAddressVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Admin Payment Type";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentSentAddress.PaymentTypeAddress"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PaymentSentAddress.PaymentTypeAddress" class="form-control" />
+                        <span asp-validation-for="PaymentSentAddress.PaymentTypeAddress" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentSentAddress.PaymentType">State</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.PaymentSentAddress.PaymentType, Model.paymentType, "Choose Payment Type",
+                       new { @class = "form-control" })
+                        <span asp-validation-for="PaymentSentAddress.PaymentType" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentSentAddress.UserNameId" class="form-control" value="@ViewBag.uNameId" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentSentAddress.IsAdmin" class="form-control" value=true />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentSentAddress.Id" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.PaymentSentAddress.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="Model.PaymentSentAddress.Id" />
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (ViewBag.validAddress)
+        {
+            <script>
+                swal("Success!", "Payment Type Added To Your List", "success")
+                    .then((value) => { window.location.href = '/Admin/PaymentSentAddress'; })
+            </script>
+        }
+        else
+        {
+            <script>
+                swal("Error!", "Not A Valid Email Address!", "error")
+                    .then((value) => { })
+            </script>
+        }
+
+    }
+}
