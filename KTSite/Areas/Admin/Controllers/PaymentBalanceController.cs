@@ -39,6 +39,7 @@ namespace KTSite.Areas.Admin.Controllers
          public IActionResult Insert()
          {
             ViewBag.showMsg = false;
+            ViewBag.success = true;
             PaymentBalanceVM paymentBalanceVM = new PaymentBalanceVM()
             {
             paymentBalances = new PaymentBalance(),
@@ -55,6 +56,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Insert(PaymentBalanceVM paymentBalanceVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             var appUser = _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == paymentBalanceVM.paymentBalances.UserNameId).FirstOrDefault();
             if(appUser.Role == SD.Role_Warehouse)
             {
@@ -70,10 +73,9 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 _unitOfWork.PaymentBalance.Add(paymentBalanceVM.paymentBalances);
                 _unitOfWork.Save();
-                ViewBag.Success = true;
+                ViewBag.success = true;
                 return View(paymentBalanceVM);
             }
-            ViewBag.Success = false;
             return View(paymentBalanceVM);
         }
         public string getUserName(string userNameId)

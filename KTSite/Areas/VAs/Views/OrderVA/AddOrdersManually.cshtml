@@ -2,10 +2,8 @@
 
 @model KTSite.Models.OrderVM
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Add Order";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Order"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -21,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                       new { @class = "form-control" })
+                                 new { @class = "form-control" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -31,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                       new { @class = "form-control" })
+                                 new { @class = "form-control" })
                         <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
                     </div>
                 </div>
@@ -96,7 +94,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                       new { @class = "form-control" })
+                                 new { @class = "form-control" })
                         <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
@@ -157,25 +155,20 @@
         });
     </script>
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
-        @if (!ViewBag.failed)
-        {
-            <script>
-                swal("Success!", "Your Order Got Saved Successfully!", "success")
-                    .then((value) => { window.location.href = '/VAs/OrderVA'; })
-            </script>
-        }
-        else
-        {
-            <script>
-                swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "error")
-                    .then((value) => { })
-            </script>
-
-        }
-
-    }
+@if (ViewBag.failed)
+{
+<script>
+    swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "error")
+        .then((value) => { })
+</script> }
+                    else if(ViewBag.success)
+                    {
+<script>
+    swal("Success!", "Your Order Got Saved Successfully!", "success")
+        .then((value) => { window.location.href = '/VAs/OrderVA'; })
+</script>}}
 }
 
 

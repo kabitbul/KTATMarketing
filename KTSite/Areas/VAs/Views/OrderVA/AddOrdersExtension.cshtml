@@ -2,10 +2,8 @@
 
 @model KTSite.Models.OrderVM
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Add Order";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Add Order"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -76,23 +74,18 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-@if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
-        @if (ViewBag.failed.Length == 0)
-        {
-<script>
-                swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
-                    .then((value) => { window.location.href = '/VAs/OrderVA'; })
-</script>
-        }
-        else
-        {
+@if (ViewBag.failed.Length > 0)
+{
 <script>
     swal("@ViewBag.failed", "warning")
                     .then((value) => {})
-</script>
-
-        }
-
-    }
+</script> }
+                    else if(ViewBag.success)
+                    {
+<script>
+                swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
+                    .then((value) => { window.location.href = '/VAs/OrderVA'; })
+</script>}}
 }

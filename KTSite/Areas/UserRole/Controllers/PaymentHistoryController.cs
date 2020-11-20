@@ -46,7 +46,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     Value = i.Id.ToString()
                 })
             };
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.payoneermsg = false;
             return View(paymentHistoryVM);
         }
@@ -64,7 +65,8 @@ namespace KTSite.Areas.UserRole.Controllers
                 })
             };
                 paymentHistoryVM.PaymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.Id == Id).FirstOrDefault();
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.payoneermsg = false;
             return View(paymentHistoryVM);
         }
@@ -80,6 +82,8 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddPayment(PaymentHistoryVM paymentHistoryVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             paymentHistoryVM.PaymentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.UserNameId == uNameId).Select(i => new SelectListItem
             {
@@ -97,7 +101,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
                  _unitOfWork.PaymentHistory.Add(paymentHistoryVM.PaymentHistory);
                  _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
             }
             return View(paymentHistoryVM);
         }
@@ -105,6 +109,8 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdatePayment(PaymentHistoryVM paymentHistoryVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             paymentHistoryVM.PaymentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.UserNameId == uNameId).Select(i => new SelectListItem
             {
@@ -122,7 +128,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
                     _unitOfWork.PaymentHistory.update(paymentHistoryVM.PaymentHistory);
                 _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
             }
             return View(paymentHistoryVM);
         }

@@ -35,7 +35,7 @@ namespace KTSite.Areas.Admin.Controllers
 
             ViewBag.UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.storeExist = true;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
             return View();
         }
         public IActionResult AllUsersStores()
@@ -48,13 +48,15 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddAdminStore(UserStoreName userStoreName)
         {
-            userStoreName.UserNameId =
-            (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+            string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+            userStoreName.UserNameId = uNameId;
+
+            ViewBag.UNameId = uNameId;
             bool storeExist = _unitOfWork.UserStoreName.GetAll().Where(q => q.IsAdminStore)
                    .Any(q => q.StoreName.Equals(userStoreName.StoreName, StringComparison.InvariantCultureIgnoreCase));
             userStoreName.UserName = User.Identity.Name;
             userStoreName.IsAdminStore = true;
-
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 if (!storeExist)
@@ -64,13 +66,12 @@ namespace KTSite.Areas.Admin.Controllers
                     _unitOfWork.Save();
                 }
                 ViewBag.storeExist = storeExist;
-                ViewBag.ShowMsg = 1;
+                ViewBag.failed = false;
                 return View();
-
-
-                //return RedirectToAction(nameof(Index));
             }
-            return View(userStoreName);
+            ViewBag.storeExist = false;
+            ViewBag.failed = true;
+            return View();
         }
         public string returnUserNameId()
         {

@@ -31,7 +31,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult Upsert(int? id)
         {
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ProductVM productVM = new ProductVM()
             {
 
@@ -53,7 +54,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM)
         {
-            ViewBag.ShowMsg = 1;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 string webRootPath = _hostEnvironment.WebRootPath;
@@ -69,6 +71,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                         ViewBag.InvalidWeight = 0;
                         _unitOfWork.Product.update(productVM.Product);
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
                 }
                     

@@ -65,6 +65,7 @@ namespace KTSite.Areas.VAs.Controllers
             ComplaintsVM complaintsVM;
             string uNameId = "";
             string uName = "";
+
             uNameId = returnUserNameId();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
             //if (Id == null)
@@ -92,7 +93,8 @@ namespace KTSite.Areas.VAs.Controllers
 
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(complaintsVM);
         }
@@ -127,12 +129,16 @@ namespace KTSite.Areas.VAs.Controllers
             {
                 complaintsVM.GeneralNotOrderRelated = false;
             }
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(complaintsVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddComplaint(ComplaintsVM complaintsVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 //complaintsVM.complaints.IsAdmin = _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).
@@ -163,7 +169,7 @@ namespace KTSite.Areas.VAs.Controllers
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
                 _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
 
 
                 //return RedirectToAction(nameof(Index));
@@ -190,7 +196,8 @@ namespace KTSite.Areas.VAs.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateComplaint(ComplaintsVM complaintsVM)
         {
-
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 complaintsVM.complaints.HandledBy =
@@ -199,7 +206,6 @@ namespace KTSite.Areas.VAs.Controllers
                 {
                     complaintsVM.complaints.OrderId = 0;
                 }
-                ViewBag.ShowMsg = 1;
                 if (!complaintsVM.GeneralNotOrderRelated && complaintsVM.complaints.Solved &&
                     complaintsVM.complaints.NewTrackingNumber == null && complaintsVM.complaints.SolutionDesc == null)
                 {
@@ -210,6 +216,7 @@ namespace KTSite.Areas.VAs.Controllers
                     ViewBag.ProvideSolution = false;
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
                 //return RedirectToAction(nameof(Index));
             }

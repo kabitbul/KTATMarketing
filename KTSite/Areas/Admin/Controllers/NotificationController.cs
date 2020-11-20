@@ -39,7 +39,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult UpsertNotification(long? id)
         {
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.NameId = getUNameId();
             Notification notification = new Notification();
             if(id == null)//create
@@ -57,6 +58,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpsertNotification(Notification notification)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 if (notification.Id == 0)
@@ -67,11 +70,10 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                     _unitOfWork.Notification.update(notification);
                 }
-                ViewBag.ShowMsg = 1;
                 _unitOfWork.Save();
+                ViewBag.success = true;
                 return View(notification);
             }
-            ViewBag.ShowMsg = 1;
             return View(notification);
         }
         #region API CALLS

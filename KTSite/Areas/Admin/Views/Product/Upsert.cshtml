@@ -2,7 +2,7 @@
 @model KTSite.Models.ProductVM
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-                var title = "Create Product"; }
+    var title = "Create Product"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -56,7 +56,7 @@
                     <label asp-for="Product.Cost">Price</label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Product.Cost" class="form-control"/>
+                    <input asp-for="Product.Cost" class="form-control" />
                     <span asp-validation-for="Product.Cost" class="text-danger"></span>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "Select a Category",
-                                  new { @class = "form-control" })
+                                       new { @class = "form-control" })
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.Product.MadeIn, Model.MadeInList,
-                                  new { @class = "form-control" })
+                                       new { @class = "form-control" })
                     <span asp-validation-for="Product.MadeIn" class="text-danger"></span>
                 </div>
             </div>
@@ -175,11 +175,20 @@
 <script>
     swal("Error!", "Product Name Already Exist In Your Inventory!", "error")
         .then((value) => { })
-</script> }
-                    else
-                    {
+</script>
+ }
+else if (ViewBag.failed)
+{
 <script>
-    swal("Success!", "Product Added!", "success")
-        .then((value) => { window.location.href = '/Admin/Product'; })
-</script>}}
+    swal("Error!", "Unknown Error!", "error")
+        .then((value) => { })
+        </script>
+}
+else if (ViewBag.success)
+    {
+        <script>
+            swal("Success!", "Product Added!", "success")
+        .then((value) => {window.location.href = '/Admin/Product'; })
+</script>
+}}
 }

@@ -41,6 +41,7 @@ namespace KTSite.Areas.VAs.Controllers
         }
         public IActionResult AddRefund(long? Id)//orderId
         {
+
             RefundVM refundVM = new RefundVM();
             string uNameId = "";
             string uName = "";
@@ -61,7 +62,8 @@ namespace KTSite.Areas.VAs.Controllers
                     })
                 };
                 ViewBag.UName = uName;
-                ViewBag.ShowMsg = 0;
+                ViewBag.ShowMsg = false;
+                ViewBag.success = true;
                 ViewBag.failed = false;
                 return View(refundVM);
             }
@@ -83,7 +85,8 @@ namespace KTSite.Areas.VAs.Controllers
                     refundVM.refund.ReturnId = returnLabel.Id;
                 }
                 ViewBag.UName = uName;
-                ViewBag.ShowMsg = 0;
+                ViewBag.ShowMsg = false;
+                ViewBag.success = true;
                 ViewBag.failed = false;
                 return View(refundVM);
             }
@@ -93,6 +96,8 @@ namespace KTSite.Areas.VAs.Controllers
         public IActionResult AddRefund(RefundVM refundVM)
         {
             bool errAmount = false;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 Order order  = _unitOfWork.Order.GetAll().Where(a => a.Id == refundVM.refund.OrderId).FirstOrDefault();
@@ -139,10 +144,8 @@ namespace KTSite.Areas.VAs.Controllers
                     _unitOfWork.Order.update(order);
                     _unitOfWork.Refund.Add(refundVM.refund);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
-                ViewBag.ShowMsg = 1;
-
-
                 //return RedirectToAction(nameof(Index));
             }
             RefundVM refundVM2 = new RefundVM()

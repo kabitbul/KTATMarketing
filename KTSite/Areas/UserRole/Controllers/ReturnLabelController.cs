@@ -53,6 +53,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 })
             };
             ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             if (Id != null)
             {
@@ -75,6 +76,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 })
             };
             ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             ViewBag.InsufficientFunds = false;
             return View(returnLabelVM);
@@ -104,7 +106,8 @@ namespace KTSite.Areas.UserRole.Controllers
         public IActionResult AddReturnLabel(ReturnLabelVM returnLabelVM)
         {
             ViewBag.InvalidQuantity = false;
-            ViewBag.ShowMsg = false;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             ReturnLabelVM returnLabelVM2 = new ReturnLabelVM()
             {
                 returnLabel = new ReturnLabel(),
@@ -138,9 +141,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     _unitOfWork.ReturnLabel.Add(returnLabelVM.returnLabel);
                     ViewBag.ReturnCost = SD.shipping_cost;
                     _unitOfWork.Save();
-
+                    ViewBag.success = true;
                 }
-                ViewBag.ShowMsg = true;
             }
             ViewBag.InsufficientFunds = false;
             return View(returnLabelVM2);
@@ -150,6 +152,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public IActionResult UpdateReturnLabel(ReturnLabelVM returnLabelVM)
         {
             ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             ViewBag.deliveredButNoTracking = false;
             ViewBag.InvalidQuantity = false;
             if (ModelState.IsValid)
@@ -165,9 +168,9 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
                 else
                 {
-                    ViewBag.ShowMsg = true;
                     _unitOfWork.ReturnLabel.update(returnLabelVM.returnLabel);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
             }
             ReturnLabelVM returnLabelVM2 = new ReturnLabelVM()

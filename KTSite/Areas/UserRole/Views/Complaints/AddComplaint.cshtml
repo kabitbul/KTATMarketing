@@ -100,7 +100,7 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg && ViewBag.success)
     {
 <script>
     swal("Success!", "Ticked Added!", "success")

@@ -98,7 +98,7 @@
                     <div class="col-8 offset-4">
                         <div class="row">
                             <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                                <button type="submit" class="btn btn-primary form-control">Update</button>
                             </div>
                             <div class="col">
                                 <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
@@ -127,7 +127,7 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
 @if (ViewBag.ProvideSolution)
 {
@@ -135,16 +135,16 @@
     swal("Error!", "Please Provide Solution Since You Marked as Solved And didn't Provide Tracking Number!", "error")
         .then((value) => { })
 </script> }
-                    else if (ViewBag.IsAdmin)
+                    else if (ViewBag.IsAdmin && ViewBag.success)
                     {
 <script>
     swal("Success!", "Complaint Updated!", "success")
         .then((value) => { window.location.href = '/VAs/Complaints'; })
 </script> }
-                    else
+                    else if (ViewBag.success)
                     {
 <script>
-    swal("Success!", "Complaint Updated!", "success")
+    swal("Success!", "Ticket Updated!", "success")
         .then((value) => { window.location.href = '/VAs/Complaints/ShowUserComplaint'; })
 </script>}}
 }

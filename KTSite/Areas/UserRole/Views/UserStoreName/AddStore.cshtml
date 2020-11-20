@@ -2,10 +2,8 @@
 
 @model KTSite.Models.UserStoreName
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Add a Store";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Add a Store"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -56,23 +54,20 @@
             menubar: 'file edit format'
         });
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
-        @if (!ViewBag.storeExist)
-        {
-            <script>
-                swal("Success!", "Store Added To your List!", "success")
-                    .then((value) => { window.location.href = '/UserRole/UserStoreName'; })
-            </script>
-        }
-        else
-        {
-            <script>
-                swal("Store Already Exists In Your List!", "Store Exists", "error")
-                    .then((value) => { window.location.href = '/UserRole/UserStoreName/AddStore'; })
-            </script>
+@if (ViewBag.storeExist)
+{
+<script>
+    swal("Store Already Exists In Your List!", "Store Exists", "error")
+        .then((value) => { window.location.href = '/UserRole/UserStoreName/AddStore'; })
+</script> }
+                    else if (ViewBag.success)
+                    {
+<script>
+    swal("Success!", "Store Added To your List!", "success")
+        .then((value) => { window.location.href = '/UserRole/UserStoreName'; })
+</script>
 
-        }
-
-    }
+}}
 }

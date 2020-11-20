@@ -92,7 +92,7 @@
                     .then((value) => { })
             </script>
         }
-        else
+        else if (ViewBag.success)
         {
             <script>
                 swal("Success!", "Return Request Created, you've been charged "+@ViewBag.ReturnCost +"$.", "success")

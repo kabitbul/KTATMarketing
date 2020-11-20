@@ -50,6 +50,7 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.ShowMsg = 0;
             ViewBag.failed = false;
             ViewBag.QuantityZero = false;
+            ViewBag.success = true;
             return View(chinaOrderVM);
         }
         public IActionResult UpdateChinaOrder(int Id)
@@ -82,7 +83,7 @@ namespace KTSite.Areas.Admin.Controllers
                 ViewBag.Received = false;
             }
             ViewBag.QuantityZero = false;
-            
+            ViewBag.success = true;
             return View(chinaOrderVM);
         }
         [HttpPost]
@@ -90,6 +91,7 @@ namespace KTSite.Areas.Admin.Controllers
         public IActionResult AddChinaOrder(ChinaOrderVM chinaOrderVM)
         {
             ViewBag.QuantityZero = false;
+            ViewBag.success = false;
             ChinaOrderVM chinaOrderVM2 = new ChinaOrderVM()
             {
                 chinaOrder = new ChinaOrder(),
@@ -114,6 +116,7 @@ namespace KTSite.Areas.Admin.Controllers
                     Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.ProductId).FirstOrDefault();
                     product.OnTheWayInventory = product.OnTheWayInventory + chinaOrderVM.chinaOrder.Quantity;
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
                 ViewBag.ShowMsg = 1;
 
@@ -126,6 +129,7 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateChinaOrder(ChinaOrderVM chinaOrderVM)
         {
+            ViewBag.success = false;
             ChinaOrderVM chinaOrderVM2 = new ChinaOrderVM()
             {
                 chinaOrder = _unitOfWork.ChinaOrder.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.Id).FirstOrDefault(),
@@ -187,6 +191,7 @@ namespace KTSite.Areas.Admin.Controllers
                     }
                     _unitOfWork.ChinaOrder.update(chinaOrderVM.chinaOrder);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                     ViewBag.ShowMsg = 1;
                 }
             }

@@ -55,21 +55,23 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 paymentSentAddressVM.PaymentSentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.Id == Id).FirstOrDefault();
             }
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(paymentSentAddressVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddPaymentType(PaymentSentAddressVM paymentSentAddressVM)
         {
-            bool validAddress = Regex.IsMatch(paymentSentAddressVM.PaymentSentAddress.PaymentTypeAddress, SD.MatchEmailPattern); 
+            bool validAddress = Regex.IsMatch(paymentSentAddressVM.PaymentSentAddress.PaymentTypeAddress, SD.MatchEmailPattern);
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             paymentSentAddressVM.paymentType = SD.paymentType;
             if (validAddress)
                 ViewBag.validAddress = true;
             else
             {
                 ViewBag.validAddress = false;
-                ViewBag.ShowMsg = 1;
                 return View(paymentSentAddressVM);
             }
 
@@ -84,7 +86,7 @@ namespace KTSite.Areas.Admin.Controllers
                     _unitOfWork.PaymentSentAddress.update(paymentSentAddressVM.PaymentSentAddress);
                 }
                     _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
                 return View(paymentSentAddressVM);
                 //return RedirectToAction(nameof(Index));
             }

@@ -38,7 +38,8 @@ namespace KTSite.Areas.UserRole.Controllers
 
             ViewBag.UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.storeExist = true;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View();
         }
         public IActionResult UpdateStore(int Id)
@@ -47,13 +48,16 @@ namespace KTSite.Areas.UserRole.Controllers
             UserStoreName userStoreName =
                   _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == Id).FirstOrDefault();
 
-            ViewBag.ShowMsg = false;            
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(userStoreName);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddStore(UserStoreName userStoreName)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             userStoreName.UserNameId =
             (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             bool storeExist = _unitOfWork.UserStoreName.GetAll().Where(q => q.UserNameId == userStoreName.UserNameId)
@@ -68,9 +72,9 @@ namespace KTSite.Areas.UserRole.Controllers
                     _unitOfWork.UserStoreName.Add(userStoreName);
 
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
                 ViewBag.storeExist = storeExist;
-                ViewBag.ShowMsg = 1;
                 return View();
 
 
@@ -83,12 +87,14 @@ namespace KTSite.Areas.UserRole.Controllers
         public IActionResult UpdateStore(UserStoreName userStoreName)
         {
             ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {   
                     ViewBag.ShowMsg = true;
                     _unitOfWork.UserStoreName.update(userStoreName);
                     _unitOfWork.Save();
-                
+                ViewBag.success = true;
+
             }
             return View(userStoreName);
         }

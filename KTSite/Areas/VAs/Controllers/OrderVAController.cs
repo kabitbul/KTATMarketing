@@ -85,7 +85,8 @@ namespace KTSite.Areas.VAs.Controllers
             
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(orderVM);
         }
@@ -113,7 +114,8 @@ namespace KTSite.Areas.VAs.Controllers
             };
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(orderVM);
         }
@@ -140,7 +142,8 @@ namespace KTSite.Areas.VAs.Controllers
             };
             ViewBag.UNameId = uNameId;
             ViewBag.failed = "";
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(orderVM);
         }
         public string returnProductName(int productId)
@@ -161,12 +164,13 @@ namespace KTSite.Areas.VAs.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersManually(OrderVM orderVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
                 if(isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
                     bool fail = false;
@@ -183,6 +187,7 @@ namespace KTSite.Areas.VAs.Controllers
                     if (!fail)
                     {
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
 
                     ViewBag.failed = false;
@@ -215,10 +220,11 @@ namespace KTSite.Areas.VAs.Controllers
         {
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
                     int oldQuantity = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
@@ -263,6 +269,7 @@ namespace KTSite.Areas.VAs.Controllers
                     if (!fail)
                     {
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
 
                     ViewBag.failed = false;
@@ -296,15 +303,17 @@ namespace KTSite.Areas.VAs.Controllers
         {
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             int processedLines = 0;
             if (ModelState.IsValid)
             {
                 string allOrders = orderVM.AllOrder;
-                if(allOrders.Length > 1)
+                if(allOrders != null && allOrders.Length > 1)
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        if (allOrders.Length > 2)
+                        if (allOrders != null && allOrders.Length > 2)
                         {
                             if (allOrders[(allOrders.Length - 1)].Equals('\r') || allOrders[(allOrders.Length - 1)].Equals('\n') ||
                             allOrders[(allOrders.Length - 1)].Equals('\"'))
@@ -314,6 +323,11 @@ namespace KTSite.Areas.VAs.Controllers
                         }
                     }
                     
+                }
+                else
+                {
+                    ViewBag.ShowMsg = false;
+                    return View(orderVM);
                 }
                 var ordersList = allOrders.Split(new string[] { "\"\r\n" },StringSplitOptions.None);
                 string failedLines = "";
@@ -376,8 +390,10 @@ namespace KTSite.Areas.VAs.Controllers
                     }
 
                 }
-                // if(failedLines.Length == 0 )
-                //{
+                if(processedLines > 0 )
+                {
+                    ViewBag.success = true;
+                }
                 if (failedLines.Length == 0)
                 {
                     ViewBag.failed = "";
@@ -399,7 +415,6 @@ namespace KTSite.Areas.VAs.Controllers
                      "*failed Orders*: " + failedLines;
                     }
                 }
-                ViewBag.ShowMsg = 1;
                 ViewBag.processedLines = processedLines;
                 return View(orderVM);
 

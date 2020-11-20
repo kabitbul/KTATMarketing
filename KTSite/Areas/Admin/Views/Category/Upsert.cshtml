@@ -2,7 +2,7 @@
 @model KTSite.Models.Category
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-                var title = "Create Category"; }
+    var title = "Create Category"; }
 
 <form method="post">
     <div class="row p-3 border">
@@ -43,4 +43,9 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    @if (ViewBag.ShowMsg && ViewBag.state)
+    {
+         <script>swal("Success!", "Category Added!", "success")
+        .then((value) => { window.location.href = '/Admin/Category'; })</script>
+    }
 }

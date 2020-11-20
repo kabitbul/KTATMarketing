@@ -51,7 +51,7 @@
             <td>
                 @if (product.ProductURL != null && product.ProductASIN != null)
                 {
-        <a href="@Html.DisplayFor(model => product.ProductURL)">@product.ProductASIN</a>}
+                 <a href="@Html.DisplayFor(model => product.ProductURL)" target="_blank">@product.ProductASIN</a>}
             </td>
             <td>@product.SellersCost$</td>
             @if (product.OOSForSellers)

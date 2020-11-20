@@ -127,7 +127,7 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
         if (ViewBag.ProvideSolution)
         {
@@ -136,10 +136,10 @@
                     .then((value) => { })
             </script>
         }
-        else
+        else if(ViewBag.success)
         {
 <script>
-    swal("Success!", "Complaint Updated!", "success")
+    swal("Success!", "Ticket Updated!", "success")
         .then((value) => { window.location.href = '/Warehouse/Complaints'; })
 </script>}
                 }

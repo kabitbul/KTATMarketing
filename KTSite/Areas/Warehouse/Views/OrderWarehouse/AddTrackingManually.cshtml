@@ -109,7 +109,7 @@
         });
     </script>
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
 @if (ViewBag.emptyTracking)
 {
@@ -124,7 +124,7 @@ else if (ViewBag.failed)
     swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "error")
         .then((value) => { })
 </script> }
-                    else
+                    else if(ViewBag.success)
                     {
 <script>
     swal("Success!", "Tracking Number Added Successfully!", "success")

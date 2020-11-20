@@ -65,7 +65,8 @@ using Newtonsoft.Json.Converters;
             
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.InsufficientFunds = false;
             ViewBag.failed = false;
             orderVM.Orders.UsDate = DateTime.Now;
@@ -96,7 +97,8 @@ using Newtonsoft.Json.Converters;
             };
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             ViewBag.InsufficientFunds = false;
             return View(orderVM);
@@ -125,7 +127,8 @@ using Newtonsoft.Json.Converters;
             };
             ViewBag.UNameId = uNameId;
             ViewBag.failed = "";
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.InsufficientFunds = false;
             return View(orderVM);
         }
@@ -172,6 +175,8 @@ using Newtonsoft.Json.Converters;
         {
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             PaymentBalance paymentBalance = userBalance(uNameId);
             OrderVM orderVM2 = new OrderVM()
             {
@@ -192,7 +197,6 @@ using Newtonsoft.Json.Converters;
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
                 if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost)
                 {
                     ViewBag.InsufficientFunds = true;
@@ -207,6 +211,7 @@ using Newtonsoft.Json.Converters;
                     updateSellerBalance(orderVM.Orders.Cost);
                     updateWarehouseBalance(orderVM.Orders.Quantity);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                     ViewBag.failed = false;
                 }
                 else
@@ -222,6 +227,8 @@ using Newtonsoft.Json.Converters;
         {
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             OrderVM orderVM2 = new OrderVM()
             {
                 Orders = new Order(),
@@ -242,7 +249,6 @@ using Newtonsoft.Json.Converters;
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
                     int oldQuantity = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
@@ -299,6 +305,7 @@ using Newtonsoft.Json.Converters;
                     if (!fail)
                     {
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
                     ViewBag.failed = false;
                 }
@@ -332,21 +339,30 @@ using Newtonsoft.Json.Converters;
         {
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
+            ViewBag.failed = "";
+            ViewBag.InsufficientFunds = false;
             int processedLines = 0;
+            ViewBag.ProcessedLines = processedLines;
             bool InsufficientFunds = false;
             if (ModelState.IsValid)
             {
-                ViewBag.ShowMsg = 1;
                 string allOrders = orderVM.AllOrder;
                 for (int i = 0; i < 3; i++)
                 {
-                    if (allOrders.Length > 2)
+                    if (allOrders != null && allOrders.Length > 2)
                     {
                         if (allOrders[(allOrders.Length - 1)].Equals('\r') || allOrders[(allOrders.Length - 1)].Equals('\n') ||
                         allOrders[(allOrders.Length - 1)].Equals('\"'))
                         {
                             allOrders = allOrders.Remove(allOrders.Length - 1);
                         }
+                    }
+                    else
+                    {
+
+                        return View(orderVM);
                     }
                 }
                 var ordersList = allOrders.Split(new string[] { "\"\r\n" },StringSplitOptions.None);
@@ -425,6 +441,7 @@ using Newtonsoft.Json.Converters;
                     }
 
                 }
+                ViewBag.success = true;
                 // if(failedLines.Length == 0 )
                 //{
                 if (InsufficientFunds)
@@ -470,7 +487,6 @@ using Newtonsoft.Json.Converters;
                     ViewBag.InsufficientFunds = false;
                     ViewBag.failed = "";
                 }
-                ViewBag.ShowMsg = 1;
                 ViewBag.ProcessedLines = processedLines;
                 return View(orderVM);
 

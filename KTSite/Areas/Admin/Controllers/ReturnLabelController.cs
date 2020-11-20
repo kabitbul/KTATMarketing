@@ -56,8 +56,9 @@ namespace KTSite.Areas.Admin.Controllers
         public IActionResult UpdateReturnLabel(long Id)
         {
             ReturnLabel returnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a => a.Id == Id).FirstOrDefault();
-                
-            ViewBag.ShowMsg = 0;
+
+            ViewBag.ShowMsg = false;
+                ViewBag.success = true;
             ViewBag.failed = false;
             return View(returnLabel);
         }
@@ -75,6 +76,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateReturnLabel(ReturnLabel returnLabel)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 string webRootPath = _hostEnvironment.WebRootPath;
@@ -102,9 +105,9 @@ namespace KTSite.Areas.Admin.Controllers
                     }
                     returnLabel.FileURL = @"\ReturnLabels\" + fileName + extention;
                 }
-                ViewBag.ShowMsg = 1;
                 _unitOfWork.ReturnLabel.update(returnLabel);
                 _unitOfWork.Save();
+                ViewBag.success = true;
             }
 
             ReturnLabel returnLabel2 = _unitOfWork.ReturnLabel.GetAll().Where(a => a.Id == returnLabel.Id).FirstOrDefault();

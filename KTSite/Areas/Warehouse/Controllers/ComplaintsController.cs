@@ -39,6 +39,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult UpdateComplaint(long Id)
         {
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             bool IsAdmin = _unitOfWork.Complaints.GetAll().Where(a => a.Id == Id).Select(a => a.IsAdmin).FirstOrDefault();
             //string uNameId = _unitOfWork.Complaints.GetAll().Where(a => a.Id == Id).Select(a => a.UserNameId).FirstOrDefault();
             ComplaintsVM complaintsVM;
@@ -65,7 +67,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateComplaint(ComplaintsVM complaintsVM)
         {
-
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 complaintsVM.complaints.HandledBy =
@@ -75,7 +78,6 @@ namespace KTSite.Areas.Warehouse.Controllers
                 {
                     complaintsVM.complaints.Solved = true;
                 }
-                ViewBag.ShowMsg = 1;
                 if (complaintsVM.complaints.NewTrackingNumber == null && complaintsVM.complaints.Solved &&
                     complaintsVM.complaints.SolutionDesc == null)
                 {
@@ -86,8 +88,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                     ViewBag.ProvideSolution = false;
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
-                
                 //return RedirectToAction(nameof(Index));
             }
             ComplaintsVM complaintsVM2;

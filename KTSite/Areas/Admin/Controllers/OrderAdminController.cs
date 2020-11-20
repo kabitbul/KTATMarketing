@@ -85,8 +85,9 @@ namespace KTSite.Areas.Admin.Controllers
             
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
             ViewBag.failed = false;
+            ViewBag.success = true;
             return View(orderVM);
         }
         public IActionResult UpdateOrder(int id)
@@ -113,7 +114,8 @@ namespace KTSite.Areas.Admin.Controllers
             };
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(orderVM);
         }
@@ -140,7 +142,8 @@ namespace KTSite.Areas.Admin.Controllers
             };
             ViewBag.UNameId = uNameId;
             ViewBag.failed = "";
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(orderVM);
         }
         public string returnProductName(int productId)
@@ -161,11 +164,12 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersManually(OrderVM orderVM)
         {
+            ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
+                ViewBag.ShowMsg = true;
                 if(isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
                     bool fail = false;
@@ -182,6 +186,7 @@ namespace KTSite.Areas.Admin.Controllers
                     if (!fail)
                     {
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
 
                     ViewBag.failed = false;
@@ -212,11 +217,13 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateOrder(OrderVM orderVM)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                ViewBag.ShowMsg = 1;
+                
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
                     int oldQuantity = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
@@ -261,6 +268,7 @@ namespace KTSite.Areas.Admin.Controllers
                     if (!fail)
                     {
                         _unitOfWork.Save();
+                        ViewBag.success = true;
                     }
 
                     ViewBag.failed = false;
@@ -292,6 +300,7 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersExtension(OrderVM orderVM)
         {
+            ViewBag.success = false;
             string failedLines = "";
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
@@ -376,6 +385,7 @@ namespace KTSite.Areas.Admin.Controllers
                     }
 
                 }
+                ViewBag.success = true;
                 // if(failedLines.Length == 0 )
                 //{
                 if (failedLines.Length == 0)
@@ -399,7 +409,7 @@ namespace KTSite.Areas.Admin.Controllers
                      "*failed Orders*: " + failedLines;
                     }
                 }
-                ViewBag.ShowMsg = 1;
+                ViewBag.ShowMsg = true;
                 ViewBag.processedLines = processedLines;
                     return View(orderVM);
 

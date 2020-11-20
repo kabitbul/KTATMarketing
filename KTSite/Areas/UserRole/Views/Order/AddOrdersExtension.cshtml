@@ -74,7 +74,7 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
         @if (ViewBag.InsufficientFunds)
          {
@@ -89,8 +89,8 @@
                 swal("Error Occured!", "@ViewBag.failed", "warning")
                                 .then((value) => {})
             </script>
-         }
-         else
+            }
+            else if (ViewBag.success && ViewBag.ProcessedLines > 0 )
          {
 <script>
                 swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")

@@ -90,7 +90,8 @@ namespace KTSite.Areas.UserRole.Controllers
 
                 ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(complaintsVM);
         }
@@ -126,7 +127,8 @@ namespace KTSite.Areas.UserRole.Controllers
                 complaintsVM.GeneralNotOrderRelated = false;
             }
             ViewBag.UNameId = uNameId;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             ViewBag.failed = false;
             return View(complaintsVM);
         }
@@ -134,13 +136,8 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddComplaint(ComplaintsVM complaintsVM)
         {
-            //userStoreName.UserNameId =
-            //(_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
-            //bool storeExist = _unitOfWork.UserStoreName.GetAll().Where(q => q.UserNameId == userStoreName.UserNameId)
-            //       .Any(q => q.StoreName.Equals(userStoreName.StoreName, StringComparison.InvariantCultureIgnoreCase));
-            //userStoreName.UserName = User.Identity.Name;
-            //userStoreName.IsAdminStore = false;
-            var errors = ModelState.Where(x => x.Value.Errors.Count > 0).Select(x => new { x.Key, x.Value.Errors }).ToArray();
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 if (complaintsVM.complaints.Id == 0)
@@ -167,8 +164,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
                 _unitOfWork.Save();
+                ViewBag.success = true;
                 //  ViewBag.storeExist = storeExist;
-                ViewBag.ShowMsg = 1;
 
 
                 //return RedirectToAction(nameof(Index));
@@ -195,6 +192,8 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateComplaint(ComplaintsVM complaintsVM)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 if (complaintsVM.complaints.Id != 0)
@@ -207,7 +206,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
                 _unitOfWork.Save();
                 //  ViewBag.storeExist = storeExist;
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
             }
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {

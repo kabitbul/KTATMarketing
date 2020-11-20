@@ -38,7 +38,8 @@ namespace KTSite.Areas.UserRole.Controllers
                 PaymentSentAddress = new PaymentSentAddress(),
                 paymentType = SD.paymentType
             };
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(paymentSentAddressVM);
         }
         public IActionResult EditPaymentType(int Id)
@@ -50,19 +51,22 @@ namespace KTSite.Areas.UserRole.Controllers
                 _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.Id == Id).FirstOrDefault(),
                 paymentType = SD.paymentType
             };
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(paymentSentAddressVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddPaymentType(PaymentSentAddressVM paymentSentAddressVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             paymentSentAddressVM.paymentType = SD.paymentType;
             if (ModelState.IsValid)
             {
                     _unitOfWork.PaymentSentAddress.Add(paymentSentAddressVM.PaymentSentAddress);
                 _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
                 return View(paymentSentAddressVM);
             }
             return View(paymentSentAddressVM);
@@ -71,12 +75,14 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditPaymentType(PaymentSentAddressVM paymentSentAddressVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             paymentSentAddressVM.paymentType = SD.paymentType;
             if (ModelState.IsValid)
             {
                 _unitOfWork.PaymentSentAddress.update(paymentSentAddressVM.PaymentSentAddress);
                 _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
             }
             return View(paymentSentAddressVM);
         }

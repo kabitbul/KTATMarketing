@@ -36,6 +36,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult AddReturningItem()
         {
+            ViewBag.success = true;
+            ViewBag.ShowMsg = false;
             ReturningItemVM returningItemVM = new ReturningItemVM()
             {
                 returningItems = new ReturningItem(),
@@ -48,7 +50,6 @@ namespace KTSite.Areas.Warehouse.Controllers
             };
             
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
             ViewBag.failed = false;
             return View(returningItemVM);
         }
@@ -62,9 +63,10 @@ namespace KTSite.Areas.Warehouse.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddReturningItem(ReturningItemVM returningItemVM)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
-                ViewBag.ShowMsg = 1;
                 _unitOfWork.ReturningItem.Add(returningItemVM.returningItems);
                 Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == returningItemVM.returningItems.ProductId).FirstOrDefault();
                 if (returningItemVM.returningItems.ItemStatus == SD.ReturningItemAdd)
@@ -76,6 +78,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                     product.InventoryCount = product.InventoryCount - returningItemVM.returningItems.Quantity;
                 }
                 _unitOfWork.Save();
+                ViewBag.success = true;
             }
                 ReturningItemVM returningItemVM2 = new ReturningItemVM()
                 {

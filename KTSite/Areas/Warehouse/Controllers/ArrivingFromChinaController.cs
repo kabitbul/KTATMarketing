@@ -47,7 +47,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                         Value = i.Id.ToString()
                     })
                 };
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(arrivingFromChinaVM);
         }
         public IActionResult UpdateArrivingFromChina(long Id)
@@ -63,15 +64,19 @@ namespace KTSite.Areas.Warehouse.Controllers
                          Value = i.Id.ToString()
                      })
                 };
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             return View(arrivingFromChinaVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddArrivingFromChina(ArrivingFromChinaVM arrivingFromChinaVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             ArrivingFromChinaVM arrivingFromChinaVM2 = new ArrivingFromChinaVM()
             {
-                arrivingFromChina = new ArrivingFromChina(),
+            arrivingFromChina = new ArrivingFromChina(),
                 ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
                 Select(i => new SelectListItem
                 {
@@ -84,8 +89,8 @@ namespace KTSite.Areas.Warehouse.Controllers
 
                _unitOfWork.ArrivingFromChina.Add(arrivingFromChinaVM.arrivingFromChina);
                     _unitOfWork.Save();
-                }
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
+            }
             return View(arrivingFromChinaVM2);
             //return RedirectToAction(nameof(Index));
         }
@@ -94,6 +99,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateArrivingFromChina(ArrivingFromChinaVM arrivingFromChinaVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             ArrivingFromChinaVM arrivingFromChinaVM2 = new ArrivingFromChinaVM()
             {
                 arrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().Where(a => a.Id == arrivingFromChinaVM.arrivingFromChina.Id).FirstOrDefault(),
@@ -106,17 +113,10 @@ namespace KTSite.Areas.Warehouse.Controllers
             };
             if (ModelState.IsValid)
             {
-                //if (chinaOrderVM.chinaOrder.QuantityReceived <= 0)
-                //{
-                //    ViewBag.QuantityZero = true;
-                //}
-                //else
-                //{
                     _unitOfWork.ArrivingFromChina.update(arrivingFromChinaVM.arrivingFromChina);
                     _unitOfWork.Save();
-                    ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
             }
-            ViewBag.ShowMsg = 1;
             return View(arrivingFromChinaVM2);
         }
         public string returnUserNameId()

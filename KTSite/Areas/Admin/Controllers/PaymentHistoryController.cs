@@ -45,6 +45,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult PayWarehouse()
         {
+            ViewBag.showMsg = false;
+            ViewBag.success = true;
             //pay warehouse
             // get the user we pay to from payment balance 
             string uNameIdWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
@@ -59,7 +61,6 @@ namespace KTSite.Areas.Admin.Controllers
                      Value = i.Id.ToString()
                  })
             };
-            ViewBag.showMsg = false;
             return View(paymentHistoryVM);
         }
         public string getPaymentAddress(int Id)

@@ -2,10 +2,8 @@
 
 @model KTSite.Models.RefundVM
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Issue Refund";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Issue Refund"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -21,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.refund.OrderId, Model.OrdersList,
-                       new { @class = "form-control" })
+                                 new { @class = "form-control" })
                         <span asp-validation-for="refund.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -78,24 +76,20 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
-        @if (ViewBag.errAmount == false)
-        {
-            <script>
-                swal("Success!", "Refund Issued!", "success")
-                    .then((value) => { window.location.href = '/VAs/Refund'; })
-            </script>
-        }
-        else
-        {
-            <script>
-                var val =document.getElementById('refund_OrderId')
-                var selVal = val.options[val.selectedIndex].value
-                swal("Error!", "Amount Is Not Valid!", "error")
-                    .then((value) => { window.location.href = '/VAs/Refund/AddRefund/'+selVal.ToString()})
-            </script>
-        }
-
-    }
+@if (ViewBag.errAmount)
+{
+<script>
+    var val = document.getElementById('refund_OrderId')
+    var selVal = val.options[val.selectedIndex].value
+    swal("Error!", "Amount Is Not Valid!", "error")
+        .then((value) => { window.location.href = '/VAs/Refund/AddRefund/' + selVal.ToString() })
+</script> }
+                    else if(ViewBag.success)
+                    {
+<script>
+    swal("Success!", "Refund Issued!", "success")
+        .then((value) => { window.location.href = '/VAs/Refund'; })
+</script>}}
 }

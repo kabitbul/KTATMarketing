@@ -104,7 +104,7 @@
                             window.location.href = '/UserRole/PaymentHistory';
                         }
                     });*@
-              @if(ViewBag.ShowMsg == 1)
+              @if(ViewBag.ShowMsg && ViewBag.success)
               {
 <script>
     swal("Success!", "Payment Updated, Admin will Approve once Payment Received!", "success")

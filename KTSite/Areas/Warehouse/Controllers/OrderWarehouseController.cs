@@ -68,6 +68,8 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult AddTrackingManually(long id)
         {
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
             OrderVM orderVM = new OrderVM()
             {
 
@@ -244,9 +246,10 @@ namespace KTSite.Areas.Warehouse.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddTrackingManually(OrderVM orderVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                ViewBag.ShowMsg = 1;
                 // if(isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 //            {
                 if (orderVM.Orders.TrackingNumber == null)
@@ -258,6 +261,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                     orderVM.Orders.OrderStatus = SD.OrderStatusDone;
                     _unitOfWork.Order.update(orderVM.Orders);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                     ViewBag.failed = false;
                     ViewBag.emptyTracking = false;
                 }

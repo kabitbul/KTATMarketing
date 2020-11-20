@@ -127,7 +127,7 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
 @if (ViewBag.ProvideSolution)
 {
@@ -144,7 +144,7 @@
         .then((value) => { window.location.href = '/Admin/Complaints'; })
 </script>
  }
-else
+else if (ViewBag.success)
 {
 <script>
     swal("Success!", "Complaint Added!", "success")

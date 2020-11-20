@@ -92,8 +92,9 @@ namespace KTSite.Areas.Admin.Controllers
 
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
-            ViewBag.ShowMsg = 0;
+            ViewBag.ShowMsg = false;
             ViewBag.failed = false;
+            ViewBag.success = true;
             return View(complaintsVM);
         }
         public IActionResult UpdateComplaint(long Id)
@@ -127,12 +128,16 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 complaintsVM.GeneralNotOrderRelated = false;
             }
+            ViewBag.success = true;
+            ViewBag.ShowMsg = false;
             return View(complaintsVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddComplaint(ComplaintsVM complaintsVM)
         {
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
             if (ModelState.IsValid)
             {
                 //   complaintsVM.complaints.IsAdmin = _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).
@@ -164,7 +169,7 @@ namespace KTSite.Areas.Admin.Controllers
                 }
 
                 _unitOfWork.Save();
-                ViewBag.ShowMsg = 1;
+                ViewBag.success = true;
 
 
                 //return RedirectToAction(nameof(Index));
@@ -191,7 +196,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateComplaint(ComplaintsVM complaintsVM)
         {
-
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 complaintsVM.complaints.HandledBy =
@@ -200,7 +206,6 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                     complaintsVM.complaints.OrderId = 0;
                 }
-                ViewBag.ShowMsg = 1;
                 if (!complaintsVM.GeneralNotOrderRelated && complaintsVM.complaints.Solved &&
                     complaintsVM.complaints.NewTrackingNumber == null && complaintsVM.complaints.SolutionDesc == null)
                 {
@@ -211,6 +216,7 @@ namespace KTSite.Areas.Admin.Controllers
                     ViewBag.ProvideSolution = false;
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                     _unitOfWork.Save();
+                    ViewBag.success = true;
                 }
                 //return RedirectToAction(nameof(Index));
             }

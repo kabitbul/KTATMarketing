@@ -68,6 +68,8 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.uName = uName;
             ViewBag.getStoreName =
                 new Func<int,string>(returnStoreName);
+            ViewBag.success = true;
+            ViewBag.ShowMsg = false;
             return View(sellersInventoryVM);
         }
         public IActionResult DeleteStoreToProduct()
@@ -95,6 +97,8 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddStoreToProduct(SellersInventoryVM sellersInventoryVM)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
                 if(sellersInventoryVM.updateAllStores)
@@ -127,9 +131,9 @@ namespace KTSite.Areas.UserRole.Controllers
                         _unitOfWork.Save();
                     }
                 }
-              
-                
-                
+
+                ViewBag.success = true;
+
                 return RedirectToAction(nameof(Index));
             }
             return View(sellersInventoryVM.SellersInventory);

@@ -34,55 +34,54 @@
             </thead>
             @foreach (ReturnLabel returnLabel in Model)
             {
-                <tr>
-                    <td>@returnLabel.Id</td>
-                    <td>@returnLabel.OrderId</td>
-                    <td>@ViewBag.getUserName(returnLabel.UserNameId.ToString())</td>
-                    <td>@ViewBag.getCustName(returnLabel.OrderId.ToString())</td>
-                    <td>@returnLabel.FileName</td>
-                    @if (returnLabel.FileURL != null)
-                    {
-                        <td><a href="@Html.DisplayFor(model => @returnLabel.FileURL)">Download Label Here</a></td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    <td>@returnLabel.CommentsToWarehouse</td>
-                    @if (returnLabel.ReturnDelivered)
-                    {
-                        <td>Yes</td>
-                    }
-                    else
-                    {
-                        <td>No</td>
-                    }
-                    <td>@returnLabel.ReturnTracking</td>
-                    <td>@returnLabel.ReturnQuantity Out Of @ViewBag.OrderQuantity(returnLabel.OrderId.ToString())</td>
-                    @if (ViewBag.Refunded(returnLabel.OrderId.ToString()))
-                    {
-                        <td>Yes</td>
-                    }
-                    else
-                    {
-                        <td>No</td>
-                    }
-                    <td>@returnLabel.DateCreated.ToString("dd/MM/yyyy")</td>
-                    @if (!ViewBag.Refunded(returnLabel.OrderId.ToString()) && returnLabel.ReturnDelivered && !ViewBag.IsAdmin(returnLabel.OrderId.ToString()) )
-                    {
-                        <td>
-                            <div class="text-center">
-                                <a href="/Admin/Refund/AddRefund/@returnLabel.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </a>
-                            </div>
-                        </td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                </tr>
+        <tr>
+            <td>@returnLabel.Id</td>
+            <td>@returnLabel.OrderId</td>
+            <td>@ViewBag.getUserName(returnLabel.UserNameId.ToString())</td>
+            <td>@ViewBag.getCustName(returnLabel.OrderId.ToString())</td>
+            <td>@returnLabel.FileName</td>
+            <td>
+                @if (returnLabel.FileURL != null)
+                {
+                 <a href="@Html.DisplayFor(model => returnLabel.FileURL)" target="_blank">Download Label Here</a>
+                }
+            </td>
+
+                            <td>@returnLabel.CommentsToWarehouse</td>
+                                                @if (returnLabel.ReturnDelivered)
+                                                {
+                            <td>Yes</td>
+ }
+                        else
+                        {
+        <td>No</td>
+}
+                                                                    <td>@returnLabel.ReturnTracking</td>
+                                                                                        <td>@returnLabel.ReturnQuantity Out Of @ViewBag.OrderQuantity(returnLabel.OrderId.ToString())</td>
+                                                                                                            @if (ViewBag.Refunded(returnLabel.OrderId.ToString()))
+                                                                                                            {
+                                                                                        <td>Yes</td>
+ }
+                                                                                    else
+                                                                                    {
+                                                                <td>No</td>
+}
+                                                                                                                                <td>@returnLabel.DateCreated.ToString("dd/MM/yyyy")</td>
+                                                                                                                                                    @if (!ViewBag.Refunded(returnLabel.OrderId.ToString()) && returnLabel.ReturnDelivered && !ViewBag.IsAdmin(returnLabel.OrderId.ToString()))
+                                                                                                                                                    {
+                                                                                                                                <td>
+                                                                                                                                    <div class="text-center">
+                                                                                                                                        <a href="/Admin/Refund/AddRefund/@returnLabel.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
+                                                                                                                                            <i class="fas fa-dollar-sign"></i>
+                                                                                                                                        </a>
+                                                                                                                                    </div>
+                                                                                                                                </td>
+ }
+                                                                                                                            else
+                                                                                                                            {
+                                                                                                        <td></td>
+}
+                                                                                                                                                                    </tr>
             }
         </table>
     </div>

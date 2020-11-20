@@ -94,10 +94,10 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg && ViewBag.success)
     {
             <script>
-                swal("Success!", "Complaint Added!", "success")
+                swal("Success!", "Ticket Created!", "success")
                     .then((value) => { window.location.href = '/VAs/Complaints'; })
     </script>}
 }

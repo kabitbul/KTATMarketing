@@ -105,10 +105,10 @@
             }
         }
     </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg && ViewBag.success)
     {
 <script>
-    swal("Success!", "Store Added To your List!", "success")
+    swal("Success!", "Ticket Updated!", "success")
         .then((value) => { window.location.href = '/UserRole/Complaints'; })
 </script>}
 }

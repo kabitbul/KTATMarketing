@@ -50,28 +50,28 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    <script>
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'lists',
-            menubar: 'file edit format'
-        });
-    </script>
-    @if (ViewBag.ShowMsg == 1)
+    @if (ViewBag.ShowMsg)
     {
-        @if (!ViewBag.storeExist)
+        @if (ViewBag.storeExist)
         {
             <script>
-                swal("Success!", "Store Added To your List!", "success")
-                    .then((value) => { window.location.href = '/Admin/AdminStore'; })
+                swal("Store Already Exists In Your List!", "Store Exists", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else if(ViewBag.failed)
+        {
+            <script>
+                swal("Error, could not Save Data!", "Unkown Error", "error")
+                    .then((value) => {  })
             </script>
         }
         else
         {
-            <script>
-                swal("Store Already Exists In Your List!", "Store Exists", "error")
-                    .then((value) => { window.location.href = '/Admin/AdminStore/AddAdminStore'; })
-            </script>
+          <script>
+            swal("Success!", "Store Added To your List!", "success")
+                .then((value) => { window.location.href = '/Admin/AdminStore'; })
+        </script>
 
         }
 

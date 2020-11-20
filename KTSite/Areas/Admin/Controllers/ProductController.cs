@@ -31,13 +31,18 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.getCategoryName =
               new Func<int, string>(getCategoryName);
             ViewBag.Profit =
-              new Func<int, double>(getProfit);
+              new Func<int, string>(getProfit);
             return View(product);
         }
-        public double getProfit(int productId)
+        public string getProfit(int productId)
         {
+            double precent;
+            double dollar;
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            return ((product.SellersCost - product.Cost-SD.shipping_cost)/ product.Cost)*100;
+            precent = ((product.SellersCost - product.Cost - SD.shipping_cost) / product.Cost) * 100;
+            dollar = product.SellersCost - product.Cost - SD.shipping_cost;
+            return precent.ToString("0.00") + "%(" + dollar.ToString("0.00") + "$)";
+
         }
         public string getCategoryName(int CategoryId)
         {
@@ -47,6 +52,8 @@ namespace KTSite.Areas.Admin.Controllers
         {
             ViewBag.existProd = false;
             ViewBag.ShowMsg = false;
+            ViewBag.success = true;
+            ViewBag.failed = false;
             ProductVM productVM = new ProductVM()
             {
 
@@ -76,6 +83,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM)
         {
+            ViewBag.success = false;
+            ViewBag.ShowMsg = true;
             ProductVM productVM2 = new ProductVM()
             {
 
@@ -139,8 +148,14 @@ namespace KTSite.Areas.Admin.Controllers
                 }
                 ViewBag.ShowMsg = true;
                 ViewBag.existProd = false;
+                ViewBag.failed = false;
                 _unitOfWork.Save();
+                ViewBag.success = true;
                 return View(productVM2);
+            }
+            else
+            {
+                ViewBag.failed = true;
             }
             ViewBag.ShowMsg = true;
             ViewBag.existProd = false;

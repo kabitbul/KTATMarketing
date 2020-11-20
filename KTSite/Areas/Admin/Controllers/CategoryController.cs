@@ -27,6 +27,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Upsert(int? id)
         {
+            ViewBag.ShowMsg = false;
+            ViewBag.failed = false;
             Category category = new Category();
             if(id == null)//create
             {
@@ -43,7 +45,8 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(Category category)
         {
-            if(ModelState.IsValid)
+            ViewBag.ShowMsg = true;
+            if (ModelState.IsValid)
             {
                 if(category.Id == 0)
                 {
@@ -54,8 +57,10 @@ namespace KTSite.Areas.Admin.Controllers
                     _unitOfWork.Category.update(category);
                 }
                 _unitOfWork.Save();
+                ViewBag.failed = false;
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.failed = true;
             return View(category);
         }
         #region API CALLS

@@ -48,12 +48,12 @@ else
     <td>
         @if (product.ProductURL != null && product.ProductASIN != null)
         {
-<a href="@Html.DisplayFor(model => product.ProductURL)">@product.ProductASIN</a>
+          <a href="@Html.DisplayFor(model => product.ProductURL)" target="_blank">@product.ProductASIN</a>
         }
     </td>
     <td>@product.Cost$</td>
     <td>@product.SellersCost$</td>
-    <td>@ViewBag.Profit(product.Id).ToString("0.00")%</td>
+    <td>@ViewBag.Profit(product.Id)</td>
     <td>@product.InventoryCount</td>
     <td>@product.OnTheWayInventory</td>
     @if (@product.OwnByWarehouse)
