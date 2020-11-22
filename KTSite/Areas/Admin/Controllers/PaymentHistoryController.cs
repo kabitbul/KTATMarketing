@@ -29,8 +29,14 @@ namespace KTSite.Areas.Admin.Controllers
                   new Func<int, string>(getPaymentAddress);
               ViewBag.getPaymentType =
                 new Func<int, string>(getPaymentType);
-
-            var PaymentHistory = _unitOfWork.PaymentHistory.getHistoryOfAllUsersPayment();
+            var PaymentHistory =_unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a=>!a.IsAdmin),
+                                                         paymentHistory => paymentHistory.SentFromAddressId,
+                                                         paymentSentAddress => paymentSentAddress.Id,
+                                                         (paymentHistory, paymentSentAddress) => new
+                                                         {
+                                                             paymentHistory
+                                                         }).Select(a=>a.paymentHistory);
+                //getHistoryOfAllUsersPayment();
             return View(PaymentHistory);
         }
         public IActionResult ShowWarehousePayment()
@@ -40,7 +46,14 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.getPaymentType =
               new Func<int, string>(getPaymentType);
             string warehouseUNameId = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a=>a.UserNameId).FirstOrDefault();
-            var PaymentHistory = _unitOfWork.PaymentHistory.getHistoryOfAdminPayment();
+            //var PaymentHistory = _unitOfWork.PaymentHistory.getHistoryOfAdminPayment();
+            var PaymentHistory = _unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a => a.IsAdmin),
+                                                         paymentHistory => paymentHistory.SentFromAddressId,
+                                                         paymentSentAddress => paymentSentAddress.Id,
+                                                         (paymentHistory, paymentSentAddress) => new
+                                                         {
+                                                             paymentHistory
+                                                         }).Select(a => a.paymentHistory);
             return View(PaymentHistory);
         }
         public IActionResult PayWarehouse()

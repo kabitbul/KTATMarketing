@@ -377,7 +377,7 @@ using Newtonsoft.Json.Converters;
                         var orderDetails = order.Split(new string[] { "\t" }, StringSplitOptions.None);
                         orderVM.Orders.ProductId = getProductIdByName(orderDetails[0]);
                         orderVM.Orders.UserNameId = returnUserNameId();
-                        orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1]);
+                        orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1],returnUserNameId());
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                         orderVM.Orders.UsDate = DateTime.Parse(orderDetails[2]);
@@ -497,18 +497,8 @@ using Newtonsoft.Json.Converters;
         }
         public bool isStoreAuthenticated(OrderVM orderVM)
         {
-            //get userName id based on store
-            string uNameStore = _unitOfWork.UserStoreName.GetAll().Where
-                (a => a.Id == orderVM.Orders.StoreNameId).
-                Select(a => a.UserName).FirstOrDefault();
-            if (User.Identity.Name.Equals(uNameStore, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return
+                _unitOfWork.UserStoreName.GetAll().Any(a => a.UserNameId == returnUserNameId() && a.Id == orderVM.Orders.StoreNameId);
         }
         public string returnUserNameId()
         {
@@ -519,10 +509,10 @@ using Newtonsoft.Json.Converters;
             return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName,StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
-        public int getStoreNameId(string storeName)
+        public int getStoreNameId(string storeName, string userNameId)
         {
-            return _unitOfWork.UserStoreName.GetAll().Where(a => a.StoreName.Equals(storeName, StringComparison.InvariantCultureIgnoreCase))
-                .Select(a => a.Id).FirstOrDefault();
+            return _unitOfWork.UserStoreName.GetAll().Where(a => a.StoreName.Equals(storeName, StringComparison.InvariantCultureIgnoreCase)
+            && a.UserNameId == userNameId).Select(a => a.Id).FirstOrDefault();
         }
         public void addAddressDetailsToVM(string orderDetails, OrderVM orderVM)
         {

@@ -26,8 +26,10 @@ namespace KTSite.DataAccess.Repository
         public IEnumerable<PaymentHistory> getHistoryOfAllUsersPayment()
         {
             IEnumerable<PaymentHistory> payHistoryList =
-                _db.PaymentHistories.FromSqlRaw("select * from PaymentHistories where SentFromAddressId IN (select p.Id from PaymentSentAddresses p where " +
-                "p.IsAdmin = 0) order by PayDate desc");
+                _db.PaymentHistories.FromSqlRaw("select * from PaymentHistories where SentFromAddressId IN (select p.Id from PaymentSentAddresses p where" +
+                " p.IsAdmin = false) order by PayDate desc");
+                
+                //_db.PaymentHistories.FromSqlRaw("select * from PaymentHistories");
             return payHistoryList;
         }
         public void update(PaymentHistory paymentHistory)

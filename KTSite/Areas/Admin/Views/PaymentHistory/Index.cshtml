@@ -48,7 +48,7 @@
             <td>@paymentHistory.Id</td>
             <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>
             <td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>
-            <td>@paymentHistory.Amount$</td>
+            <td>@paymentHistory.Amount.ToString("0.00")$</td>
             <td>@paymentHistory.PayDate</td>
             @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusApproved)
             {
@@ -120,9 +120,7 @@
                             processData: false,
                             contentType: false,
                             success: function (data) {
-                                swal("Success!", {
-                                    icon: "success",
-                                });
+                                location.reload();
                                 setTimeout(function () {
                                     location.reload()
                                 }, 100);
@@ -158,6 +156,7 @@
                             processData: false,
                             contentType: false,
                             success: function (data) {
+                                location.reload();
                                 swal("Success!", {
                                     icon: "success",
                                 });
@@ -167,7 +166,7 @@
                             }
                         });
                         setTimeout(function () {
-                            location.reload()
+                            location.reload();
                         }, 100);
                     } else {
                         swal("Nothing Changed!");
