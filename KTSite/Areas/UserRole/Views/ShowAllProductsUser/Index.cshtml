@@ -9,14 +9,8 @@
         <div class="col-6">
             <h2 class="text-primary">Products </h2>
         </div>
-        <div class="col-6 text-right">
-            <a class="btn btn-primary" asp-action="AddStoreToProduct" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Product To Store</a>
-        </div>
         <div class="col-6">
             <h2 class="text-primary"></h2>
-        </div>
-        <div class="col-6 text-right">
-            <a class="btn btn-primary" asp-action="DeleteStoreToProduct" style="background-color:red"><i class="fas fa-trash-alt"></i> &nbsp; Delete Product From Store</a>
         </div>
     </div>
 
@@ -33,6 +27,7 @@
                     <th>Status</th>
                     <th>Product Details</th>
                     <th>Stores With Product</th>
+                    <th>Add\Remove Stores</th>
 </thead>
             @{string stores = "";}
             @foreach (Product product in Model.Products)
@@ -42,26 +37,24 @@
             <td>@product.Id</td>
             @if (product.ImageUrl != null)
             {
-        <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
- }
+        <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td> }
                         else
                         {
-        <td></td>}
+        <td></td>
+}
             <td>@product.ProductName</td>
             <td>
                 @if (product.ProductURL != null && product.ProductASIN != null)
                 {
-                 <a href="@Html.DisplayFor(model => product.ProductURL)" target="_blank">@product.ProductASIN</a>}
+        <a href="@Html.DisplayFor(model => product.ProductURL)" target="_blank">@product.ProductASIN</a>}
             </td>
             <td>@product.SellersCost$</td>
             @if (product.OOSForSellers)
             {
-        <td>Out Of Stock</td>
- }
-    else
-    {
-        <td>In Stock</td>
-}
+        <td style="font-weight:bold;color:red">Out Of Stock</td> }
+                        else
+                        {
+        <td style="font-weight:bold;color:forestgreen">In Stock</td>}
             <td><textarea readonly>@product.ProductDesc</textarea></td>
             @foreach (var sellerInvRec in Model.SellInv)
             {
@@ -76,6 +69,13 @@
                 stores = stores.Remove(stores.Length - 1);
             }
             <td>@stores</td>
+            <td>
+                <div class="text-center">
+                    <a href="/UserRole/ShowAllProductsUser/AddStoreToProduct/@product.Id" class="btn btn-success text-white" style="cursor:pointer">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </div>
+            </td>
         </tr>
             }
 

@@ -191,6 +191,7 @@ namespace KTSite.Areas.Identity.Pages.Account
                     Value = i
                 })
             };
+
             // If we got this far, something failed, redisplay form
             return Page();
         }

@@ -10,6 +10,7 @@ namespace KTSite.Models
         public SellersInventory SellersInventory {get; set; }
         public IEnumerable<SelectListItem> ProductList { get; set; }
         public IEnumerable<SelectListItem> StoresList { get; set; }
+        public List<StoresChecked> storesChecked { get; set; }
         public bool updateAllStores { get; set; }
     }
 }
