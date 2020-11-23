@@ -73,9 +73,12 @@ namespace KTSite.Areas.VAs.Controllers
                 complaintsVM = new ComplaintsVM()
                 {
                     complaints = new Complaints(),
-                    OrdersList = _unitOfWork.Complaints.getAllOrdersForAdmin().
-                    Select(i => new SelectListItem
-                    {
+                    // OrdersList = _unitOfWork.Complaints.getAllOrdersForAdmin().
+                    //Select(i => new SelectListItem
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusDone &&
+                                     !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                      Select(i => new SelectListItem
+                      {
                         Text = i.CustName + "- Id: " + i.Id,
                         Value = i.Id.ToString()
                     }),

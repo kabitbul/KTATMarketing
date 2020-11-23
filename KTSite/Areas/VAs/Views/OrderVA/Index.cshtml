@@ -55,12 +55,13 @@
                 <th>Order Status</th>
                 <th>Product</th>
                 <th>US Date</th>
+                <th>User</th>
                 <th>Store</th>
                 <th>Quantity</th>
                 <th>Full Address</th>
                 <th>Tracking Number</th>
                 <th></th>
-        </thead>
+</thead>
         @{string FullAddress = "";}
         @foreach (Order order in Model.Order)
         {
@@ -70,6 +71,7 @@
     <td>@order.OrderStatus</td>
     <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
     <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
+    <td>@ViewBag.getUserOrAdminName(order.StoreNameId).ToString()</td>
     <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
     <td>@order.Quantity</td>
 

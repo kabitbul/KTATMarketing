@@ -55,8 +55,12 @@ namespace KTSite.Areas.UserRole.Controllers
                 complaintsVM = new ComplaintsVM()
                 {
                     complaints = new Complaints(),
-                    OrdersList = _unitOfWork.Complaints.getAllOrdersOfUser(uNameId).Select(i => new SelectListItem
-                    {
+                    //OrdersList = _unitOfWork.Complaints.getAllOrdersOfUser(uNameId).Select(i => new SelectListItem
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == uNameId &&
+                                              a.OrderStatus == SD.OrderStatusDone &&
+                                       !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                      Select(i => new SelectListItem
+                      {
                         Text = i.CustName + "- Id: " + i.Id,
                         Value = i.Id.ToString()
                     }),

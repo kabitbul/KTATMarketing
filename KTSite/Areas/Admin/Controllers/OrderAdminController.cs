@@ -35,6 +35,8 @@ namespace KTSite.Areas.Admin.Controllers
                new Func<int, string>(returnProductName);
             ViewBag.getStoreName =
                new Func<int, string>(returnStoreName);
+            ViewBag.getUserOrAdminName =
+               new Func<int, string>(returnUserOrAdminName);
             ViewBag.getCost =
                           new Func<int, double ,double>(returnCost);
             ViewBag.errSaveInProgress = false;
@@ -153,6 +155,19 @@ namespace KTSite.Areas.Admin.Controllers
         public string returnStoreName(int storeId)
         {
             return (_unitOfWork.UserStoreName.GetAll().Where(q => q.Id == storeId).Select(q => q.StoreName)).FirstOrDefault();
+        }
+        public string returnUserOrAdminName(int storeId)
+        {
+            UserStoreName userStoreName = _unitOfWork.UserStoreName.GetAll().Where(q => q.Id == storeId).FirstOrDefault();
+            if (userStoreName.IsAdminStore)
+            {
+                return "Admin";
+            }
+            else
+            {
+                return _unitOfWork.ApplicationUser.GetAll().
+                    Where(a => a.Id == userStoreName.UserNameId).Select(a => a.Name).FirstOrDefault();
+            }
         }
         public double returnCost(int productId, double quantity)
         {
@@ -337,7 +352,7 @@ namespace KTSite.Areas.Admin.Controllers
                         orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1]);
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                        orderVM.Orders.UsDate = DateTime.Parse(orderDetails[2]);
+                        orderVM.Orders.UsDate = DateTime.ParseExact(orderDetails[2], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                         addAddressDetailsToVM(orderDetails[4], orderVM);
                         //remove diacritics and comma
                         orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "");

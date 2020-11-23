@@ -40,11 +40,13 @@ namespace KTSite.Areas.Admin.Controllers
          {
             ViewBag.showMsg = false;
             ViewBag.success = true;
+
             PaymentBalanceVM paymentBalanceVM = new PaymentBalanceVM()
             {
             paymentBalances = new PaymentBalance(),
-
-                UsersList = _unitOfWork.ApplicationUser.GeAllUsersWithoutrecInPayBalance().Select(i => new SelectListItem
+                UsersList = _unitOfWork.ApplicationUser.GetAll().
+                Where(a => !_unitOfWork.PaymentBalance.GetAll().Any(p => p.UserNameId == a.Id)).Select(i => new SelectListItem
+                //_unitOfWork.ApplicationUser.GeAllUsersWithoutrecInPayBalance().Select(i => new SelectListItem
                 {
                     Text = i.Name +"-"+i.UserName,
                     Value = i.Id.ToString()
@@ -64,8 +66,9 @@ namespace KTSite.Areas.Admin.Controllers
                 paymentBalanceVM.paymentBalances.IsWarehouseBalance = true;
             }
             ViewBag.showMsg = true;
-            paymentBalanceVM.UsersList = _unitOfWork.ApplicationUser.GeAllUsersWithoutrecInPayBalance().Select(i => new SelectListItem
-            {
+            paymentBalanceVM.UsersList = _unitOfWork.ApplicationUser.GetAll().
+                Where(a => !_unitOfWork.PaymentBalance.GetAll().Any(p => p.UserNameId == a.Id)).Select(i => new SelectListItem
+                {
                 Text = i.UserName,
                 Value = i.Id.ToString()
             });

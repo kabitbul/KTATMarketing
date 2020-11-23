@@ -380,7 +380,7 @@ using Newtonsoft.Json.Converters;
                         orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1],returnUserNameId());
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                        orderVM.Orders.UsDate = DateTime.Parse(orderDetails[2]);
+                        orderVM.Orders.UsDate = DateTime.ParseExact(orderDetails[2], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                         addAddressDetailsToVM(orderDetails[4], orderVM);
                         //remove diacritics and comma
                         orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "");

@@ -53,7 +53,7 @@ namespace KTSite.Areas.Admin.Controllers
                                                          (paymentHistory, paymentSentAddress) => new
                                                          {
                                                              paymentHistory
-                                                         }).Select(a => a.paymentHistory);
+                                                         }).Select(a => a.paymentHistory).OrderByDescending(a => a.PayDate);
             return View(PaymentHistory);
         }
         public IActionResult PayWarehouse()

@@ -30,7 +30,14 @@ namespace KTSite.Areas.Warehouse.Controllers
             ViewBag.getPaymentType =
               new Func<int, string>(getPaymentType);
             string warehouseUNameId = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
-            var PaymentHistory = _unitOfWork.PaymentHistory.getHistoryOfAdminPayment();
+            //var PaymentHistory = _unitOfWork.PaymentHistory.getHistoryOfAdminPayment();
+            var PaymentHistory = _unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a => a.IsAdmin),
+                                                         paymentHistory => paymentHistory.SentFromAddressId,
+                                                         paymentSentAddress => paymentSentAddress.Id,
+                                                         (paymentHistory, paymentSentAddress) => new
+                                                         {
+                                                             paymentHistory
+                                                         }).Select(a => a.paymentHistory).OrderByDescending(a=>a.PayDate);
             return View(PaymentHistory);
         }
         public string getPaymentAddress(int Id)
