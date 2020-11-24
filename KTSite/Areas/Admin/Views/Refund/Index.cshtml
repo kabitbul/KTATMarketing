@@ -22,26 +22,30 @@
                 <tr class="table-info">
                     <th>Refund Id</th>
                     <th>Order Id</th>
+                    <th>User</th>
                     <th>Store</th>
-                    <th>Quantity To Refund</th>
+                    <th>Refund Quantity</th>
+                    <th>Refund Amount</th>
                     <th>Refunded By</th>
                     <th>Refund Date</th>
-            </thead>
+</thead>
 
             @foreach (Refund refund in Model)
             {
         <tr>
             <td>@refund.Id</td>
             <td>@refund.OrderId</td>
+            <td>@ViewBag.getUserName(refund.OrderId.ToString()).ToString()</td>
             @if (refund.OrderId != 0)//store
             {
-                <td>@ViewBag.getStore(refund.OrderId.ToString()).ToString()</td>
-            }
-            else
-            {
-                <td></td>
-            }
+        <td>@ViewBag.getStore(refund.OrderId.ToString()).ToString()</td>
+ }
+    else
+    {
+        <td></td>
+}
             <td>@refund.RefundQuantity</td>
+            <td>@ViewBag.getRefundAmount(refund.OrderId.ToString(),refund.RefundQuantity.ToString()).ToString()</td>
             <td>@refund.RefundedBy</td>
             <td>@refund.RefundDate</td>
         </tr>

@@ -75,5 +75,10 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public ActionResult MyBalance()
+        {
+            PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().FirstOrDefault();
+        return PartialView("_TotalBalance", paymentBalance);
+        }
     }
 }

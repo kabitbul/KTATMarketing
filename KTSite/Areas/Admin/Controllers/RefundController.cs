@@ -28,7 +28,22 @@ namespace KTSite.Areas.Admin.Controllers
             var refund = _unitOfWork.Refund.GetAll();
             ViewBag.getStore =
                new Func<string, string>(getStore);
+            ViewBag.getUserName = new Func<string, string>(returnUserName);
+            ViewBag.getRefundAmount = new Func<string, string, string>(returnRefundAmount);
             return View(refund);
+        }
+        public string returnUserName(string OrderId)
+        {
+            Order order = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(OrderId)).FirstOrDefault();
+            return 
+                _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == order.UserNameId).Select(a => a.Name).FirstOrDefault();
+        }
+        public string returnRefundAmount(string OrderId,string quantityRefund)
+        {
+            Order order = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(OrderId)).FirstOrDefault();
+            double costPerone = order.Cost / order.Quantity;
+            return (costPerone * Convert.ToDouble(quantityRefund)).ToString("0.00") + "$";
+
         }
         public string getUserName(string unameId)
         {
