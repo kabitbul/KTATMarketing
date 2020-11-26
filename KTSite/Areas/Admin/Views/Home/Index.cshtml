@@ -10,7 +10,7 @@
     <div class="text-left display-3 p-4 border rounded col-5">
         <h1 style="font-size: 20px">
             <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-            Total Value Of Inventory: <span style="color:seagreen">@ViewBag.totalInventoryValue$</span>
+            Total Value Of Inventory: <span style="color:seagreen">@ViewBag.totalInventoryValue.ToString("0.00")$</span>
         </h1>
     </div>
     @if (ViewBag.OrdersFromChina == 1)

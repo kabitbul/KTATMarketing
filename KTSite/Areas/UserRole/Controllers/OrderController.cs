@@ -209,7 +209,7 @@ using Newtonsoft.Json.Converters;
                     _unitOfWork.Order.Add(orderVM.Orders);
                     updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                     updateSellerBalance(orderVM.Orders.Cost);
-                    updateWarehouseBalance(orderVM.Orders.Quantity);
+                    updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                     _unitOfWork.Save();
                     ViewBag.success = true;
                     ViewBag.failed = false;
@@ -273,7 +273,7 @@ using Newtonsoft.Json.Converters;
                         if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                         {
                             updateInventory(oldProductId, oldQuantity * (-1));
-                            updateWarehouseBalance(oldQuantity * (-1));
+                            updateWarehouseBalance(oldQuantity * (-1), oldProductId);
                             updateSellerBalance(oldCost*(-1));
                             // if it's a cancellation - we dont want any change but the cancellation it self
                             orderVM.Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id).FirstOrDefault();
@@ -283,7 +283,7 @@ using Newtonsoft.Json.Converters;
                         else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
                         {
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                            updateWarehouseBalance(orderVM.Orders.Quantity);
+                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                             updateSellerBalance(orderVM.Orders.Cost);
                         }
                         //status didnt change
@@ -292,7 +292,7 @@ using Newtonsoft.Json.Converters;
                             if (oldQuantity != orderVM.Orders.Quantity)
                             {
                                 updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                updateWarehouseBalance(orderVM.Orders.Quantity - oldQuantity);
+                                updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
                                 updateSellerBalance(orderVM.Orders.Cost - oldCost);
                             }
                         }
@@ -328,7 +328,7 @@ using Newtonsoft.Json.Converters;
                 order.OrderStatus = SD.OrderStatusCancelled;
                 _unitOfWork.Order.update(order);
                 updateInventory(order.ProductId, (order.Quantity*(-1)));
-                updateWarehouseBalance((order.Quantity * (-1)));
+                updateWarehouseBalance((order.Quantity * (-1)), order.ProductId);
                 updateSellerBalance((order.Cost * (-1)));
                 _unitOfWork.Save();
             }
@@ -411,7 +411,7 @@ using Newtonsoft.Json.Converters;
                         {
                             _unitOfWork.Order.Add(orderVM.Orders);
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity );
-                            updateWarehouseBalance(orderVM.Orders.Quantity);
+                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                             updateSellerBalance(orderVM.Orders.Cost);
                             _unitOfWork.Save();
                             processedLines++;
@@ -618,10 +618,18 @@ using Newtonsoft.Json.Converters;
             PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == UNameId).FirstOrDefault();
             paymentBalance.Balance = paymentBalance.Balance - sellerCost;
         }
-        public void updateWarehouseBalance(int quantity)
+        public void updateWarehouseBalance(int quantity, int productId)
         {
+            Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
             PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
-            paymentBalance.Balance = paymentBalance.Balance - (quantity * SD.shipping_cost);
+            if (product.OwnByWarehouse)
+            {
+                paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost + product.Cost));
+            }
+            else
+            {
+                paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+            }
         }
     }
 }

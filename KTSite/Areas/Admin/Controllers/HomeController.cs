@@ -38,10 +38,13 @@ namespace KTSite.Areas.Admin.Controllers
                 ViewBag.CountPendingPayments = _unitOfWork.PaymentHistory.GetAll().
                     Where(a => a.Status == SD.PaymentStatusPending).Count();
                 var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0);
-                long totalInventoryValue = 0; 
+                double totalInventoryValue = 0; 
                 foreach(Product prod in product)
                 {
-                    totalInventoryValue = totalInventoryValue + (Convert.ToInt64(prod.InventoryCount) + Convert.ToInt64(prod.OnTheWayInventory)) * Convert.ToInt64(prod.Cost);
+                    if (!prod.OwnByWarehouse)
+                    {
+                        totalInventoryValue = totalInventoryValue + ((prod.InventoryCount + prod.OnTheWayInventory) * prod.Cost);
+                    }
                 }
                 ViewBag.totalInventoryValue = totalInventoryValue;
                 ViewBag.CountArrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().
