@@ -30,7 +30,8 @@ namespace KTSite.Utility
         public const double paypalOneTimeFee = 0.3;
         public const string MadeInChina = "China";
         public const string MadeInUSA = "USA";
-        public const string PathToCreateCSV = @"C:\KT shipping";
+        public const string PathToCreateCSV = @"C:\Users\kobiab\Downloads\";
+        //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =
             @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
      + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?

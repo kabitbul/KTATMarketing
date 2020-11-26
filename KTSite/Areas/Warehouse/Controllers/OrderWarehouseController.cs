@@ -1,38 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Globalization;
 using System.Text;
-using Newtonsoft.Json.Converters;
 using Microsoft.AspNetCore.Http;
 using System.Data;
-using System.Data.OleDb;
-using System.Web;
-using System.Collections;
-using KTSite.Areas.Warehouse.Views.OrderWarehouse;
-using ExcelDataReader;
 using CsvHelper;
+using System.Web.Http.Cors;
+using Microsoft.AspNetCore.Hosting;
 
 namespace KTSite.Areas.Warehouse.Controllers
 {
     [Area("Warehouse")]
     [Authorize(Roles = SD.Role_Warehouse)]
+    [EnableCors(origins: "https://ktatmarketing.azurewebsites.net", headers: "*", methods: "*")]
     public class OrderWarehouseController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public OrderWarehouseController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _hostEnvironment;
+        public OrderWarehouseController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _hostEnvironment = hostEnvironment;
         }
         public IActionResult Index()
         {
@@ -45,8 +39,9 @@ namespace KTSite.Areas.Warehouse.Controllers
             ViewBag.getStoreName =
                new Func<int, string>(returnStoreName);
             ViewBag.getCost =
-                          new Func<int, double ,double>(returnCost);
+                          new Func<int, double, double>(returnCost);
             ViewBag.errSaveInProgress = false;
+            ViewBag.ExistInProgress = false;
             return View(myModel);
 
         }
@@ -74,9 +69,9 @@ namespace KTSite.Areas.Warehouse.Controllers
             {
 
                 Orders = new Order()
-                
+
             };
-            
+
             orderVM.Orders = _unitOfWork.Order.Get(id);
             if (orderVM.Orders == null)
             {
@@ -96,97 +91,94 @@ namespace KTSite.Areas.Warehouse.Controllers
         public double returnCost(int productId, double quantity)
         {
             double productCost = (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.Cost)).FirstOrDefault();
-            return Convert.ToDouble(String.Format("{0:0.00}", (productCost * quantity))); 
+            return Convert.ToDouble(String.Format("{0:0.00}", (productCost * quantity)));
         }
 
         [HttpPost]
         public JsonResult ChangeInProgress()
         {
-            var orderList  = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress);
-            foreach(Order order in orderList)
+            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress);
+            foreach (Order order in orderList)
             {
                 order.OrderStatus = SD.OrderStatusAccepted;
                 _unitOfWork.Order.update(order);
                 _unitOfWork.Save();
             }
             return Json(new { });
-
         }
         [HttpPost]
-        public JsonResult ExportData()
+        public /*ActionResult*/FileResult Export()
         {
+            string fileName =
+                    DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
             var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).OrderBy(a => a.Id);
-            string path = SD.PathToCreateCSV + "_" + DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute+".csv";
             ViewBag.errSaveInProgress = false;
-            string excep = "No Orders In Status Accepted left.";
-            int success=0;
             int lineCounter = 0;
-            if(orderList.Count() == 0)
+            if (orderList.Count() == 0)
             {
-                return Json(new { excep, success });
+                throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
             }
             bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
-            if(existInProgress)
+            if (existInProgress)
             {
-                excep = "Cannot create file, some orders are already in status In Progress.";
-                success = 0;
-                return Json(new { excep, success });
+                throw new Exception(String.Format("exceptStatusInProgress"));
             }
-            try
+            //try
+            //{
+            //}
+            //catch (IOException e)
+            //{
+            //    throw new Exception(String.Format("exceptStatusCantCreateFile"));
+            //}
+            StringBuilder sb = new StringBuilder();
+            //Header
+            sb.Append("Product,Empty,Name,Address1,Address2,City,State,zip,Country,Phone,Quantity,Weight");
+            sb.Append("\r\n");
+            foreach (Order order in orderList)
             {
-                using (StreamWriter sw = new StreamWriter(path, false, new UTF8Encoding(true)))
-                using (CsvWriter cw = new CsvWriter(sw, System.Globalization.CultureInfo.CurrentCulture))
+                if (lineCounter >= 300)
                 {
-                    cw.WriteHeader<CSVColumnOrders>();
-                    cw.NextRecord();
-                    foreach (Order order in orderList)
-                    {
-                        if(lineCounter >= 300)
-                        {
-                            break;
-                        }
-                        CSVColumnOrders csvColumn = new CSVColumnOrders();
-                        csvColumn.Product = getProductName(order.ProductId) + "- " + order.Quantity;
-                        csvColumn.Name = order.CustName.Replace(",", "").Replace("\"", "");
-                        csvColumn.Address1 = order.CustStreet1.Replace(",", "").Replace("\"", "");
-                        csvColumn.Address2 = order.CustStreet2.Replace(",", "").Replace("\"", "");
-                        csvColumn.City = order.CustCity;
-                        csvColumn.State = order.CustState;
-                        csvColumn.Zip = order.CustZipCode;
-                        csvColumn.Country = "US";
-                        if (order.CustPhone != null)
-                        {
-                            csvColumn.Phone = order.CustPhone;
-                        }
-                        else
-                        {
-                            csvColumn.Phone = "999-999-9999";
-                        }
-                        csvColumn.Quantity = order.Quantity.ToString();
-                        csvColumn.Weight = getWeight(order.ProductId);
-
-                        cw.WriteRecord<CSVColumnOrders>(csvColumn);
-                        try
-                        {
-                            setInProgressStatus(order.Id);
-                        }
-                        catch
-                        {
-                            ViewBag.errSaveInProgress = true;
-                        }
-                        cw.NextRecord();
-                        lineCounter++;
-                    }
+                    break;
                 }
-                excep = "File Created Successfully in : " + path;
-                success = 1;
+                sb.Append(getProductName(order.ProductId) + "- " + order.Quantity + ',');
+                sb.Append(',');
+                sb.Append(order.CustName.Replace(",", "").Replace("\"", "") + ',');
+                sb.Append(order.CustStreet1.Replace(",", "").Replace("\"", "") + ',');
+                if (order.CustStreet2 == null)
+                {
+                    sb.Append(',');
+                }
+                else
+                {
+                    sb.Append(order.CustStreet2.Replace(",", "").Replace("\"", "") + ',');
+                }
+                sb.Append(order.CustCity + ',');
+                sb.Append(order.CustState + ',');
+                sb.Append(order.CustZipCode + ',');
+                sb.Append("US" + ',');
+                if (order.CustPhone != null)
+                {
+                    sb.Append(order.CustPhone + ',');
+                }
+                else
+                {
+                    sb.Append("999-999-9999" + ',');
+                }
+                sb.Append(order.Quantity.ToString() + ',');
+                sb.Append(getWeight(order.ProductId) + ',');
+                try
+                {
+                    setInProgressStatus(order.Id);
+                }
+                catch
+                {
+                    ViewBag.errSaveInProgress = true;
+                }
+                //Append new line character.
+                sb.Append("\r\n");
+                lineCounter++;
             }
-            catch (IOException e)
-            {
-                excep = "An Error Occured,could not create File.";
-                success = 0;
-            }
-            return Json(new { excep ,success});
+            return File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", fileName);
         }
         [HttpPost]
         public JsonResult Submit(IFormFile CSVFile)
@@ -198,7 +190,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             {
                 using (var reader = new StreamReader(CSVFile.OpenReadStream()))
                 {
-                    if(reader.Peek() <= 1)
+                    if (reader.Peek() <= 1)
                     {
                         success = 0;
                         excep = "File is Empty";
@@ -219,8 +211,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                         Order order =
                            _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
                                                      .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)
-                                                     .Where(a => a.CustZipCode.Substring(0,5) == custZip.Substring(0, 5))//compare first 5
-                                                     .Where(a=>a.TrackingNumber == null)
+                                                     .Where(a => a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5))//compare first 5
+                                                     .Where(a => a.TrackingNumber == null)
                                                      .FirstOrDefault();
                         if (order != null)
                         {
@@ -290,7 +282,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public int getProductIdByName(string productName)
         {
-            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName,StringComparison.InvariantCultureIgnoreCase))
+            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
         public int getStoreNameId(string storeName)
@@ -298,7 +290,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             return _unitOfWork.UserStoreName.GetAll().Where(a => a.StoreName.Equals(storeName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
-        
+
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
@@ -316,7 +308,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         public IActionResult Delete(int id)
         {
             var objFromDb = _unitOfWork.Product.Get(id);
-            if(objFromDb == null)
+            if (objFromDb == null)
             {
                 return Json(new { success = false, message = "Error While Deleting" });
             }
