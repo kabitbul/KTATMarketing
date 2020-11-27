@@ -10,12 +10,18 @@
     </div>
     <div class="row">
         <div class="col-12 text-right">
-            <button class="btn btn-primary" style="background-color:forestgreen" onclick="Export()">
+            @using (Html.BeginForm("Export", "OrderWarehouse", FormMethod.Post))
+            {
+            <button class="btn btn-primary" style="background-color:forestgreen">
                 <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)
             </button>
+            }
+            @* <input type="submit" id="btnSubmit" value="ExportData" />*@
+            @*<button class="btn btn-primary" style="background-color:forestgreen" onclick="Export()">
+            <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)
+        </button>*@
         </div>
     </div>&nbsp;
-    @*<input type="submit" id="btnSubmit" value="ExportData" />  call action fron button*@
     <div class="row">
         <div class="col-12 text-right">
             <button class="btn btn-primary" style="background-color:crimson" onclick="ChangeInProgress()">Change Status "In Progress" Back to "Accepted"</button>
@@ -79,43 +85,43 @@
             @foreach (Order order in Model.Order)
             {
                 FullAddress = "";
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.OrderStatus</td>
-                <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
-                <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
-                <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
-                <td>@order.Quantity</td>
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.OrderStatus</td>
+                    <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
+                    <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
+                    <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
+                    <td>@order.Quantity</td>
 
-                @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
-                @if (order.CustStreet2 != null)
-    {
-        FullAddress = FullAddress + order.CustStreet2 + "\n";
-    }
-                @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
-                                                              + "United States";}
-                @if (order.CustPhone != null && order.CustPhone.Length > 0)
-    {
-        FullAddress = FullAddress + "\n" + order.CustPhone;
-    }
-                <td><textarea readonly>@FullAddress</textarea></td>
-                <td>@order.TrackingNumber</td>
-                @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
-    {
-                <td>
-                    <div class="text-center">
-                        <a href="/Warehouse/OrderWarehouse/AddTrackingManually/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
- }
-else
-{
-                <td></td>
-}
-            </tr>
-}
+                    @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
+                    @if (order.CustStreet2 != null)
+                    {
+                        FullAddress = FullAddress + order.CustStreet2 + "\n";
+                    }
+                    @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
+                                                                      + "United States";}
+                    @if (order.CustPhone != null && order.CustPhone.Length > 0)
+                    {
+                        FullAddress = FullAddress + "\n" + order.CustPhone;
+                    }
+                    <td><textarea readonly>@FullAddress</textarea></td>
+                    <td>@order.TrackingNumber</td>
+                    @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
+                    {
+                        <td>
+                            <div class="text-center">
+                                <a href="/Warehouse/OrderWarehouse/AddTrackingManually/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
         </table>
     </div>
 </div>
@@ -218,7 +224,7 @@ else
 
             swal({
                 title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover this",
+                text: "Change Status Back To In Progress?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -241,11 +247,19 @@ else
                 });
         }
     </script>
-    <script>
-        function refresh() {
-            setTimeout(function () {
-                location.reload()
-            }, 100);
-        }
-    </script>
+    @if (ViewBag.ExistInProgress)
+    {
+        <script>
+            swal("CSV File not created!", "There Are orders already in status \"In Progress\"", "error")
+                .then((value) => { })
+        </script>
+    }
+    else if (ViewBag.NoOrdersMsg)
+    {
+        <script>
+            swal("CSV File not created!", "No Orders in status \"Accepted\"", "error")
+                .then((value) => { })
+        </script>
+    }
+
 }

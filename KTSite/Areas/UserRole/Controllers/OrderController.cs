@@ -550,7 +550,7 @@ using Newtonsoft.Json.Converters;
         }
         public void cityStateZipToVM(string line, OrderVM orderVM)
         {
-            var cityStateZip = line.Split(' ');
+            var cityStateZip = line.Trim().Split(' ');
             orderVM.Orders.CustZipCode = cityStateZip[cityStateZip.Length-1];
             orderVM.Orders.CustState = cityStateZip[cityStateZip.Length-2];
             orderVM.Orders.CustCity = cityStateZip[0];

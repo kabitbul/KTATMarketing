@@ -42,8 +42,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                           new Func<int, double, double>(returnCost);
             ViewBag.errSaveInProgress = false;
             ViewBag.ExistInProgress = false;
+            ViewBag.NoOrdersMsg = false;
             return View(myModel);
-
         }
         public void setInProgressStatus(long Id)
         {
@@ -107,21 +107,47 @@ namespace KTSite.Areas.Warehouse.Controllers
             return Json(new { });
         }
         [HttpPost]
-        public /*ActionResult*/FileResult Export()
+        public ActionResult Export()
         {
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
-            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).OrderBy(a => a.Id);
+            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).OrderBy(a => getProductName(a.ProductId));
             ViewBag.errSaveInProgress = false;
             int lineCounter = 0;
-            if (orderList.Count() == 0)
-            {
-                throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
-            }
             bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
             if (existInProgress)
             {
-                throw new Exception(String.Format("exceptStatusInProgress"));
+                dynamic myModel = new System.Dynamic.ExpandoObject();
+                myModel.Order = _unitOfWork.Order.GetAll();
+                myModel.ordercsv = new List<KTSite.Areas.Warehouse.Views.OrderWarehouse.CSVOrderLine>();
+                ViewBag.getProductName =
+                   new Func<int, string>(returnProductName);
+                ViewBag.getStoreName =
+                   new Func<int, string>(returnStoreName);
+                ViewBag.getCost =
+                              new Func<int, double, double>(returnCost);
+                ViewBag.errSaveInProgress = false;
+                ViewBag.ExistInProgress = true;
+                ViewBag.NoOrdersMsg = false;
+                //throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
+                return View("Index", myModel);
+            }
+            if (orderList.Count() == 0)
+            {
+                dynamic myModel = new System.Dynamic.ExpandoObject();
+                myModel.Order = _unitOfWork.Order.GetAll();
+                myModel.ordercsv = new List<KTSite.Areas.Warehouse.Views.OrderWarehouse.CSVOrderLine>();
+                ViewBag.getProductName =
+                   new Func<int, string>(returnProductName);
+                ViewBag.getStoreName =
+                   new Func<int, string>(returnStoreName);
+                ViewBag.getCost =
+                              new Func<int, double, double>(returnCost);
+                ViewBag.errSaveInProgress = false;
+                ViewBag.ExistInProgress = false;
+                ViewBag.NoOrdersMsg = true;
+                //throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
+                return View("Index", myModel);
             }
             //try
             //{
