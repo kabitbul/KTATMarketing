@@ -41,7 +41,7 @@ namespace KTSite.Areas.Admin.Controllers
                 double totalInventoryValue = 0; 
                 foreach(Product prod in product)
                 {
-                    if (!prod.OwnByWarehouse)
+                    if (!prod.OwnByWarehouse && prod.Id != 60 && prod.Id != 61)// Daniel Items (Dropshipping)
                     {
                         totalInventoryValue = totalInventoryValue + ((prod.InventoryCount + prod.OnTheWayInventory) * prod.Cost);
                     }

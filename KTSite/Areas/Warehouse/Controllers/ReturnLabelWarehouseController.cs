@@ -33,7 +33,23 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             var returnLabelList = _unitOfWork.ReturnLabel.GetAll().OrderByDescending(q=>q.Id);
             ViewBag.getCustName = new Func<string, string>(returnCustName);
+            ViewBag.getQuantityString = new Func<int, string, string>(returnQuantityString);
+            ViewBag.isBold = new Func<int, string, bool>(returnIsBold);
             return View(returnLabelList);
+        }
+        public string returnQuantityString(int retQuantity,string OrderId)
+        {
+           int quantity = 
+               _unitOfWork.Order.GetAll().Where(q => q.Id == Convert.ToInt64(OrderId)).Select(q => q.Quantity).FirstOrDefault();
+            return retQuantity.ToString() + " Out Of " + quantity;
+        }
+        public bool returnIsBold(int retQuantity, string OrderId)
+        {
+            int quantity =
+                _unitOfWork.Order.GetAll().Where(q => q.Id == Convert.ToInt64(OrderId)).Select(q => q.Quantity).FirstOrDefault();
+            if (retQuantity == quantity)
+                return false;
+            return true;
         }
         public IActionResult UpdateReturnLabel(long Id)
         {

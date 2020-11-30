@@ -29,30 +29,26 @@ namespace KTSite.Areas.Admin.Controllers
         {
             IEnumerable<Product> product = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName);
             ViewBag.getDailyAvg =  new Func<int, int,double>(returnDailyAvg);
-            ViewBag.getDaysToOOS = new Func<int, string>(returnDaysToOOS);
+            ViewBag.getDaysToOOS = new Func<int, double>(returnDaysToOOS);
             ViewBag.getPaintData = new Func<int, bool>(returnPaintData);
             return View(product);
         }
         public bool returnPaintData(int productId)
         {
-            string daysToOOS = returnDaysToOOS(productId);
-            if (daysToOOS == "No Sales")
-            {
-                return false;
-            }
-            else if (Convert.ToDouble(daysToOOS) <= 400)
+            double daysToOOS = returnDaysToOOS(productId);
+            if (daysToOOS <= 100 && daysToOOS > 0)
                 return true;
             return false;
         }
-        public string returnDaysToOOS(int productId)
+        public double returnDaysToOOS(int productId)
         {
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
             double avgsells = returnDailyAvg(productId, 3);
             if(avgsells == 0)
             {
-                return "No Sales";
+                return 999999.99;
             }
-            return ((product.InventoryCount + product.OnTheWayInventory) / avgsells).ToString("0.00");
+            return Convert.ToDouble(((product.InventoryCount + product.OnTheWayInventory) / avgsells).ToString("0.00"));
         }
         public double returnDailyAvg(int productId, int avgDay)
         {

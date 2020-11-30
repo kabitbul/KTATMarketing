@@ -29,17 +29,21 @@
         <tr>
             <td>@returnLabel.Id</td>
             <td>@returnLabel.OrderId</td>
-            <td>@returnLabel.ReturnQuantity</td>
+            @if (ViewBag.isBold(returnLabel.ReturnQuantity, returnLabel.OrderId.ToString()))
+            {
+        <td style="font-weight:bold; color:red">@ViewBag.getQuantityString(returnLabel.ReturnQuantity, returnLabel.OrderId.ToString())</td> }
+          else
+            {
+              <td>@ViewBag.getQuantityString(returnLabel.ReturnQuantity, returnLabel.OrderId.ToString())</td>
+            }
             <td>@ViewBag.getCustName(returnLabel.OrderId.ToString())</td>
             <td>@returnLabel.FileName</td>
             @if (returnLabel.FileURL != null)
             {
-        <td><a href="@Html.DisplayFor(model => @returnLabel.FileURL)" target="_blank">Download Label Here</a></td>
- }
-    else
-    {
-        <td></td>
-}
+        <td><a href="@Html.DisplayFor(model => @returnLabel.FileURL)" target="_blank">Download Label Here</a></td> }
+                        else
+                        {
+        <td></td>}
             <td>@returnLabel.CommentsToWarehouse</td>
             <td>@returnLabel.DateCreated.ToString("dd/MM/yyyy")</td>
             <td>

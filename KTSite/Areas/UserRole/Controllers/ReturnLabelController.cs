@@ -137,7 +137,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 {
                     PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == returnUserNameId()).
                         FirstOrDefault();
-                    if(paymentBalance.Balance < SD.shipping_cost)
+                    if(paymentBalance.Balance < SD.shipping_cost && !paymentBalance.AllowNegativeBalance)
                     {
                         ViewBag.InsufficientFunds = true;
                         ViewBag.ShowMsg = true;

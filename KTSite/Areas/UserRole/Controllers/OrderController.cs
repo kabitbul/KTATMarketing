@@ -14,8 +14,9 @@ using KTSite.Utility;
 using System.Globalization;
 using System.Text;
 using Newtonsoft.Json.Converters;
+using Microsoft.AspNetCore.Http;
 
-    namespace KTSite.Areas.UserRole.Controllers
+namespace KTSite.Areas.UserRole.Controllers
 {
     [Area("UserRole")]
     [Authorize(Roles = SD.Role_Users)]
@@ -348,6 +349,12 @@ using Newtonsoft.Json.Converters;
             bool InsufficientFunds = false;
             if (ModelState.IsValid)
             {
+                //StringBuilder sb = new StringBuilder();
+                //Header
+               // sb.Append("Product,Empty,Name,Address1,Address2,City,State,zip,Country,Phone,Quantity,Weight");
+                //FileContentResult fr = File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", "Error_log.csv");
+                //ActionContext ac = new ActionContext();
+                //fr.ExecuteResult(getC );
                 string allOrders = orderVM.AllOrder;
                 for (int i = 0; i < 3; i++)
                 {
@@ -375,13 +382,13 @@ using Newtonsoft.Json.Converters;
                     try
                     {
                         var orderDetails = order.Split(new string[] { "\t" }, StringSplitOptions.None);
+                        addAddressDetailsToVM(orderDetails[4], orderVM);
                         orderVM.Orders.ProductId = getProductIdByName(orderDetails[0]);
                         orderVM.Orders.UserNameId = returnUserNameId();
                         orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1],returnUserNameId());
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                         orderVM.Orders.UsDate = DateTime.ParseExact(orderDetails[2], "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                        addAddressDetailsToVM(orderDetails[4], orderVM);
                         //remove diacritics and comma
                         orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "");
                         orderVM.Orders.CustStreet1 = RemoveDiacritics(orderVM.Orders.CustStreet1).Replace(",", "");
@@ -553,6 +560,16 @@ using Newtonsoft.Json.Converters;
             var cityStateZip = line.Trim().Split(' ');
             orderVM.Orders.CustZipCode = cityStateZip[cityStateZip.Length-1];
             orderVM.Orders.CustState = cityStateZip[cityStateZip.Length-2];
+            if (orderVM.Orders.CustState.Length > 2)// if not an abbr 
+            {
+                foreach (var state in SD.States)
+                {
+                    if (state.Text.ToLower().ToString().Contains(orderVM.Orders.CustState))
+                    {
+                        orderVM.Orders.CustState = state.Value;
+                    }
+                }
+            }
             orderVM.Orders.CustCity = cityStateZip[0];
             for(int i=1;i<(cityStateZip.Length-2);i++)
             {

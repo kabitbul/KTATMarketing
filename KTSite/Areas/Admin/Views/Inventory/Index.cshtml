@@ -23,32 +23,56 @@
                 <th>DailyAvg(3 days)</th>
                 <th>DailyAvg(Week)</th>
                 <th>Days to OOS</th>
+                <th></th>
             </tr>
         </thead>
         @foreach (Product product in Model)
         {
-<tr>
-    @if (product.ImageUrl != null)
-    {
-<td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
+    <tr>
+        @if (product.ImageUrl != null)
+        {
+    <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td> }
+                    else
+                    {
+    <td></td>}
+        <td>@product.ProductName</td>
+        <td>@product.InventoryCount</td>
+        <td>@product.OnTheWayInventory</td>
+        <td>@product.Cost$</td>
+        @if (@product.OwnByWarehouse)
+        {
+            <td>Yes</td>
  }
-else
-{
-<td></td>
-   }
-    <td>@product.ProductName</td>
-    <td>@product.InventoryCount</td>
-    <td>@product.OnTheWayInventory</td>
-    <td>@product.Cost$</td>
-    @if (@product.OwnByWarehouse)
-      { <td>Yes</td> }else { <td>No</td>}
-    @if (@product.ReStock)
-    {<td>Yes</td>}else{<td>No</td> }
-    <td>@ViewBag.getDailyAvg(product.Id,3).ToString("0.00")</td>
-    <td>@ViewBag.getDailyAvg(product.Id,7).ToString("0.00")</td>
-    @if (ViewBag.getPaintData(product.Id))
-    {  <td style="font-weight:bold;color:red">@ViewBag.getDaysToOOS(product.Id)</td>}else { <td>@ViewBag.getDaysToOOS(product.Id)</td>}
-</tr>}
+        else
+        {
+            <td>No</td>
+}
+        @if (@product.ReStock)
+        {
+            <td>Yes</td>
+}
+        else
+        {
+            <td>No</td>
+}
+        <td>@ViewBag.getDailyAvg(product.Id, 3).ToString("0.00")</td>
+        <td>@ViewBag.getDailyAvg(product.Id, 7).ToString("0.00")</td>
+        @if (ViewBag.getPaintData(product.Id))
+        {
+            <td style="font-weight:bold;color:red">@ViewBag.getDaysToOOS(product.Id)</td>
+}
+        else
+        {
+            <td>@ViewBag.getDaysToOOS(product.Id)</td>
+}
+        <td>
+            <div class="text-center">
+                <a href="/Admin/ProductStatistics/ProductGraph/@product.Id" class="btn btn-success text-white" style="cursor:pointer">
+                    <i class="fas fa-chart-bar"></i>
+                </a>
+            </div>
+        </td>
+    </tr>}
     </table>
 </div>
 

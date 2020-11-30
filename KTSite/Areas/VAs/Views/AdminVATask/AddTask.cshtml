@@ -1,0 +1,95 @@
+﻿@model KTSite.Models.AdminVATaskVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">Add New Task</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row" id="storesDiv">
+                <div class="col-4">
+                    <label asp-for="AdminVATask.StoreId">Store</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.AdminVATask.StoreId, Model.StoresList, "- Select Store -",
+                                                                new { @class = "form-control" })
+                    <span asp-validation-for="AdminVATask.StoreId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="AdminVATask.UserNameId" class="form-control" value="@ViewBag.UNameId" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="AdminVATask.DateCreated" class="form-control" value="@DateTime.Now" />
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="AdminVATask.TaskToDo">Task</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="AdminVATask.TaskToDo" class="form-control" />
+                    <span asp-validation-for="AdminVATask.TaskToDo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="AllStores">All Stores</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="AllStores" class="form-control" onclick="checkboxclick()" />
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="AdminVATask.TaskCompleted" class="form-control" value=false />
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg)
+    {
+@if (!ViewBag.success)
+{
+<script>
+    swal("error!", "error", "error")
+        .then((value) => { })
+</script> }
+   else
+   {
+<script>
+    swal("Success!", "Task Added!", "success")
+        .then((value) => { window.location.href = '/VAs/AdminVATask'; })
+</script>
+}
+    }
+    <script language="javascript" type="text/javascript">
+        //window.onload = function () { $("#storesDiv").hide(0); }
+        function checkboxclick() {
+            if ($("#AllStores").is(':checked')) {
+                $("#storesDiv").hide(500);
+            }
+            else {
+                $("#storesDiv").show(500);
+            }
+        }
+    </script>
+}

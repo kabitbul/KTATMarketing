@@ -24,6 +24,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         INotificationRepository Notification { get; }
         IUserGuidelineRepository UserGuideline { get; }
         IArrivingFromChinaRepository ArrivingFromChina { get; }
+        IAdminVATaskRepository adminVATask { get; }
         ISP_Call SP_Call { get; }
 
         void Save();

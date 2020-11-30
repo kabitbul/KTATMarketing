@@ -58,6 +58,7 @@
                         <th>User</th>
                         <th>Store</th>
                         <th>Quantity</th>
+                        <th>Cost</th>
                         <th>Full Address</th>
                         <th>Tracking Number</th>
                         <th></th>
@@ -66,47 +67,53 @@
                 @foreach (Order order in Model.Order)
                 {
                     FullAddress = "";
-    <tr>
-        <td>@order.Id</td>
-        <td>@order.OrderStatus</td>
-        <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
-        <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
-        <td>@ViewBag.getUserOrAdminName(order.StoreNameId).ToString()</td>
-        <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
-        <td>@order.Quantity</td>
-
-        @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
-        @if (order.CustStreet2 != null)
-        {
-            FullAddress = FullAddress + order.CustStreet2 + "\n";
-        }
-        @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
-                                                                              + "United States";}
-        @if (order.CustPhone != null && order.CustPhone.Length > 0)
-        {
-            FullAddress = FullAddress + "\n" + order.CustPhone;
-        }
-        <td><textarea readonly>@FullAddress</textarea></td>
-        <td>@order.TrackingNumber</td>
-        <td>
-            @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.OrderStatus</td>
+                <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
+                <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
+                <td>@ViewBag.getUserOrAdminName(order.StoreNameId).ToString()</td>
+                <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
+                @if (order.Quantity > 1)
+                {
+            <td style="font-weight:bold;background-color:darkseagreen">@order.Quantity</td>
+ }
+                            else
+                            {
+            <td>@order.Quantity</td>                }
+                <td>@order.Cost$</td>
+                @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
+                @if (order.CustStreet2 != null)
+                {
+                    FullAddress = FullAddress + order.CustStreet2 + "\n";
+                }
+                @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
+                                                                                          + "United States";}
+                @if (order.CustPhone != null && order.CustPhone.Length > 0)
+                {
+                    FullAddress = FullAddress + "\n" + order.CustPhone;
+                }
+                <td><textarea readonly>@FullAddress</textarea></td>
+                <td>@order.TrackingNumber</td>
+                <td>
+                    @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
+                    {
+            <div class="text-center">
+                <a href="/Admin/OrderAdmin/UpdateOrder/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>}
+                    @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusDone)
+                    {
+            @if (ViewBag.AllowComplaint(order.Id.ToString()))
             {
-    <div class="text-center">
-        <a href="/Admin/OrderAdmin/UpdateOrder/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
-            <i class="fas fa-edit"></i>
-        </a>
-    </div>}
-            @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusDone)
-            {
-    @if (ViewBag.AllowComplaint(order.Id.ToString()))
-    {
-    <div class="text-center">
-        <a href="/Admin/Complaints/AddComplaint/@order.Id" class="btn btn-info text-white" style="cursor:pointer">
-            <i class="fas fa-ticket-alt"></i>
-        </a>
-    </div>}}
-        </td>
-    </tr>}
+            <div class="text-center">
+                <a href="/Admin/Complaints/AddComplaint/@order.Id" class="btn btn-info text-white" style="cursor:pointer">
+                    <i class="fas fa-ticket-alt"></i>
+                </a>
+            </div>}}
+                </td>
+            </tr>}
             </table>
         </div>
     </div>
