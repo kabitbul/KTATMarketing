@@ -144,6 +144,9 @@ namespace KTSite.Areas.UserRole.Controllers
                         ViewBag.InvalidQuantity = false;
                         return View(returnLabelVM2);
                     }
+                    PaymentBalance paymentBalanceWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
+                        FirstOrDefault();
+                    paymentBalanceWarehouse.Balance = paymentBalanceWarehouse.Balance - SD.shipping_cost;
                     paymentBalance.Balance = paymentBalance.Balance - SD.shipping_cost;
                     ViewBag.InvalidQuantity = false;
                     _unitOfWork.ReturnLabel.Add(returnLabelVM.returnLabel);

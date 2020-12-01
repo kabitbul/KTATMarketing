@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
+using Newtonsoft.Json;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -65,6 +66,64 @@ namespace KTSite.Areas.Admin.Controllers
         public string getCategoryName(int CategoryId)
         {
             return _unitOfWork.Category.GetAll().Where(a => a.Id == CategoryId).Select(a => a.Name).FirstOrDefault();
+        }
+        public IActionResult productGraph(int Id)
+        {
+            //stack chart
+            List<DataPoint> dataPointsUser = new List<DataPoint>();
+            List<DataPoint> dataPointsAdmin = new List<DataPoint>();
+            getStackGraphData(false, dataPointsUser, Id);
+            getStackGraphData(true, dataPointsAdmin, Id);
+            ViewBag.DataPointsUser = JsonConvert.SerializeObject(dataPointsUser);
+            ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(dataPointsAdmin);
+            ViewBag.ProductName = returnProductName(Id);
+            return View();
+        }
+        public string returnProductName(int productId)
+        {
+            return (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.ProductName)).FirstOrDefault();
+        }
+        public void getStackGraphData(bool isAdmin, List<DataPoint> list, int ProductId)
+        {
+            DateTime iterateDate = DateTime.Now.AddDays(-60);
+            if (isAdmin)
+            {
+                var result = _unitOfWork.Order.GetAll().Where(a => a.IsAdmin && a.OrderStatus != SD.OrderStatusCancelled && a.ProductId == ProductId).
+                    GroupBy(a => a.UsDate)
+                          .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
+                while (iterateDate <= DateTime.Now)
+                {
+                    if (result.Exists(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")))
+                    {
+                        list.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(),
+                                              result.Find(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")).total));
+                    }
+                    else
+                    {
+                        list.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(), 0));
+                    }
+                    iterateDate = iterateDate.AddDays(1);
+                }
+            }
+            else
+            {
+                var result = _unitOfWork.Order.GetAll().Where(a => !a.IsAdmin && a.OrderStatus != SD.OrderStatusCancelled && a.ProductId == ProductId).
+                    GroupBy(a => a.UsDate)
+                          .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
+                while (iterateDate <= DateTime.Now)
+                {
+                    if (result.Exists(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")))
+                    {
+                        list.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(),
+                                              result.Find(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")).total));
+                    }
+                    else
+                    {
+                        list.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(), 0));
+                    }
+                    iterateDate = iterateDate.AddDays(1);
+                }
+            }
         }
         #region API CALLS
         [HttpGet]

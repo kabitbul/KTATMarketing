@@ -40,6 +40,7 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.storeExist = true;
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
+            ViewBag.MaxStores = false;
             return View();
         }
         public IActionResult UpdateStore(int Id)
@@ -58,16 +59,21 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
+            ViewBag.MaxStores = false;
             userStoreName.UserNameId =
             (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             bool storeExist = _unitOfWork.UserStoreName.GetAll().Where(q => q.UserNameId == userStoreName.UserNameId)
                    .Any(q => q.StoreName.Equals(userStoreName.StoreName, StringComparison.InvariantCultureIgnoreCase));
             userStoreName.UserName = User.Identity.Name;
             userStoreName.IsAdminStore = false;
-
+            int countStores = _unitOfWork.UserStoreName.GetAll().Where(q => q.UserNameId == userStoreName.UserNameId).Count();
+            if(countStores >=8)
+            {
+                ViewBag.MaxStores = true;
+            }
             if (ModelState.IsValid)
             {
-                if (!storeExist)
+                if (!storeExist && countStores < 8)
                 {
                     _unitOfWork.UserStoreName.Add(userStoreName);
 

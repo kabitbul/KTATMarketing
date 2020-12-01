@@ -4,10 +4,10 @@
 
 <div class="row">
     <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
-    <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
+    @*<h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
         <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         Balance: @ViewBag.Balance.ToString("0.00")$
-    </h1>
+    </h1>*@
 </div>
 <div class="col-12" style="font:bolder">
     @if (ViewBag.Amount > 0 && ViewBag.PayDate != null)

@@ -3,7 +3,7 @@
 @model KTSite.Models.UserStoreName
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-                var title = "Add a Store"; }
+    var title = "Add a Store"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -61,13 +61,19 @@
 <script>
     swal("Store Already Exists In Your List!", "Store Exists", "error")
         .then((value) => { window.location.href = '/UserRole/UserStoreName/AddStore'; })
-</script> }
-                    else if (ViewBag.success)
-                    {
+</script>
+ }
+else if (ViewBag.MaxStores)
+{
+<script>
+    swal("You Have Reachd The Maximum Stores Allowed!", "Max Stores Reached", "error")
+        .then((value) => { window.location.href = '/UserRole/UserStoreName/AddStore'; })
+</script>
+ }
+else if (ViewBag.success)
+{
 <script>
     swal("Success!", "Store Added To your List!", "success")
         .then((value) => { window.location.href = '/UserRole/UserStoreName'; })
-</script>
-
-}}
+</script>}}
 }

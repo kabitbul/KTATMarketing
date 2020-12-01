@@ -1,35 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@{ ViewData["Title"] = "Home Page"; }
+
 
 <div class="row">
     <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
-    @if (@ViewBag.Balance >= 0)
+    @*@if (@ViewBag.Balance >= 0)
     {
 <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
     <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
     Current Balance :@ViewBag.Balance.ToString("0.00")$
 </h1> }
-            else
-            {
-                <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:red;border-style:inset">
-                    <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-                    Current Balance :@ViewBag.Balance.ToString("0.00")$
-                </h1>
-            }
+else
+{
+<h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:red;border-style:inset">
+    <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+    Current Balance :@ViewBag.Balance.ToString("0.00")$
+</h1>            }*@
 </div>
 <div class="col-12" style="font:message-box">
     <div class="text-left display-3 p-4 border rounded col-5">
         @if (ViewBag.PendingCount == 0)
         {
-            <h1 style="font-size: 20px">No Pending Payments</h1>
-        }
-        else
-        {
-            <h1 style="font-size: 20px">
-                <a href="PaymentHistory">You Have @ViewBag.PendingAmount$ waiting for Admin Approval</a>
-            </h1>
-        }
+<h1 style="font-size: 20px">No Pending Payments</h1> }
+            else
+            {
+<h1 style="font-size: 20px">
+    <a href="PaymentHistory">You Have @ViewBag.PendingAmount$ waiting for Admin Approval</a>
+</h1>}
     </div>
     &nbsp;
     <div class="text-left display-4 p-2 border rounded col-4">
@@ -40,8 +36,7 @@
         <ul>
             @foreach (Notification notification in @ViewBag.NotificationList)
             {
-                <li class="display-4" style="font-size:20px">@notification.Message</li>
-            }
+<li class="display-4" style="font-size:20px">@notification.Message</li>            }
         </ul>
     </div>
 </div>
