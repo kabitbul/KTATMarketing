@@ -21,7 +21,6 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://kit.fontawesome.com/e19c476714.js"></script>
-    @RenderSection("Scripts", required: false)
 </head>
 <body>
     <header>
@@ -106,8 +105,7 @@
                                                                                                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryAnalysis" asp-action="Index">Check Inventory</a>
                                                                                                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
                                                                                                                                 </div>
-                                                                                                                            </li>
-}
+                                                                                                                            </li>}
                         @if (User.IsInRole(SD.Role_Users))
                         {
             <li class="nav-item">
@@ -143,8 +141,7 @@
                                                                                                     <a class="dropdown-item" asp-area="UserRole" asp-controller="UserGuideline" asp-action="Index">User Guideline</a>
                                                                                                     @*<div class="dropdown-divider"></div>*@
                                                                                                 </div>
-                                                                                            </li>
-}
+                                                                                            </li>}
                         @if (User.IsInRole(SD.Role_VAs))
                         {
             <li class="nav-item">
@@ -158,7 +155,8 @@
                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" asp-area="VAs" asp-controller="AdminVATask" asp-action="Index">Admin Tasks</a>
-                                                            </li>}
+                                                            </li>
+}
                         @if (User.IsInRole(SD.Role_Warehouse))
                         {
             <li class="nav-item">
@@ -188,8 +186,7 @@
                                                                                             </li>
                                                                                                             <li class="nav-item">
                                                                                                                 <a class="nav-link" asp-area="Warehouse" asp-controller="ArrivingFromChina" asp-action="Index">Shipment From China</a>
-                                                                                                            </li>
-}
+                                                                                                            </li>}
                     </ul>
                 </div>
             </div>
@@ -198,54 +195,54 @@
     <div class="container-fluid">
         @if (User.IsInRole(SD.Role_Users))
         {
-    <div class="row">
-        <h1 class="col-6"></h1>
-        <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
-            <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-            Current Balance : <span id="returndata">
-                <script>
-                    $(function () {
-                        $.ajax({
-                            type: "Get",
-                            url: "/Home/GetBalanceUser",
-                            success: function (data) {
-                                //update the page content.
-                                $('#returndata').html(""); //clear the content
-                                $('#returndata').html(data); //add the latest data.
-                            },
-                            error: function (response) {
-                                console.log(response.responseText);
-                            }
-                        });
-                    });</script>
-            </span>
-        </h1>
-    </div> }
+<div class="row">
+    <h1 class="col-6"></h1>
+    <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
+        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        Current Balance : <span id="returndata">
+            <script>
+                $(function () {
+                    $.ajax({
+                        type: "Get",
+                        url: "/Home/GetBalanceUser",
+                        success: function (data) {
+                            //update the page content.
+                            $('#returndata').html(""); //clear the content
+                            $('#returndata').html(data); //add the latest data.
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                });</script>
+        </span>
+    </h1>
+</div> }
 else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
 {
-    <div class="row">
-        <h1 class="col-6"></h1>
-        <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
-            <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-            Current Balance : <span id="returndata">
-                <script>
-                    $(function () {
-                        $.ajax({
-                            type: "Get",
-                            url: "/Home/GetBalanceWarehouse",
-                            success: function (data) {
-                                //update the page content.
-                                $('#returndata').html(""); //clear the content
-                                $('#returndata').html(data); //add the latest data.
-                            },
-                            error: function (response) {
-                                console.log(response.responseText);
-                            }
-                        });
-                    });</script>
-            </span>
-        </h1>
-    </div>}
+<div class="row">
+    <h1 class="col-6"></h1>
+    <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
+        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        Current Balance : <span id="returndata">
+            <script>
+                $(function () {
+                    $.ajax({
+                        type: "Get",
+                        url: "/Home/GetBalanceWarehouse",
+                        success: function (data) {
+                            //update the page content.
+                            $('#returndata').html(""); //clear the content
+                            $('#returndata').html(data); //add the latest data.
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                });</script>
+        </span>
+    </h1>
+</div>}
         <main role="main" class="pb-3">
             @RenderBody();
         </main>
@@ -256,6 +253,7 @@ else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
             &copy; 2020 - KT AT Online Marketing LTD
         </div>
     </footer>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
 @section Scripts

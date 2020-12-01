@@ -353,7 +353,33 @@ namespace KTSite.Areas.Admin.Controllers
                         orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1]);
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                        orderVM.Orders.UsDate = DateTime.ParseExact(orderDetails[2], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        string validDate;
+                        if (orderDetails[2].Length < 10)
+                        {
+                            var splitDate = orderDetails[2].Split(new string[] { "/" }, StringSplitOptions.None);
+                            if (splitDate[0].Length == 1)
+                            {
+                                validDate = "0" + splitDate[0] + "/";
+                            }
+                            else
+                            {
+                                validDate = splitDate[0] + "/";
+                            }
+                            if (splitDate[1].Length == 1)
+                            {
+                                validDate = validDate + "0" + splitDate[1] + "/";
+                            }
+                            else
+                            {
+                                validDate = validDate + splitDate[1] + "/";
+                            }
+                            validDate = validDate + splitDate[2];
+                        }
+                        else
+                        {
+                            validDate = orderDetails[2];
+                        }
+                        orderVM.Orders.UsDate = DateTime.ParseExact(validDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                         //remove diacritics and comma
                         orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "");
                         orderVM.Orders.CustStreet1 = RemoveDiacritics(orderVM.Orders.CustStreet1).Replace(",", "");

@@ -72,15 +72,16 @@ namespace KTSite
             app.UseAuthentication();
             app.UseAuthorization();
             dbinitializer.Initialize();
-            app.UseEndpoints(endpoints => 
-            { 
-                  endpoints.MapControllerRoute(
-                      name: "area", 
-                      pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "area",
+                    pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages(); });
+                endpoints.MapRazorPages();
+            });
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapControllerRoute(
@@ -88,6 +89,7 @@ namespace KTSite
             //        pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
             //    endpoints.MapRazorPages();
             //});
-        }
+       // });
+            }
     }
 }
