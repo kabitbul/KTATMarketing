@@ -9,83 +9,117 @@
     <div class="container">
         <div class="row p-3 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-12 border-bottom">
+            <div class="col-12 border-bottom" id="titleDiv">
                 <h2 class="text-primary">@title</h2>
             </div>
             <div class="col-8 pt-4">
 
                 <div class="form-group row">
-                    <div class="col-4">
+                    <div class="col-4" id="textareaLabel">
                         <label asp-for="AllOrder">Paste Orders In Field</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8" id="textareaOrders">
                         <textarea asp-for="AllOrder" class="form-control rounded-0" rows="20"></textarea>
                     </div>
                 </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.ProductId" class="form-control" value="5" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.Quantity" class="form-control" value="5" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.CustName" class="form-control" value="aa" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.CustStreet1" class="form-control" value="aa" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.CustCity" class="form-control" value="aa" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.CustState" class="form-control" value="aa" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.CustZipCode" class="form-control" value="1" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" value=true />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.UserNameId" class="form-control" value="@ViewBag.uNameId" />
-                </div>
-                <div class="col-8">
-                    <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" value=@KTSite.Utility.SD.OrderStatusAccepted />
+                <div class="form-group row">
+                    <div class="col-6" id="resultFailed">
+                        <img src="~/Images/Error.jpg" alt="Site Logo" style="height:100px; width: 100px" />
+                        <label id="resultFailedLabel" style="font-size:18px"></label>
+                    </div>
+                    @if (!ViewBag.ShowErrInLabel)
+                    {
+        <script>$("#resultFailed").hide(0);</script>}
                 </div>
             </div>
-            <div class="col-8 pt-4">
-                <div class="form-group row">
-                    <div class="col-8 offset-4">
-                        <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
-                            </div>
-                            <div class="col">
-                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
-                            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.ProductId" class="form-control" value="5" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.Quantity" class="form-control" value="5" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.CustName" class="form-control" value="aa" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.CustStreet1" class="form-control" value="aa" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.CustCity" class="form-control" value="aa" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.CustState" class="form-control" value="aa" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.CustZipCode" class="form-control" value="1" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" value=true />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.UserNameId" class="form-control" value="@ViewBag.uNameId" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" value=@KTSite.Utility.SD.OrderStatusAccepted />
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn">Add</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 </form>
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg)
+    @if (ViewBag.ShowErrInLabel)
     {
+        <script>
+               // swal("Error Occured!", "@ViewBag.failed", "warning")
+                 //               .then((value) => {})
+
+                $("#textareaLabel").hide(0);
+                 $("#textareaOrders").hide(0);
+            $("#AddBtn").hide(0);
+            $("#titleDiv").hide(0);
+    $("#resultFailed").show(0);
+            var copyViewBag = '@ViewBag.failed';
+            var lines = copyViewBag.split("/n");
+            document.getElementById('resultFailedLabel').innerHTML = lines[0]+"<br>";
+            for (let j = 1; j < lines.length; j++)
+            {
+                    document.getElementById('resultFailedLabel').innerHTML =
+                        document.getElementById('resultFailedLabel').innerHTML + lines[j] + "<br>";
+            }
+
+        </script>
+    }
+    else if (ViewBag.ShowMsg)
+{
 @if (ViewBag.failed.Length == 0 && ViewBag.success)
 {
 <script>
                 swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
                     .then((value) => {  window.location.href = '/Admin/OrderAdmin'; })
-</script> }
-                    else
-                    {
+</script>
+ }
+else
+{
 <script>
     swal("@ViewBag.failed", "warning")
                     .then((value) => {})
-</script>}}
+</script>
+}}
 }

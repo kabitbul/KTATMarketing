@@ -23,6 +23,7 @@ namespace KTSite.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DefaultValue("Now")]
         public DateTime DateArrived { get; set; }
+        public string CreatedBy { get; set; }
 
     }
 }

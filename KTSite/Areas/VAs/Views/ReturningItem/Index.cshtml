@@ -23,7 +23,7 @@
                     <th>Comments</th>
                     <th>Created By</th>
                     <th>Date Arrived</th>
-            </thead>
+</thead>
             @foreach (ReturningItem returningItem in Model)
             {
         <tr>
@@ -32,15 +32,14 @@
             <td>@returningItem.ItemStatus</td>
             @if (returningItem.ItemStatus == "Add")
             {
-        <td style="background-color:darkseagreen">@returningItem.Quantity</td>
- }
-    else if (returningItem.ItemStatus == "Remove")
-    {
-        <td style="background-color:palevioletred">@returningItem.Quantity</td> }
-                        else
+        <td style="background-color:darkseagreen">@returningItem.Quantity</td> }
+                        else if (returningItem.ItemStatus == "Remove")
                         {
-                            <td>@returningItem.Quantity</td>
-                        }
+        <td style="background-color:palevioletred">@returningItem.Quantity</td>
+ }
+    else
+    {
+        <td>@returningItem.Quantity</td>}
             <td>@returningItem.Comments</td>
             <td>@returningItem.CreatedBy</td>
             <td>@returningItem.DateArrived.ToString("dd/MM/yyyy")</td>

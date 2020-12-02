@@ -131,6 +131,7 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
             ViewBag.InsufficientFunds = false;
+            ViewBag.ShowErrInLabel = false;
             return View(orderVM);
         }
         //allow return if not returned yet or returned part of total quantity
@@ -344,17 +345,20 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.success = false;
             ViewBag.failed = "";
             ViewBag.InsufficientFunds = false;
+            ViewBag.ShowErrInLabel = false;
             int processedLines = 0;
             ViewBag.ProcessedLines = processedLines;
             bool InsufficientFunds = false;
+            StringBuilder sb = new StringBuilder();
+            //Header
+            sb.Append("Product,Empty,Name,Address1,Address2,City,State,zip,Country,Phone,Quantity,Weight");
+            FileContentResult fr = File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", "Error_log.csv");
+            
+            
+
+            //fr.ExecuteResult(getC );
             if (ModelState.IsValid)
             {
-                //StringBuilder sb = new StringBuilder();
-                //Header
-               // sb.Append("Product,Empty,Name,Address1,Address2,City,State,zip,Country,Phone,Quantity,Weight");
-                //FileContentResult fr = File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", "Error_log.csv");
-                //ActionContext ac = new ActionContext();
-                //fr.ExecuteResult(getC );
                 string allOrders = orderVM.AllOrder;
                 for (int i = 0; i < 3; i++)
                 {
@@ -432,7 +436,7 @@ namespace KTSite.Areas.UserRole.Controllers
                             }
                             else
                             {
-                                failedLines = failedLines + "," + orderVM.Orders.CustName;
+                                failedLines = failedLines + "<br />" + orderVM.Orders.CustName;
                             }
                             continue;
                         }
@@ -457,7 +461,7 @@ namespace KTSite.Areas.UserRole.Controllers
                             }
                             else
                             {
-                                failedLines = failedLines + "," + orderVM.Orders.CustName;
+                                failedLines = failedLines + "/n" + orderVM.Orders.CustName;
                             }
                         }
                     }
@@ -469,7 +473,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         }
                         else
                         {
-                            failedLines = failedLines + "," + orderVM.Orders.CustName;
+                            failedLines = failedLines + "/n" + orderVM.Orders.CustName;
                         }
                     }
 
@@ -486,13 +490,15 @@ namespace KTSite.Areas.UserRole.Controllers
                     }
                     else if(processedLines == 1)
                     {
-                        ViewBag.failed = "Insufficient Funds! Only One Order was Processed Successfully!" +
-                        "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Insufficient Funds! 1 Order Failed:/n" +
+                        failedLines;
                     }
                     else
                     {
-                        ViewBag.failed = "Insufficient Funds! Only " + processedLines + " Orders were Processed Successfully!" +
-                    "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Insufficient Funds! Only " + processedLines + " Orders were Processed Successfully!/n" +
+                    "/nFailed Orders: /n/n" + failedLines;
                     }
                     
                 }
@@ -505,13 +511,15 @@ namespace KTSite.Areas.UserRole.Controllers
                     }
                     else if (processedLines == 1)
                     {
-                        ViewBag.failed = "Pay Attention: An error occured! Only One Order was Processed Successfully!" +
-                        "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Pay Attention: An error occured! Only One Order was Processed Successfully/n" +
+                        "/nFailed Orders:/n/n" + failedLines;
                     }
                     else
                     {
-                        ViewBag.failed = "Pay Attention: An error occured Only " + processedLines + " Orders were Processed Successfully!" +
-                     "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Pay Attention: An error occured Only " + processedLines + " Orders were Processed Successfully/n" +
+                     "/nFailed Orders:/n/n" + failedLines;
                     }
                     
                 }

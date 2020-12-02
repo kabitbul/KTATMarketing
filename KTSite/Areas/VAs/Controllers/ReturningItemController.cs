@@ -15,10 +15,10 @@ using System.Globalization;
 using System.Text;
 using Newtonsoft.Json.Converters;
 
-namespace KTSite.Areas.Warehouse.Controllers
+namespace KTSite.Areas.VAs.Controllers
 {
-    [Area("Warehouse")]
-    [Authorize(Roles = SD.Role_Warehouse)]
+    [Area("VAs")]
+    [Authorize(Roles = SD.Role_VAs)]
     public class ReturningItemController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -127,18 +127,6 @@ namespace KTSite.Areas.Warehouse.Controllers
             var allObj = _unitOfWork.Product.GetAll();
             return Json(new { data = allObj });
         }
-        //[HttpDelete]
-        //public IActionResult Delete(int id)
-        //{
-        //    var objFromDb = _unitOfWork.Product.Get(id);
-        //    if(objFromDb == null)
-        //    {
-        //        return Json(new { success = false, message = "Error While Deleting" });
-        //    }
-        //    _unitOfWork.Product.Remove(objFromDb);
-        //    _unitOfWork.Save();
-        //    return Json(new { success = true, message = "Delete Successfull" });
-        //}
 
         #endregion
     }

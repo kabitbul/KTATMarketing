@@ -146,6 +146,7 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.failed = "";
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
+            ViewBag.ShowErrInLabel = false;
             return View(orderVM);
         }
         public string returnProductName(int productId)
@@ -319,6 +320,7 @@ namespace KTSite.Areas.Admin.Controllers
             string failedLines = "";
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             ViewBag.uNameId = uNameId;
+            ViewBag.ShowErrInLabel = false;
             int processedLines = 0;
             if (ModelState.IsValid)
             {
@@ -408,7 +410,7 @@ namespace KTSite.Areas.Admin.Controllers
                             }
                             else
                             {
-                                failedLines = failedLines + "," + orderVM.Orders.CustName;
+                                failedLines = failedLines + "/n" + orderVM.Orders.CustName;
                             }
                             
                         }
@@ -421,7 +423,7 @@ namespace KTSite.Areas.Admin.Controllers
                         }
                         else
                         {
-                            failedLines = failedLines + "," + orderVM.Orders.CustName;
+                            failedLines = failedLines + "/n" + orderVM.Orders.CustName;
                         }
                     }
 
@@ -441,13 +443,15 @@ namespace KTSite.Areas.Admin.Controllers
                     }
                     else if (processedLines == 1)
                     {
-                        ViewBag.failed = "Pay Attention: An error occured! Only One Order was Processed Successfully!" +
-                        "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Only One Order was Processed Successfully!/n" +
+                        "/nFailed Orders:/n/n" + failedLines;
                     }
                     else
                     {
-                        ViewBag.failed = "Pay Attention: An error occured Only " + processedLines + " Orders were Processed Successfully!" +
-                     "*failed Orders*: " + failedLines;
+                        ViewBag.ShowErrInLabel = true;
+                        ViewBag.failed = "Pay Attention: An error occured Only " + processedLines + " Orders were Processed Successfully!/n" +
+                     "/nfailed Orders:/n/n" + failedLines;
                     }
                 }
                 ViewBag.ShowMsg = true;

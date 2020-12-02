@@ -3,24 +3,33 @@
 @model KTSite.Models.OrderVM
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-                var title = "Add Order"; }
+    var title = "Add Order"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
         <div class="row p-8 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-12 border-bottom">
+            <div class="col-12 border-bottom" id="titleDiv">
                 <h2 class="text-primary">@title</h2>
             </div>
             <div class="col-8 pt-4">
-
                 <div class="form-group row">
-                    <div class="col-4">
+                    <div class="col-4" id="textareaLabel">
                         <label asp-for="AllOrder">Paste Orders In Field</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8" id="textareaOrders">
                         <textarea asp-for="AllOrder" class="form-control rounded-0" rows="20"></textarea>
                     </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-6" id="resultFailed">
+                        <img src="~/Images/Error.jpg" alt="Site Logo" style="height:100px; width: 100px" />
+                        <label id="resultFailedLabel" style="font-size:18px"></label>
+                    </div>
+                    @if(!ViewBag.ShowErrInLabel)
+                    {
+                        <script>$("#resultFailed").hide(0);</script>
+                    }
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.ProductId" class="form-control" value="5" />
@@ -59,10 +68,10 @@
                 <div class="col-8 offset-4">
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn">Add</button>
                         </div>
                         <div class="col">
-                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            <a asp-action="Index" class="btn btn-success form-control">Back To Orders</a>
                         </div>
                     </div>
                 </div>
@@ -74,28 +83,58 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg)
+
+    @if (ViewBag.ShowErrInLabel)
     {
-        @if (ViewBag.InsufficientFunds)
-         {
-           <script>
+        <script>
+               // swal("Error Occured!", "@ViewBag.failed", "warning")
+                 //               .then((value) => {})
+
+                $("#textareaLabel").hide(0);
+                 $("#textareaOrders").hide(0);
+            $("#AddBtn").hide(0);
+            $("#titleDiv").hide(0);
+    $("#resultFailed").show(0);
+            var copyViewBag = '@ViewBag.failed';
+            var lines = copyViewBag.split("/n");
+            document.getElementById('resultFailedLabel').innerHTML = lines[0]+"<br>";
+            for (let j = 1; j < lines.length; j++)
+            {
+                    document.getElementById('resultFailedLabel').innerHTML =
+                        document.getElementById('resultFailedLabel').innerHTML + lines[j] + "<br>";
+            }
+            
+        </script>
+    }
+    else if (ViewBag.ShowMsg)
+    {
+<script>$("#resultFailed").hide(0);</script>
+@if (ViewBag.InsufficientFunds)
+{
+<script>
                swal("Insufficient Funds!", "@ViewBag.failed", "warning")
                                 .then((value) => {})
-           </script>
-        }
-        else if (ViewBag.failed.Length > 0)
-        {
-            <script>
+</script> }
+                    else if (ViewBag.failed.Length > 0)
+                    {
+<script>
                 swal("Error Occured!", "@ViewBag.failed", "warning")
                                 .then((value) => {})
-            </script>
-            }
-            else if (ViewBag.success && ViewBag.ProcessedLines > 0 )
-         {
+</script> }
+                    else if (ViewBag.success && ViewBag.ProcessedLines > 0)
+                    {
 <script>
-                swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
-                    .then((value) => { window.location.href = '/UserRole/Order'; })
+               swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
+                   .then((value) => { window.location.href = '/UserRole/Order'; })
 </script>
-         }
-      }
+} }
+else
+{
+<script>
+    $("#textareaLabel").show(0);
+    $("#textareaOrders").show(0);
+    $("#titleDiv").show(0);
+    $("#AddBtn").show(0);
+    $("#resultFailed").hide(0);
+</script>}
 }

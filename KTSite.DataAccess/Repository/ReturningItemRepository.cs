@@ -27,6 +27,7 @@ namespace KTSite.DataAccess.Repository
                 //objFromDb.UserStoreName = order.UserStoreName;
                 objFromDb.Comments = returningItem.Comments;
                 objFromDb.DateArrived = returningItem.DateArrived;
+                objFromDb.CreatedBy = returningItem.CreatedBy;
             }
         }
     }

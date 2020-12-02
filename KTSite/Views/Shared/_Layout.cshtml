@@ -156,6 +156,12 @@
                                                             <li class="nav-item">
                                                                 <a class="nav-link" asp-area="VAs" asp-controller="AdminVATask" asp-action="Index">Admin Tasks</a>
                                                             </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" asp-area="VAs" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
+                                                                            </li>
+                                                                                            <li class="nav-item">
+                                                                                                <a class="nav-link" asp-area="VAs" asp-controller="Products" asp-action="Index">Products</a>
+                                                                                            </li>
 }
                         @if (User.IsInRole(SD.Role_Warehouse))
                         {
@@ -197,7 +203,7 @@
         {
 <div class="row">
     <h1 class="col-6"></h1>
-    <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
+    <h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset" id="userBalance">
         <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         Current Balance : <span id="returndata">
             <script>
@@ -209,6 +215,9 @@
                             //update the page content.
                             $('#returndata').html(""); //clear the content
                             $('#returndata').html(data); //add the latest data.
+                            if (data.includes('-')) {
+                                document.getElementById('userBalance').style.color = "red";
+                            }
                         },
                         error: function (response) {
                             console.log(response.responseText);
@@ -258,21 +267,4 @@ else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
 </html>
 @section Scripts
 {
-    <script>
-        window.alert('in section b4 Ajax');
-        $(function () {
-            $.ajax({
-                type: "Get",
-                url: "/Home/GetBalance",
-                success: function (data) {
-                    //update the page content.
-                    $('#returndata').html(""); //clear the content
-                    $('#returndata').html(data); //add the latest data.
-                },
-                error: function (response) {
-                    console.log(response.responseText);
-                }
-            });
-        });
-    </script>
 }

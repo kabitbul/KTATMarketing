@@ -40,5 +40,8 @@ namespace KTSite.Models
         [Required]
         public bool OOSForSellers { get; set; }
         public string MadeIn { get; set; }
+        public double BestOffer { get; set; }
+        public double MinimumPrice { get; set; }
+
     }
 }

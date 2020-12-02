@@ -45,6 +45,9 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.ImageUrl = product.ImageUrl;
                 objFromDb.ProductASIN = product.ProductASIN;
                 objFromDb.ProductURL = product.ProductURL;
+                objFromDb.BestOffer = product.BestOffer;
+                objFromDb.MinimumPrice = product.MinimumPrice;
+
             }
         }
     }
