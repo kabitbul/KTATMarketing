@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 using System.Globalization;
 using System.Text;
-using Newtonsoft.Json.Converters;
-using Microsoft.AspNetCore.Http;
 
 namespace KTSite.Areas.UserRole.Controllers
 {
@@ -30,15 +26,10 @@ namespace KTSite.Areas.UserRole.Controllers
         public IActionResult Index()
         {
             string UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
-            var orderList = _unitOfWork.Order.GetAll().Where(q=>q.IsAdmin == false).OrderByDescending(q=>q.Id);
             dynamic myModel = new System.Dynamic.ExpandoObject();
             myModel.Order = _unitOfWork.Order.GetAll().Where(q=>q.UserNameId == UNameId).Where(q => q.IsAdmin == false);
+            ViewBag.errSaveInProgress = false;
             ViewBag.uNameId = UNameId;
-            ViewBag.getProductName = new Func<int, string>(returnProductName);
-            ViewBag.getStoreName = new Func<int, string>(returnStoreName);
-            ViewBag.getCost =  new Func<int, double ,double>(returnCost);
-            ViewBag.AllowReturn = new Func<string,bool>(allowRetrun);
-            ViewBag.AllowComplaint = new Func<string, bool>(allowComplaint);
             return View(myModel);
         }
         public IActionResult AddOrdersManually()
@@ -172,6 +163,142 @@ namespace KTSite.Areas.UserRole.Controllers
             _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).FirstOrDefault();
         }
         [HttpPost]
+        public ActionResult GetList()
+        {
+            //Server Side parameters
+            int start = Convert.ToInt32(Request.Form["start"].FirstOrDefault());
+            int length = Convert.ToInt32(Request.Form["length"].FirstOrDefault());
+            string searchValue = Request.Form["search[value]"].FirstOrDefault();
+            string sortColumnName = Request.Form["columns[" + Request.Form["order[0][column]"] + "][name]"].FirstOrDefault();
+            string sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            List<Order> orderList = new List<Order>();
+            orderList = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == returnUserNameId()).ToList();
+            int totalRows = orderList.Count;
+            foreach (Order order in orderList)
+            {
+                order.StringDate = order.UsDate.Day + "/" + order.UsDate.Month + "/" + order.UsDate.Year;
+                order.FullAddress = order.CustName + "\n" + order.CustStreet1 + "\n";
+                if (!string.IsNullOrEmpty(order.CustStreet2))
+                {
+                    order.FullAddress = order.FullAddress + order.CustStreet2 + "\n";
+                }
+                order.FullAddress = order.FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
+                                                                                        + "United States";
+                if (order.CustPhone != null && order.CustPhone.Length > 0)
+                {
+                    order.FullAddress = order.FullAddress + "\n" + order.CustPhone;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                orderList = orderList.Where(x => x.FullAddress.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.Id.ToString().Contains(searchValue.ToLower()) ||
+                                            x.OrderStatus.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.ProductName.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.StringDate.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.StoreName.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.Quantity.ToString().Contains(searchValue.ToLower()) ||
+                                            x.Cost.ToString().Contains(searchValue.ToLower()) ||
+                                            (!string.IsNullOrEmpty(x.TrackingNumber) && x.TrackingNumber.ToString().Contains(searchValue.ToLower()))
+                ).ToList<Order>();
+            }
+            int totalRowsAfterFiltering = orderList.Count;
+            //Handle Sorting
+            if (sortDirection == "desc")
+            {
+                if (sortColumnName.ToLower() == "id")
+                {
+                    orderList = orderList.OrderByDescending(x => x.Id).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "orderstatus")
+                {
+                    orderList = orderList.OrderByDescending(x => x.OrderStatus).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "productname")
+                {
+                    orderList = orderList.OrderByDescending(x => x.ProductName).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "stringdate")
+                {
+                    orderList = orderList.OrderByDescending(x => x.UsDate).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "storename")
+                {
+                    orderList = orderList.OrderByDescending(x => x.StoreName).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "quantity")
+                {
+                    orderList = orderList.OrderByDescending(x => x.Quantity).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "cost")
+                {
+                    orderList = orderList.OrderByDescending(x => x.Cost).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "fulladdress")
+                {
+                    orderList = orderList.OrderByDescending(x => x.FullAddress).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "trackingnumber")
+                {
+                    orderList = orderList.OrderByDescending(x => x.TrackingNumber).ToList<Order>();
+                }
+            }
+            else
+            {
+                if (sortColumnName.ToLower() == "id")
+                {
+                    orderList = orderList.OrderBy(x => x.Id).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "orderstatus")
+                {
+                    orderList = orderList.OrderBy(x => x.OrderStatus).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "productname")
+                {
+                    orderList = orderList.OrderBy(x => x.ProductName).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "stringdate")
+                {
+                    orderList = orderList.OrderBy(x => x.UsDate).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "storename")
+                {
+                    orderList = orderList.OrderBy(x => x.StoreName).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "quantity")
+                {
+                    orderList = orderList.OrderBy(x => x.Quantity).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "cost")
+                {
+                    orderList = orderList.OrderBy(x => x.Cost).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "fulladdress")
+                {
+                    orderList = orderList.OrderBy(x => x.FullAddress).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "trackingnumber")
+                {
+                    orderList = orderList.OrderBy(x => x.TrackingNumber).ToList<Order>();
+                }
+            }
+            //orderList = orderList.OrderBy(x => x.Id //sortColumnName + " " + sortDirection).ToList<Order>();
+            orderList = orderList.Skip(start).Take(length).ToList<Order>();
+            foreach (Order order in orderList)
+            {
+                order.AllowComplaint = allowComplaint(order.Id.ToString());
+                order.AllowReturn = allowRetrun(order.Id.ToString());
+            }
+            return Json(new
+            {
+                data = orderList,
+                draw = Request.Form["draw"],
+                recordsTotal = totalRows,
+                recordsFiltered = totalRowsAfterFiltering
+            });
+        }
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersManually(OrderVM orderVM)
         {
@@ -208,6 +335,9 @@ namespace KTSite.Areas.UserRole.Controllers
                 ViewBag.InsufficientFunds = false;
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
+                    orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                    orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                    orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                     _unitOfWork.Order.Add(orderVM.Orders);
                     updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                     updateSellerBalance(orderVM.Orders.Cost);
@@ -298,6 +428,9 @@ namespace KTSite.Areas.UserRole.Controllers
                                 updateSellerBalance(orderVM.Orders.Cost - oldCost);
                             }
                         }
+                        orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                        orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                        orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                         _unitOfWork.Order.update(orderVM.Orders);
                     }
                     catch
@@ -326,8 +459,11 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             if(orderId != null)
             {
-                Order order = _unitOfWork.Order.GetAll().Where(a => a.Id == orderId).FirstOrDefault();
+                Order order = _unitOfWork.Order.Get(Convert.ToInt64(orderId));
                 order.OrderStatus = SD.OrderStatusCancelled;
+                order.ProductName = returnProductName(order.ProductId);
+                order.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                order.StoreName = returnStoreName(order.StoreNameId);
                 _unitOfWork.Order.update(order);
                 updateInventory(order.ProductId, (order.Quantity*(-1)));
                 updateWarehouseBalance((order.Quantity * (-1)), order.ProductId);
@@ -349,14 +485,7 @@ namespace KTSite.Areas.UserRole.Controllers
             int processedLines = 0;
             ViewBag.ProcessedLines = processedLines;
             bool InsufficientFunds = false;
-            StringBuilder sb = new StringBuilder();
-            //Header
-            sb.Append("Product,Empty,Name,Address1,Address2,City,State,zip,Country,Phone,Quantity,Weight");
-            FileContentResult fr = File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", "Error_log.csv");
             
-            
-
-            //fr.ExecuteResult(getC );
             if (ModelState.IsValid)
             {
                 string allOrders = orderVM.AllOrder;
@@ -446,6 +575,9 @@ namespace KTSite.Areas.UserRole.Controllers
                             Enumerable.Range(5,10).Contains(orderVM.Orders.CustZipCode.Length) &&
                             orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2)
                         {
+                            orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                            orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                            orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                             _unitOfWork.Order.Add(orderVM.Orders);
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity );
                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);

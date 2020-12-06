@@ -50,7 +50,22 @@ namespace KTSite.Models
         public DateTime UsDate { get; set; }
         public DateTime CreatedDate { get; set; }
         [Required]
+        //[Index(“IX_Name_DepartmentMaster”, IsClustered = false)]
         public bool IsAdmin { get; set; }
+        //[NotMapped]
+        public string ProductName { get; set; }
+        [NotMapped]
+        public string StringDate { get; set; }
+        //[NotMapped]
+        public string UserNameToShow { get; set; }
+        //[NotMapped]
+        public string StoreName { get; set; }
+        [NotMapped]
+        public string FullAddress { get; set; }
+        [NotMapped]
+        public bool AllowComplaint { get; set; }
+        [NotMapped]
+        public bool AllowReturn { get; set; }
 
 
 

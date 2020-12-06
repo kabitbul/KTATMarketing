@@ -1,138 +1,155 @@
 ﻿@model dynamic
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <br />
 <div class="container">
     <div class="row">
-            <div class="col-6">
-                <h2 class="text-primary">Orders List </h2>
-            </div>
-            <div class="col-6 text-right">
-                <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
-            </div>
+        <div class="col-6">
+            <h2 class="text-primary">Orders List </h2>
         </div>
-        <div class="row">
-            <div class="col-12 text-right">
-                <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Admin Orders Manually</a>
-            </div>
+        <div class="col-6 text-right">
+            <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
         </div>
-
-        <br />
-        @*<div id="AllOrders">
-            <input type="checkbox" id="pos" value=true />  Show All Orders
-        </div>*@
-        <div class="p-4 border rounded">
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="Accepted" checked />
-                <label class="custom-control-label" for="Accepted">Accepted </label>
-            </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="InProgress" checked />
-                <label class="custom-control-label" for="InProgress">In Progress </label>
-            </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="Done" checked>
-                <label class="custom-control-label" for="Done">Done </label>
-            </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="Cancelled" checked />
-                <label class="custom-control-label" for="Cancelled">Cancelled </label>
-            </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="FullRefund" checked />
-                <label class="custom-control-label" for="FullRefund">Full Refund </label>
-            </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="PartialRefund" checked />
-                <label class="custom-control-label" for="PartialRefund">Partial Refund </label>
-            </div>
-            <table id="tblData" class="table table-striped table-bordered" style="width:100%">
-                <thead class="thead-dark">
-                    <tr class="table-info">
-                        <th>Order Id</th>
-                        <th>Order Status</th>
-                        <th>Product</th>
-                        <th>US Date</th>
-                        <th>User</th>
-                        <th>Store</th>
-                        <th>Quantity</th>
-                        <th>Cost</th>
-                        <th>Full Address</th>
-                        <th>Tracking Number</th>
-                        <th></th>
-                </thead>
-                @{string FullAddress = "";}
-                @foreach (Order order in Model.Order)
-                {
-                    FullAddress = "";
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.OrderStatus</td>
-                <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
-                <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
-                <td>@ViewBag.getUserOrAdminName(order.StoreNameId).ToString()</td>
-                <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
-                @if (order.Quantity > 1)
-                {
-            <td style="font-weight:bold;background-color:darkseagreen">@order.Quantity</td>
- }
-                            else
-                            {
-            <td>@order.Quantity</td>                }
-                <td>@order.Cost$</td>
-                @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
-                @if (order.CustStreet2 != null)
-                {
-                    FullAddress = FullAddress + order.CustStreet2 + "\n";
-                }
-                @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
-                                                                                          + "United States";}
-                @if (order.CustPhone != null && order.CustPhone.Length > 0)
-                {
-                    FullAddress = FullAddress + "\n" + order.CustPhone;
-                }
-                <td><textarea readonly>@FullAddress</textarea></td>
-                <td>@order.TrackingNumber</td>
-                <td>
-                    @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
-                    {
-            <div class="text-center">
-                <a href="/Admin/OrderAdmin/UpdateOrder/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
-                    <i class="fas fa-edit"></i>
-                </a>
-            </div>}
-                    @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusDone)
-                    {
-            @if (ViewBag.AllowComplaint(order.Id.ToString()))
-            {
-            <div class="text-center">
-                <a href="/Admin/Complaints/AddComplaint/@order.Id" class="btn btn-info text-white" style="cursor:pointer">
-                    <i class="fas fa-ticket-alt"></i>
-                </a>
-            </div>}}
-                </td>
-            </tr>}
-            </table>
+    </div>
+    <div class="row">
+        <div class="col-12 text-right">
+            <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Admin Orders Manually</a>
         </div>
     </div>
 
-    @section Scripts{
-        <script>
-            $(document).ready(function () {
-                $('#tblData').DataTable({ "order": [[0, "desc"]],"pageLength": 50 });
-            });</script>
+    <br />
+    @*<div id="AllOrders">
+            <input type="checkbox" id="pos" value=true />  Show All Orders
+        </div>*@
+    <div class="p-4 ">
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" name ="AcceptedName" id="Accepted" value="AcceptedValue" checked />
+            <label class="custom-control-label" for="Accepted">Accepted </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="InProgress" checked />
+            <label class="custom-control-label" for="InProgress">In Progress </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="Done" checked>
+            <label class="custom-control-label" for="Done">Done </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="Cancelled" checked />
+            <label class="custom-control-label" for="Cancelled">Cancelled </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="FullRefund" checked />
+            <label class="custom-control-label" for="FullRefund">Full Refund </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="PartialRefund" checked />
+            <label class="custom-control-label" for="PartialRefund">Partial Refund </label>
+        </div>
+        <table id="tblData" class="table table-striped table-bordered" >
+            <thead class="thead-dark">
+                <tr class="table-info">
+                    <th>Order Id</th>
+                    <th>Order Status</th>
+                    <th>Product</th>
+                    <th>US Date</th>
+                    <th>User</th>
+                    <th>Store</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Full Address</th>
+                    <th style="width:1000px">Tracking Number</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tr>
+                <td>Order Id</td>
+                <td>Order Status</td>
+                <td>Product</td>
+                <td>US Date</td>
+                <td>User</td>
+                <td>Store</td>
+                <td>Quantity</td>
+                <td>Cost</td>
+                <td>Full Address</td>
+                <td style="width:200px">Tracking Number</td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+</div>
 
-        @if (ViewBag.errSaveInProgress)
-        {
-            <script>
-                swal("Pay Attention: could not save status \"In Progress\" to All orders!", "error")
-                    .then((value) => { })
-            </script>
-
-        }
-<script>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({
+                "ajax": {
+                    "url": "OrderAdmin/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "orderStatus", "name": "OrderStatus" },
+                    { "data": "productName", "name": "ProductName" },
+                    { "data": "stringDate", "name": "StringDate" },
+                    { "data": "userNameToShow", "name": "UserNameToShow" },
+                    { "data": "storeName", "name": "StoreName" },
+                    {
+                        "data": "quantity", "name": "Quantity", "render": function (data) {
+                            if (data > 1)
+                                return `<div class="text-center" style="font-weight:bold;background-color:darkseagreen"><label >${data}</label></div>`
+                            else
+                                return `<div class="text-center"><label>${data}</label></div>`
+                        }
+                    },
+                    {
+                        "data": "cost", "name": "Cost", "render": function (data) {
+                            return `<label>${data}$</label>`
+                        }
+                    },
+                    {
+                        "data": "fullAddress", "name": "FullAddress", "render": function (data) {
+                            return `<textarea readonly>${data}</textarea>`
+                        },
+                        "width": "20%"
+                        },
+                    { "data": "trackingNumber", "name": "TrackingNumber", "width": "200px"},
+                    {
+                        "data": {
+                            "orderStatus": "orderStatus",
+                            "id": "id",
+                            "allowComplaint": "allowComplaint"
+                        },
+                        "render": function (data) {
+                            if (data.orderStatus == 'Accepted') {
+                                return `
+                            <div class="text-center">
+                                <a href="/Admin/OrderAdmin/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                             `}
+                            else if (data.orderStatus == 'Done' && data.allowComplaint) {
+                                return `
+                                              <div class="text-center">
+                                                <a href="/Admin/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
+                                                <i class="fas fa-ticket-alt"></i>
+                                                </a>
+                                              </div>
+                                            `
+                            }
+                            else { return `<div></div>` }
+                        }, "width": "5%"
+                    }
+                ],
+                "serverSide": "true",
+                "order": [0, "desc"],
+                "processing": "true"
+            });
+        });
+    </script>
+    <script>
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     var status = data[1];
@@ -152,7 +169,13 @@
                 var table = $('#tblData').DataTable();
                 table.draw();
             });
-</script>
-    }
+    </script>
+    @if (ViewBag.errSaveInProgress)
+    {
+<script>
+    swal("Pay Attention: could not save status \"In Progress\" to All orders!", "error")
+        .then((value) => { })
+</script>}
+}
 
 

@@ -38,6 +38,9 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.TrackingNumber = order.TrackingNumber;
                 objFromDb.IsAdmin = order.IsAdmin;
                 objFromDb.OrderStatus = order.OrderStatus;
+                objFromDb.ProductName = order.ProductName;
+                objFromDb.UserNameToShow = order.UserNameToShow;
+                objFromDb.StoreName = order.StoreName;
             }
         }
     }
