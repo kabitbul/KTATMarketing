@@ -172,7 +172,8 @@ namespace KTSite.Areas.UserRole.Controllers
             string sortColumnName = Request.Form["columns[" + Request.Form["order[0][column]"] + "][name]"].FirstOrDefault();
             string sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
             List<Order> orderList = new List<Order>();
-            orderList = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == returnUserNameId()).ToList();
+            string userNameId = returnUserNameId();
+            orderList = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == userNameId).ToList();
             int totalRows = orderList.Count;
             foreach (Order order in orderList)
             {
@@ -724,6 +725,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public void cityStateZipToVM(string line, OrderVM orderVM)
         {
             var cityStateZip = line.Trim().Split(' ');
+            cityStateZip = cityStateZip.Where(x => !string.IsNullOrEmpty(x)).ToArray();
             orderVM.Orders.CustZipCode = cityStateZip[cityStateZip.Length-1];
             orderVM.Orders.CustState = cityStateZip[cityStateZip.Length-2];
             if (orderVM.Orders.CustState.Length > 2)// if not an abbr 

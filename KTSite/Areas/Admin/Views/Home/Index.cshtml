@@ -74,12 +74,6 @@ if (ViewBag.CountArrivingFromChina > 1)
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     </div>
     &nbsp;
-    &nbsp;
-    &nbsp;
-    <div>
-        <div id="chartContainer2" style="height: 370px; width: 70%;"></div>
-        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    </div>
 </div>
 @section Scripts{
     <script type="text/javascript">
@@ -109,33 +103,7 @@ if (ViewBag.CountArrivingFromChina > 1)
                 }
                 ]
             });
-              var chart2 = new CanvasJS.Chart("chartContainer2", {
-                animationEnabled: true,
-                title: {
-                    text: "Last Month sales(Quantity Vs Sales Num)"
-                },
-                axisY: {
-                    title: "Quantity",
-                },
-                data: [
-                {
-                    type: "stackedColumn",
-                    legendText: "Quantity",
-                    showInLegend: "true",
-                        dataPoints: @Html.Raw(ViewBag.DataPointsQuantity),
-                }, {
-                    type: "stackedColumn",
-                    legendText: "Sales Num",
-                    showInLegend: "true",
-                    indexLabel: "#total",
-                    indexLabelPlacement: "outside",
-
-                    dataPoints: @Html.Raw(ViewBag.DataPointssalesNum),
-                }
-                ]
-            });
             chart.render();
-            chart2.render();
         };
     </script>
 

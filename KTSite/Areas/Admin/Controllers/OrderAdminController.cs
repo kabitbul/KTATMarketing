@@ -616,7 +616,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public int getStoreNameId(string storeName)
         {
-            return _unitOfWork.UserStoreName.GetAll().Where(a => a.StoreName.Equals(storeName, StringComparison.InvariantCultureIgnoreCase))
+            return _unitOfWork.UserStoreName.GetAll().Where(a => a.IsAdminStore
+            && a.StoreName.Equals(storeName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
         public void addAddressDetailsToVM(string orderDetails, OrderVM orderVM)
@@ -656,6 +657,7 @@ namespace KTSite.Areas.Admin.Controllers
         public void cityStateZipToVM(string line, OrderVM orderVM)
         {
             var cityStateZip = line.Trim().Split(' ');
+            cityStateZip = cityStateZip.Where(x => !string.IsNullOrEmpty(x)).ToArray();
             orderVM.Orders.CustZipCode = cityStateZip[cityStateZip.Length - 1];
             orderVM.Orders.CustState = cityStateZip[cityStateZip.Length - 2];
             if(orderVM.Orders.CustState.Length > 2)// if not an abbr 

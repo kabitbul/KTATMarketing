@@ -80,63 +80,77 @@
                     <th>Full Address</th>
                     <th>Tracking Number</th>
                     <th></th>
+                </tr>
             </thead>
-            @{string FullAddress = "";}
-            @foreach (Order order in Model.Order)
-            {
-                FullAddress = "";
-        <tr>
-            <td>@order.Id</td>
-            <td>@order.OrderStatus</td>
-            <td>@ViewBag.getProductName(order.ProductId).ToString()</td>
-            <td>@order.UsDate.ToString("dd/MM/yyyy")</td>
-            <td>@ViewBag.getStoreName(order.StoreNameId).ToString()</td>
-            @if (order.Quantity > 1)
-            {
-             <td style="font-weight:bold;background-color:darkseagreen">@order.Quantity</td>
-             }
-            else
-            {
-             <td>@order.Quantity</td>
-            }
-
-            @{FullAddress = @order.CustName + "\n" + order.CustStreet1 + "\n";}
-            @if (order.CustStreet2 != null)
-            {
-                FullAddress = FullAddress + order.CustStreet2 + "\n";
-            }
-            @{FullAddress = FullAddress + order.CustCity + " " + order.CustState + " " + order.CustZipCode + "\n"
-                                                                + "United States";}
-            @if (order.CustPhone != null && order.CustPhone.Length > 0)
-            {
-                FullAddress = FullAddress + "\n" + order.CustPhone;
-            }
-            <td><textarea readonly>@FullAddress</textarea></td>
-            <td>@order.TrackingNumber</td>
-            @if (order.OrderStatus == KTSite.Utility.SD.OrderStatusAccepted)
-            {
-                <td>
-                    <div class="text-center">
-                        <a href="/Warehouse/OrderWarehouse/AddTrackingManually/@order.Id" class="btn btn-success text-white" style="cursor:pointer">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </div>
-                </td>
-            }
-            else
-            {
+            <tr>
+                <td>Order Id</td>
+                <td>Order Status</td>
+                <td>Product</td>
+                <td>US Date</td>
+                <td>Store</td>
+                <td>Quantity</td>
+                <td>Full Address</td>
+                <td>Tracking Number</td>
                 <td></td>
-            }
-        </tr>
-            }
+            </tr>
         </table>
     </div>
 </div>
 @section Scripts{
+    
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[0, "desc"]], "pageLength": 100 });
-        });</script>
+            $('#tblData').DataTable({
+                "ajax": {
+                    "url": "OrderWarehouse/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    { "data": "orderStatus", "name": "OrderStatus" },
+                    { "data": "productName", "name": "ProductName" },
+                    { "data": "stringDate", "name": "StringDate" },
+                    { "data": "storeName", "name": "StoreName" },
+                    {
+                        "data": "quantity", "name": "Quantity", "render": function (data) {
+                            if (data > 1)
+                                return `<div class="text-center" style="font-weight:bold;background-color:darkseagreen"><label >${data}</label></div>`
+                            else
+                                return `<div class="text-center"><label>${data}</label></div>`
+                        }
+                    },
+                    {
+                        "data": "fullAddress", "name": "FullAddress", "render": function (data) {
+                            return `<textarea readonly>${data}</textarea>`
+                        },
+                        "width": "20%"
+                    },
+                    { "data": "trackingNumber", "name": "TrackingNumber", "width": "200px" },
+                    {
+                        "data": {
+                            "orderStatus": "orderStatus",
+                            "id": "id"
+                        },
+                        "render": function (data) {
+                            if (data.orderStatus == 'Accepted') {
+                                return `
+                                    <div class="text-center">
+                                        <a href="/Warehouse/OrderWarehouse/AddTrackingManually/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                     `}
+                            else { return `<div></div>` }
+                        }, "width": "5%"
+                    }
+                ],
+                "serverSide": "true",
+                "order": [0, "desc"],
+                "processing": "true"
+            });
+        });
+    </script>
     <script>
                 $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
