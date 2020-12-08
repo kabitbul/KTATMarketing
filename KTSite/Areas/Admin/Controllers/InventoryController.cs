@@ -28,45 +28,9 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Product> product = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName);
-            ViewBag.getDailyAvg =  new Func<int, int,double>(returnDailyAvg);
-            ViewBag.getDaysToOOS = new Func<int, double>(returnDaysToOOS);
-            ViewBag.getPaintData = new Func<int, bool>(returnPaintData);
-            return View(product);
+            return View();
         }
-        public bool returnPaintData(int productId)
-        {
-            double daysToOOS = returnDaysToOOS(productId);
-            if (daysToOOS <= 100 && daysToOOS > 0)
-                return true;
-            return false;
-        }
-        public double returnDaysToOOS(int productId)
-        {
-            Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            double avgsells = returnDailyAvg(productId, 3);
-            if(avgsells == 0)
-            {
-                return 999999.99;
-            }
-            return Convert.ToDouble(((product.InventoryCount + product.OnTheWayInventory) / avgsells).ToString("0.00"));
-        }
-        public double returnDailyAvg(int productId, int avgDay)
-        {
-            int Count = _unitOfWork.Order.GetAll().Where(a => a.ProductId == productId &&
-                              a.OrderStatus != SD.OrderStatusCancelled &&
-                              a.UsDate.Date >= DateTime.Now.AddDays((avgDay * (-1))).Date &&
-                              a.UsDate.Date <= DateTime.Now.AddDays(-1).Date).Sum(a => a.Quantity);
-            if (Count > 0)
-            {
-                return (double)Count / avgDay;
-            }
-            return 0;
-        }
-        public string getCategoryName(int CategoryId)
-        {
-            return _unitOfWork.Category.GetAll().Where(a => a.Id == CategoryId).Select(a => a.Name).FirstOrDefault();
-        }
+       
         public IActionResult productGraph(int Id)
         {
             //stack chart
@@ -83,7 +47,186 @@ namespace KTSite.Areas.Admin.Controllers
         {
             return (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.ProductName)).FirstOrDefault();
         }
-        public void getStackGraphData(bool isAdmin, List<DataPoint> list, int ProductId)
+        [HttpPost]
+        public ActionResult GetList()
+        {
+            //Server Side parameters
+            int start = Convert.ToInt32(Request.Form["start"].FirstOrDefault());
+            int length = Convert.ToInt32(Request.Form["length"].FirstOrDefault());
+            string searchValue = Request.Form["search[value]"].FirstOrDefault();
+            string sortColumnName = Request.Form["columns[" + Request.Form["order[0][column]"] + "][name]"].FirstOrDefault();
+            string sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+            List<ProductInventory> productList = new List<ProductInventory>();
+           
+            var allWeekOrders = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
+            a.UsDate >= DateTime.Now.AddDays(-7) && a.UsDate <= DateTime.Now.AddDays(-1)).OrderBy(a=>a.UsDate);
+            initialize(productList);
+            int totalRows = productList.Count;
+            foreach (Order order in allWeekOrders)
+            {
+                ProductInventory prodInv = new ProductInventory();
+                if (productList.Find(a => a.ProductId == order.ProductId) != null)
+                {
+                    int val7 = productList.Find(a => a.ProductId == order.ProductId).TotalSales7;
+                    productList.Find(a => a.ProductId == order.ProductId).TotalSales7 = val7 + order.Quantity;
+                }
+                if(order.UsDate >= DateTime.Now.AddDays(-3))
+                {
+                    int val3 = productList.Find(a => a.ProductId == order.ProductId).TotalSales3;
+                    productList.Find(a => a.ProductId == order.ProductId).TotalSales3 = val3+ order.Quantity;
+                }
+            }
+            //calc and populate average
+             foreach(ProductInventory prInv in productList)
+            {
+                prInv.DailyAvg3 = prInv.TotalSales3 / 3;
+                prInv.DailyAvg7 = prInv.TotalSales7 / 7;
+                if (prInv.DailyAvg3 > 0)
+                {
+                    prInv.DaysToOOS = (prInv.Inventory + prInv.OnTheWay) / prInv.DailyAvg3;
+                }
+                prInv.DaysToOOSstr = prInv.DaysToOOS.ToString("0.00");
+            }
+
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                productList = productList.Where(x => x.ProductName.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.Inventory.ToString().Contains(searchValue.ToLower()) ||
+                                            x.OnTheWay.ToString().Contains(searchValue.ToLower()) ||
+                                            x.Cost.ToString().Contains(searchValue.ToLower()) ||
+                                            x.OwnByWarehouse.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.Restock.ToLower().Contains(searchValue.ToLower()) ||
+                                            x.DailyAvg3.ToString().Contains(searchValue.ToLower()) ||
+                                            x.DailyAvg7.ToString().Contains(searchValue.ToLower()) ||
+                                            x.DaysToOOS.ToString().Contains(searchValue.ToLower())
+                ).ToList<ProductInventory>();
+            }
+            int totalRowsAfterFiltering = productList.Count;
+            if (sortDirection == "desc")
+            {
+                if (sortColumnName.ToLower() == "productname")
+                {
+                    productList = productList.OrderByDescending(x => x.ProductName).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "inventory")
+                {
+                    productList = productList.OrderByDescending(x => x.Inventory).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ontheway")
+                {
+                    productList = productList.OrderByDescending(x => x.OnTheWay).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "cost")
+                {
+                    productList = productList.OrderByDescending(x => x.Cost).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ownbywarehouse")
+                {
+                    productList = productList.OrderByDescending(x => x.OwnByWarehouse).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "restock")
+                {
+                    productList = productList.OrderByDescending(x => x.Restock).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "dailyavg3")
+                {
+                    productList = productList.OrderByDescending(x => x.DailyAvg3).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "dailyavg7")
+                {
+                    productList = productList.OrderByDescending(x => x.DailyAvg7).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "daystooosstr")
+                {
+                    productList = productList.OrderByDescending(x => x.DaysToOOS).ToList<ProductInventory>();
+                }
+            }
+            else
+            {
+                if (sortColumnName.ToLower() == "productname")
+                {
+                    productList = productList.OrderBy(x => x.ProductName).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "inventory")
+                {
+                    productList = productList.OrderBy(x => x.Inventory).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ontheway")
+                {
+                    productList = productList.OrderBy(x => x.OnTheWay).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "cost")
+                {
+                    productList = productList.OrderBy(x => x.Cost).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ownbywarehouse")
+                {
+                    productList = productList.OrderBy(x => x.OwnByWarehouse).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "restock")
+                {
+                    productList = productList.OrderBy(x => x.Restock).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "dailyavg3")
+                {
+                    productList = productList.OrderBy(x => x.DailyAvg3).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "dailyavg7")
+                {
+                    productList = productList.OrderBy(x => x.DailyAvg7).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "daystooosstr")
+                {
+                    productList = productList.OrderBy(x => x.DaysToOOS).ToList<ProductInventory>();
+                }
+            }
+            productList = productList.Skip(start).Take(length).ToList<ProductInventory>();
+            return Json(new
+            {
+                data = productList,
+                draw = Request.Form["draw"],
+                recordsTotal = totalRows,
+                recordsFiltered = totalRowsAfterFiltering
+            });
+        }
+        public void initialize(List<ProductInventory> productInvList)
+        {
+            List<Product> allProducts = _unitOfWork.Product.GetAll().ToList();
+            
+            foreach (Product product in allProducts)
+            {
+                ProductInventory prodInv = new ProductInventory();
+                prodInv.ProductId = product.Id;
+                prodInv.ImageUrl = product.ImageUrl;
+                prodInv.ProductName = product.ProductName;
+                prodInv.Inventory = product.InventoryCount;
+                prodInv.OnTheWay = product.OnTheWayInventory;
+                prodInv.Cost = product.Cost;
+                if(product.OwnByWarehouse)
+                {
+                    prodInv.OwnByWarehouse = "Yes";
+                }
+                else
+                {
+                    prodInv.OwnByWarehouse = "No";
+                }
+                if (product.ReStock)
+                {
+                    prodInv.Restock = "Yes";
+                }
+                else
+                {
+                    prodInv.Restock = "No";
+                }
+                prodInv.TotalSales3 = 0;
+                prodInv.TotalSales7 = 0;
+                prodInv.DailyAvg3 = 0;
+                prodInv.DailyAvg7 = 0;
+                prodInv.DaysToOOS = 0;
+                productInvList.Add(prodInv);
+            }
+        }
+            public void getStackGraphData(bool isAdmin, List<DataPoint> list, int ProductId)
         {
             DateTime iterateDate = DateTime.Now.AddDays(-60);
             if (isAdmin)

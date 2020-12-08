@@ -8,26 +8,20 @@ namespace KTSite.Models
 {
     public class ProductStatistics
     {
-        [NotMapped]
+        public string ImageUrl { get; set; }
         public int ProductId { get; set; }
-        [NotMapped]
+        public string ProductName { get; set; }
         public int SevenDays { get; set; }
-        [NotMapped]
         public int SixDays { get; set; }
-        [NotMapped]
         public int FiveDays { get; set; }
-        [NotMapped]
         public int FourDays { get; set; }
-        [NotMapped]
         public int ThreeDays { get; set; }
-        [NotMapped]
         public int TwoDays { get; set; }
-        [NotMapped]
         public int Yesterday { get; set; }
-        [NotMapped]
         public int Today { get; set; }
-        [NotMapped]
         public double WeeklyAverage { get; set; }
+        public string WeeklyAveragestr { get; set; }
+        public int TotalSales7 { get; set; }
 
     }
 }

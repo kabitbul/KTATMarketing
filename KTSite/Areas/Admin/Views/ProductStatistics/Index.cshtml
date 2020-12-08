@@ -3,7 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<br />
 <div class="row">
     <div class="col-6">
         <h2 class="text-primary">Product Statistics </h2>
@@ -12,9 +11,10 @@
 
 <br />
 <div class="p-4 border rounded">
-    <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+    <table id="tblData" class="table table-striped table-bordered">
         <thead class="thead-dark">
             <tr class="table-info">
+                <th>Image</th>
                 <th>Product</th>
                 <th>7 Days ago</th>
                 <th>6 Days ago</th>
@@ -28,37 +28,92 @@
                 <th></th>
             </tr>
         </thead>
-        @foreach (ProductStatistics productStatistics in Model)
-        {
-    <tr>
-        <td>@ViewBag.getProductName(productStatistics.ProductId)</td>
-        <td>@productStatistics.SevenDays</td>
-        <td>@productStatistics.SixDays</td>
-        <td>@productStatistics.FiveDays</td>
-        <td>@productStatistics.FourDays</td>
-        <td>@productStatistics.ThreeDays</td>
-        <td>@productStatistics.TwoDays</td>
-        <td>@productStatistics.Yesterday</td>
-        <td>@productStatistics.Today</td>
-        <td>@productStatistics.WeeklyAverage.ToString("0.00")</td>
-        <td>
-            <div class="text-center">
-                <a href="/Admin/ProductStatistics/ProductGraph/@productStatistics.ProductId" class="btn btn-success text-white" style="cursor:pointer">
-                    <i class="fas fa-chart-bar"></i>
-                </a>
-            </div>
-        </td>
-    </tr>
-        }
+        <tr class="table-info">
+            <td></td>
+            <td>Product</td>
+            <td>7 Days ago</td>
+            <td>6 Days ago</td>
+            <td>5 Days ago</td>
+            <td>4 Days ago</td>
+            <td>3 Days ago</td>
+            <td>2 Days ago</td>
+            <td>Yesterday</td>
+            <td>Today</td>
+            <td>Weekly Average</td>
+            <td></td>
+        </tr>
     </table>
 </div>
 
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[0, "desc"]]});
-        });</script>
-    @*<script src="~/js/product.js"></script>*@
+            $('#tblData').DataTable({
+                "ajax": {
+                    "url": "ProductStatistics/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": "imageUrl", "name": "ImageUrl", "render": function (data) {
+                            if (data != null) {
+                                return `<div><img src=${data} alt="Product Image" style="height:70px; width:70px" /></div>`
+                            }
+                            else {
+                                return `<div></div>`
+                            }
+                        }
+                    },
+                    { "data": "productName", "name": "ProductName" },
+                    { "data": "sevenDays", "name": "SevenDays" },
+                    { "data": "sixDays", "name": "SixDays" },
+                    { "data": "fiveDays", "name": "FiveDays" },
+                    { "data": "fourDays", "name": "FourDays" },
+                    { "data": "threeDays", "name": "ThreeDays" },
+                    { "data": "twoDays", "name": "TwoDays" },
+                    { "data": "yesterday", "name": "Yesterday" },
+                    { "data": "today", "name": "Today" },
+                    {
+                        "data": "weeklyAveragestr", "name": "WeeklyAveragestr",
+                        "render": function (data) {
+                            if (data <= 3) {
+                                return `<div class="text-center" style="font-weight:bold;background-color:red"><label >${data}</label></div>`
+                            }
+                            else if (data <= 10) {
+                                return `<div class="text-center" style="font-weight:bold;background-color:palevioletred"><label >${data}</label></div>`
+                            }
+                            else if (data >= 40) {
+                                return `<div class="text-center" style="font-weight:bold;background-color:lawngreen"><label >${data}</label></div>`
+                            }
+                            else if (data >= 20) {
+                                return `<div class="text-center" style="font-weight:bold;background-color:lightgreen"><label >${data}</label></div>`
+                            }
+                            else {
+                                return `<div class="text-center"><label >${data}</label></div>`
+                            }
+                        }
+                    },
+                    {
+                        "data": "productId", "name": "ProductId",
+                        "render": function (data) {
+                            return `
+                                         <div class="text-center">
+                <a href="/Admin/ProductStatistics/ProductGraph/${data}" class="btn btn-success text-white" style="cursor:pointer">
+                    <i class="fas fa-chart-bar"></i>
+                </a>
+            </div>
+                                         `
+                        },
+                    }
+                ],
+                "serverSide": "true",
+                "order": [1, "asc"],
+                "processing": "true",
+                "pageLength": 50
+            });
+        });
+    </script>
 }
 
 

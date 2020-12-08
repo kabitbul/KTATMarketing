@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>
+﻿
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <br />
@@ -26,59 +26,81 @@
                 <th></th>
             </tr>
         </thead>
-        @foreach (Product product in Model)
-        {
-    <tr>
-        @if (product.ImageUrl != null)
-        {
-    <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td> }
-                    else
-                    {
-    <td></td>}
-        <td>@product.ProductName</td>
-        <td>@product.InventoryCount</td>
-        <td>@product.OnTheWayInventory</td>
-        <td>@product.Cost$</td>
-        @if (@product.OwnByWarehouse)
-        {
-            <td>Yes</td>
- }
-        else
-        {
-            <td>No</td>
-}
-        @if (@product.ReStock)
-        {
-            <td>Yes</td>
-}
-        else
-        {
-            <td>No</td>
-}
-        <td>@ViewBag.getDailyAvg(product.Id, 3).ToString("0.00")</td>
-        <td>@ViewBag.getDailyAvg(product.Id, 7).ToString("0.00")</td>
-        @if (ViewBag.getPaintData(product.Id))
-        {
-            <td style="font-weight:bold;color:red">@ViewBag.getDaysToOOS(product.Id)</td>
-}
-        else
-        {
-            <td>@ViewBag.getDaysToOOS(product.Id)</td>
-}
-        <td>
-            <div class="text-center">
-                <a href="/Admin/Inventory/ProductGraph/@product.Id" class="btn btn-success text-white" style="cursor:pointer">
-                    <i class="fas fa-chart-bar"></i>
-                </a>
-            </div>
-        </td>
-    </tr>}
+        <tr class="table-info">
+            <td>Image</td>
+            <td>Product</td>
+            <td>Inventory</td>
+            <td>On The Way</td>
+            <td>Cost</td>
+            <td>Warehouse</td>
+            <td>ReStock</td>
+            <td>DailyAvg(3 days)</td>
+            <td>DailyAvg(Week)</td>
+            <td>Days to OOS</td>
+            <td></td>
+        </tr>
     </table>
 </div>
 
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[9, "asc"]], "pageLength": 100 });
-        });</script>
+            $('#tblData').DataTable({
+                "ajax": {
+                    "url": "Inventory/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": "imageUrl", "name": "ImageUrl", "render": function (data) {
+                            if (data != null)   
+                                return `<div><img src=${data} alt="Product Image" style="height:70px; width: 70px" /></div>`
+                            else
+                                return `<div></div>`
+                        }
+                    },
+                    { "data": "productName", "name": "ProductName" },
+                    { "data": "inventory", "name": "Inventory" },
+                    { "data": "onTheWay", "name": "OnTheWay" },
+                    {
+                        "data": "cost", "name": "Cost", "render": function (data) {
+                            return `<label>${data}$</label>`
+                        }
+                    },
+                    { "data": "ownByWarehouse", "name": "OwnByWarehouse" },
+                    { "data": "restock", "name": "Restock" },
+                    { "data": "dailyAvg3", "name": "DailyAvg3" },
+                    { "data": "dailyAvg7", "name": "DailyAvg7" },
+                    {
+                        "data": "daysToOOSstr", "name": "DaysToOOSstr",
+                        "render": function (data) {
+                            if (data <= 100) {
+                                return `<div class="text-center" style="font-weight:bold;color:red"><label >${data}</label></div>`
+                            }
+                            else {
+                                return `<div class="text-center"><label >${data}</label></div>`
+                            }
+                        }
+                    },
+                    {
+                        "data": "productId", "name": "ProductId",
+                        "render": function (data) {
+                                return `
+                                     <div class="text-center">
+            <a href="/Admin/Inventory/ProductGraph/${data}" class="btn btn-success text-white" style="cursor:pointer">
+                <i class="fas fa-chart-bar"></i>
+            </a>
+        </div>
+                                     `
+                        }, 
+                    }
+                ],
+                "serverSide": "true",
+                "order": [9, "asc"],
+                "processing": "true",
+                "pageLength": 50
+            });
+        });
+    </script>
 }

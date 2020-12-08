@@ -521,7 +521,10 @@ namespace KTSite.Areas.UserRole.Controllers
                         orderVM.Orders.UserNameId = returnUserNameId();
                         orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1],returnUserNameId());
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
-                        orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                        if (orderVM.Orders.ProductId > 0)
+                        {
+                            orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                        }
                         string validDate;
                         if (orderDetails[2].Length < 10)
                         {
@@ -765,6 +768,10 @@ namespace KTSite.Areas.UserRole.Controllers
             orderVM.Orders.Id = 0;
             orderVM.Orders.ProductId = 0;
             orderVM.Orders.CustStreet2= "";
+            orderVM.Orders.CustStreet1 = "";
+            orderVM.Orders.CustCity = "";
+            orderVM.Orders.CustState = "";
+            orderVM.Orders.CustZipCode = "";
             orderVM.Orders.CustPhone= "";
             orderVM.Orders.IsAdmin = false;
             orderVM.Orders.OrderStatus = SD.OrderStatusAccepted;

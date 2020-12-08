@@ -175,6 +175,7 @@
 
     <script type="text/javascript">
         function Submit() {
+            window.alert('in submit');
             var pdata = new FormData();
             var files = $("#CSVFile").get(0).files;
             pdata.append('CSVFile', files[0]);
