@@ -31,7 +31,14 @@ namespace KTSite.Models
         public string NewTrackingNumber { get; set; }
         [DefaultValue(false)]
         public bool IsAdmin { get; set; }
-        
+        [DefaultValue(false)]
+        public bool WarehouseResponsibility { get; set; }
+        [NotMapped]
+        [DefaultValue(false)]
+        public bool isChecked { get; set; }
+
         public int StoreId { get; set; }
+        public string ProductName { get; set; }
+        public string CustName { get; set; }
     }
 }

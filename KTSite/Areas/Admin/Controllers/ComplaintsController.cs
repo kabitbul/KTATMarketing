@@ -157,7 +157,10 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         complaintsVM.complaints.StoreId =
                             _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).Select(a => a.StoreNameId).
-                            FirstOrDefault();;
+                            FirstOrDefault();
+                        Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                        complaintsVM.complaints.ProductName = ord.ProductName;
+                        complaintsVM.complaints.CustName = ord.CustName;
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
                 }
@@ -168,6 +171,13 @@ namespace KTSite.Areas.Admin.Controllers
                         complaintsVM.complaints.OrderId = 0;
                         complaintsVM.complaints.StoreId = 0;
                     }
+                    else
+                    {
+                        Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                        complaintsVM.complaints.ProductName = ord.ProductName;
+                        complaintsVM.complaints.CustName = ord.CustName;
+
+                    }
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
 
@@ -177,10 +187,11 @@ namespace KTSite.Areas.Admin.Controllers
 
                 //return RedirectToAction(nameof(Index));
             }
+            string userNameId = returnUserNameId();
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == returnUserNameId()).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
     Select(i => new SelectListItem
     {
         Text = i.CustName + "- Id: " + i.Id,
@@ -264,6 +275,24 @@ namespace KTSite.Areas.Admin.Controllers
             }
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;
             return View(complaintsVM2);
+        }
+        [HttpPost]
+        public IActionResult warehouseResp(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Complaints complaints = _unitOfWork.Complaints.Get(Id);
+                if (complaints.WarehouseResponsibility)
+                {
+                    complaints.WarehouseResponsibility = false;
+                }
+                else
+                {
+                    complaints.WarehouseResponsibility = true;
+                }
+                _unitOfWork.Save();
+            }
+            return View();
         }
         public string returnUserNameId()
         {

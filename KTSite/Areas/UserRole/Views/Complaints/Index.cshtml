@@ -24,6 +24,8 @@
                 <tr class="table-info">
                     <th>Ticket Id</th>
                     <th>Order Id</th>
+                    <th>Product</th>
+                    <th>Customer</th>
                     <th>Store</th>
                     <th>Description</th>
                     <th>Solution</th>
@@ -38,33 +40,29 @@
         <tr>
             <td>@complaints.Id</td>
             <td>@complaints.OrderId</td>
+            <td>@complaints.ProductName</td>
+            <td>@complaints.CustName</td>
             @if (complaints.StoreId != 0)
             {
-                <td>@ViewBag.getStore(complaints.StoreId.ToString()).ToString()</td>
-            }
-            else
-            {
-                <td></td>
-            }
+        <td>@ViewBag.getStore(complaints.StoreId.ToString()).ToString()</td> }
+                        else
+                        {
+        <td></td>}
             <td><textarea readonly>@complaints.Description</textarea></td>
             <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
             @if (@complaints.Solved)
             {
-        <td>Yes</td>
- }
-    else
-    {
-        <td>No</td>
-}
+        <td>Yes</td> }
+                        else
+                        {
+        <td>No</td>}
             <td>@complaints.NewTrackingNumber</td>
             @if (ViewBag.Refunded(complaints.OrderId.ToString()))
             {
-        <td>Yes</td>
- }
-    else
-    {
-        <td>No</td>
-}
+        <td>Yes</td> }
+                        else
+                        {
+        <td>No</td>}
             @if (!complaints.Solved)
             {
         <td>
@@ -73,12 +71,10 @@
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
-        </td>
- }
-    else
-    {
-        <td></td>
-}
+        </td> }
+                        else
+                        {
+        <td></td>}
         </tr>
             }
 

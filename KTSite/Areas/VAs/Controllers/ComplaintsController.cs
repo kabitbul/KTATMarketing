@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -158,7 +153,10 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         complaintsVM.complaints.StoreId =
                             _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).Select(a => a.StoreNameId).
-                            FirstOrDefault(); ;
+                            FirstOrDefault();
+                        Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                        complaintsVM.complaints.ProductName = ord.ProductName;
+                        complaintsVM.complaints.CustName = ord.CustName;
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
                 }
@@ -264,6 +262,29 @@ namespace KTSite.Areas.VAs.Controllers
             }
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;
             return View(complaintsVM2);
+        }
+        [HttpPost]
+        public IActionResult warehouseResp(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Complaints complaints = _unitOfWork.Complaints.Get(Id);
+                if (complaints.WarehouseResponsibility)
+                {
+                    complaints.WarehouseResponsibility = false;
+                }
+                else
+                {
+                    complaints.WarehouseResponsibility = true;
+                }
+                _unitOfWork.Save();
+            }
+            var complaints2 = _unitOfWork.Complaints.GetAll().Where(a => a.IsAdmin);
+            ViewBag.getStore =
+               new Func<string, string>(getStore);
+            ViewBag.IsAdmin = new Func<string, bool>(returnIsAdmin);
+            return View(complaints2);
+            //return View();
         }
         public string returnUserNameId()
         {

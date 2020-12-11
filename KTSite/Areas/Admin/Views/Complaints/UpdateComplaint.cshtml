@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
-                                                     new { @class = "form-control", @disabled = "disabled" })
+                                                                    new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
-                                                new { @class = "form-control", @disabled = "disabled" })
+                                                               new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
                     </div>
                 </div>
@@ -91,6 +91,15 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="complaints.StoreId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.WarehouseResponsibility" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.ProductName" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.CustName" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">

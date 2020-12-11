@@ -59,7 +59,7 @@ namespace KTSite.Areas.Admin.Controllers
             List<ProductInventory> productList = new List<ProductInventory>();
            
             var allWeekOrders = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
-            a.UsDate >= DateTime.Now.AddDays(-7) && a.UsDate <= DateTime.Now.AddDays(-1)).OrderBy(a=>a.UsDate);
+            a.UsDate >= DateTime.Now.AddDays(-7).Date && a.UsDate <= DateTime.Now.AddDays(-1).Date).OrderBy(a=>a.UsDate);
             initialize(productList);
             int totalRows = productList.Count;
             foreach (Order order in allWeekOrders)
@@ -70,7 +70,7 @@ namespace KTSite.Areas.Admin.Controllers
                     int val7 = productList.Find(a => a.ProductId == order.ProductId).TotalSales7;
                     productList.Find(a => a.ProductId == order.ProductId).TotalSales7 = val7 + order.Quantity;
                 }
-                if(order.UsDate >= DateTime.Now.AddDays(-3))
+                if(order.UsDate >= DateTime.Now.AddDays(-3).Date)
                 {
                     int val3 = productList.Find(a => a.ProductId == order.ProductId).TotalSales3;
                     productList.Find(a => a.ProductId == order.ProductId).TotalSales3 = val3+ order.Quantity;
@@ -79,13 +79,25 @@ namespace KTSite.Areas.Admin.Controllers
             //calc and populate average
              foreach(ProductInventory prInv in productList)
             {
-                prInv.DailyAvg3 = prInv.TotalSales3 / 3;
-                prInv.DailyAvg7 = prInv.TotalSales7 / 7;
+                prInv.DailyAvg3 = (double)prInv.TotalSales3 / 3;
+                prInv.DailyAvg7 = (double)prInv.TotalSales7 / 7;
                 if (prInv.DailyAvg3 > 0)
                 {
-                    prInv.DaysToOOS = (prInv.Inventory + prInv.OnTheWay) / prInv.DailyAvg3;
+                    prInv.DaysToOOS = (double)(prInv.Inventory + prInv.OnTheWay) / prInv.DailyAvg3;
                 }
-                prInv.DaysToOOSstr = prInv.DaysToOOS.ToString("0.00");
+                if (prInv.DaysToOOS != 0)
+                    prInv.DaysToOOSstr = prInv.DaysToOOS.ToString("0.00");
+                else
+                    prInv.DaysToOOSstr = "0";
+
+                if (prInv.DailyAvg3 != 0)
+                    prInv.DailyAvg3str = prInv.DailyAvg3.ToString("0.00");
+                else
+                    prInv.DailyAvg3str = "0";
+                if (prInv.DailyAvg7 != 0)
+                    prInv.DailyAvg7str = prInv.DailyAvg7.ToString("0.00");
+                else
+                    prInv.DailyAvg7str = "0";
             }
 
             if (!string.IsNullOrEmpty(searchValue))

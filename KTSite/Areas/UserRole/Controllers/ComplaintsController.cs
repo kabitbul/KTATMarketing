@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -25,7 +20,8 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult Index()
         {
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.UserNameId == returnUserNameId());
+            string userNameId = returnUserNameId();
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.UserNameId == userNameId);
             ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
             ViewBag.getStore = new Func<string, string>(getStore);
             return View(complaints);
@@ -64,7 +60,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         Text = i.CustName + "- Id: " + i.Id,
                         Value = i.Id.ToString()
                     }),
-                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == uNameId).
                     Select(i => new SelectListItem
                     {
                         Text = i.StoreName,
@@ -82,7 +78,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         Text = i.CustName + "- Id: " + i.Id,
                         Value = i.Id.ToString()
                     }),
-                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == uNameId).
                     Select(i => new SelectListItem
                     {
                         Text = i.StoreName,
@@ -115,7 +111,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         Text = i.CustName + "- Id: " + i.Id,
                         Value = i.Id.ToString()
                     }),
-                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == uNameId).
                     Select(i => new SelectListItem
                     {
                         Text = i.StoreName,
@@ -154,7 +150,10 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         complaintsVM.complaints.StoreId =
                             _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).Select(a => a.StoreNameId).
-                            FirstOrDefault(); ;
+                            FirstOrDefault();
+                        Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                        complaintsVM.complaints.ProductName = ord.ProductName;
+                        complaintsVM.complaints.CustName = ord.CustName;
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
                 }
@@ -174,16 +173,17 @@ namespace KTSite.Areas.UserRole.Controllers
 
                 //return RedirectToAction(nameof(Index));
             }
+            string userNameId = returnUserNameId();
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == returnUserNameId()).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
     Select(i => new SelectListItem
     {
         Text = i.CustName + "- Id: " + i.Id,
         Value = i.Id.ToString()
     }),
-                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == userNameId).
                     Select(i => new SelectListItem
                     {
                         Text = i.StoreName,
@@ -212,17 +212,18 @@ namespace KTSite.Areas.UserRole.Controllers
                 //  ViewBag.storeExist = storeExist;
                 ViewBag.success = true;
             }
+            string uNameId = returnUserNameId();
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
                 OrdersList = _unitOfWork.Order.GetAll().
-                Where(a => a.UserNameId == returnUserNameId()).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                Where(a => a.UserNameId == uNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
                 Select(i => new SelectListItem
                 {
                     Text = i.CustName + "- Id: " + i.Id,
                     Value = i.Id.ToString()
                 }),
-                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.UserNameId == uNameId).
                     Select(i => new SelectListItem
                     {
                         Text = i.StoreName,

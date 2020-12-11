@@ -24,5 +24,7 @@ namespace KTSite.Models
         public double DailyAvg7 { get; set; }
         public double DaysToOOS { get; set; }
         public string DaysToOOSstr { get; set; }
+        public string DailyAvg7str { get; set; }
+        public string DailyAvg3str { get; set; }
     }
 }

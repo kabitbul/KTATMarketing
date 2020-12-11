@@ -8,12 +8,12 @@
             <h2 class="text-primary">Orders List </h2>
         </div>
         <div class="col-6 text-right">
-            <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
+            <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Orders from Extension</a>
         </div>
     </div>
     <div class="row">
         <div class="col-12 text-right">
-            <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Admin Orders Manually</a>
+            <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Orders Manually</a>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
             <input type="checkbox" id="pos" value=true />  Show All Orders
         </div>*@
     <div class="p-4 ">
-        <div class="custom-control custom-checkbox custom-control-inline">
+        @*<div class="custom-control custom-checkbox custom-control-inline">
             <input type="checkbox" class="custom-control-input" name="AcceptedName" id="Accepted" value="AcceptedValue" checked />
             <label class="custom-control-label" for="Accepted">Accepted </label>
         </div>
@@ -45,7 +45,7 @@
         <div class="custom-control custom-checkbox custom-control-inline">
             <input type="checkbox" class="custom-control-input" id="PartialRefund" checked />
             <label class="custom-control-label" for="PartialRefund">Partial Refund </label>
-        </div>
+        </div>*@
         <table id="tblData" class="table table-striped table-bordered">
             <thead class="thead-dark">
                 <tr class="table-info">
@@ -136,8 +136,8 @@
                                     </a>
                                     </div>
                                     <div class="text-center">
-                                    <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
-                                    <i class="fas fa-ticket-alt"></i>
+                                    <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                    <i class="fas fa-shipping-fast"></i>
                                     </a>
                                     </div>
                                 `}
@@ -152,8 +152,8 @@
                             else if (data.orderStatus == 'Done' && data.allowReturn) {
                                 return `
                                     <div class="text-center">
-                                    <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
-                                    <i class="fas fa-ticket-alt"></i>
+                                    <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                    <i class="fas fa-shipping-fast"></i>
                                     </a>
                                     </div>
                                 `}

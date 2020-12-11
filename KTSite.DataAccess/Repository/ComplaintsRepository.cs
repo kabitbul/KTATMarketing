@@ -43,6 +43,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.Solved = complaints.Solved;
                 objFromDb.CreatedDate = complaints.CreatedDate;
                 objFromDb.NewTrackingNumber = complaints.NewTrackingNumber;
+                objFromDb.WarehouseResponsibility = complaints.WarehouseResponsibility;
             }
         }
     }

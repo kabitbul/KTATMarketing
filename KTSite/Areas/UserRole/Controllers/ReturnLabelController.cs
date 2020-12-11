@@ -28,7 +28,8 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult Index()
         {
-            var returnLabelList = _unitOfWork.ReturnLabel.GetAll().Where(a=>a.UserNameId == returnUserNameId()).OrderByDescending(q=>q.Id);
+            string userNameId = returnUserNameId();
+            var returnLabelList = _unitOfWork.ReturnLabel.GetAll().Where(a=>a.UserNameId == userNameId).OrderByDescending(q=>q.Id);
             ViewBag.getCustName =
                new Func<string, string>(returnCustName);
             ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
@@ -42,11 +43,12 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult AddReturnLabel(long? Id)//Id is Order Id
         {
-           ViewBag.UserNameId = returnUserNameId();
+            string userNameId = returnUserNameId();
+            ViewBag.UserNameId = userNameId;
             ReturnLabelVM returnLabelVM = new ReturnLabelVM()
             {
                 returnLabel = new ReturnLabel(),
-                OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == returnUserNameId() &&
+                OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId &&
                                               a.OrderStatus == SD.OrderStatusDone &&
                                        !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
                       Select(i => new SelectListItem
@@ -63,18 +65,19 @@ namespace KTSite.Areas.UserRole.Controllers
             {
                 returnLabelVM.returnLabel.OrderId = (long)Id;
             }
-            returnLabelVM.returnLabel.UserNameId = returnUserNameId();
+            returnLabelVM.returnLabel.UserNameId = userNameId;
             ViewBag.InsufficientFunds = false;
             return View(returnLabelVM);
         }
         public IActionResult UpdateReturnLabel(int Id)
         {
-            ViewBag.UserNameId = returnUserNameId();
+            string userNameId = returnUserNameId();
+            ViewBag.UserNameId = userNameId;
             ReturnLabelVM returnLabelVM = new ReturnLabelVM()
             {
                 returnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a=>a.Id == Id).FirstOrDefault(),
                 //OrderList = _unitOfWork.ReturnLabel.getAllOrdersOfUser(returnUserNameId()).Select(i => new SelectListItem
-                OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == returnUserNameId() &&
+                OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId &&
                                              a.OrderStatus == SD.OrderStatusDone &&
                                       !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
                       Select(i => new SelectListItem
@@ -113,19 +116,21 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddReturnLabel(ReturnLabelVM returnLabelVM)
         {
+            string userNameId = returnUserNameId();
             ViewBag.InvalidQuantity = false;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
             ReturnLabelVM returnLabelVM2 = new ReturnLabelVM()
             {
+                
                 returnLabel = new ReturnLabel(),
-                OrderList = _unitOfWork.Order.GetAll().Where(i => i.UserNameId == returnUserNameId()).Select(i => new SelectListItem
+                OrderList = _unitOfWork.Order.GetAll().Where(i => i.UserNameId == userNameId).Select(i => new SelectListItem
                 {
                     Text = i.Id + "-" + i.CustName + "-Quantity: " + i.Quantity,
                     Value = i.Id.ToString()
                 })
             };
-            returnLabelVM2.returnLabel.UserNameId = returnUserNameId();
+            returnLabelVM2.returnLabel.UserNameId = userNameId;
             if (ModelState.IsValid)
             {
                 int quantity =_unitOfWork.Order.GetAll().Where(a => a.Id == returnLabelVM.returnLabel.OrderId).Select(a => a.Quantity).FirstOrDefault();
@@ -135,7 +140,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
                 else
                 {
-                    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == returnUserNameId()).
+                    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).
                         FirstOrDefault();
                     if(paymentBalance.Balance < SD.shipping_cost && !paymentBalance.AllowNegativeBalance)
                     {
@@ -162,6 +167,7 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateReturnLabel(ReturnLabelVM returnLabelVM)
         {
+            string userNameId = returnUserNameId();
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
             ViewBag.deliveredButNoTracking = false;
@@ -187,13 +193,13 @@ namespace KTSite.Areas.UserRole.Controllers
             ReturnLabelVM returnLabelVM2 = new ReturnLabelVM()
             {
                 returnLabel = new ReturnLabel(),
-                OrderList = _unitOfWork.Order.GetAll().Where(i => i.UserNameId == returnUserNameId()).Select(i => new SelectListItem
+                OrderList = _unitOfWork.Order.GetAll().Where(i => i.UserNameId == userNameId).Select(i => new SelectListItem
                 {
                     Text = i.Id + "-" + i.CustName + "-Quantity: " + i.Quantity,
                     Value = i.Id.ToString()
                 })
             };
-            returnLabelVM2.returnLabel.UserNameId = returnUserNameId();
+            returnLabelVM2.returnLabel.UserNameId = userNameId;
             return View(returnLabelVM2);
         }
 
