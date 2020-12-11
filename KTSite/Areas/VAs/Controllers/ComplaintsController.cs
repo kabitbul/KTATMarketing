@@ -137,12 +137,13 @@ namespace KTSite.Areas.VAs.Controllers
         {
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
+            string userNameId = returnUserNameId();
             if (ModelState.IsValid)
             {
                 //complaintsVM.complaints.IsAdmin = _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).
                 //    Select(a => a.IsAdmin).FirstOrDefault();
                 complaintsVM.complaints.IsAdmin = true;
-                complaintsVM.complaints.UserNameId = returnUserNameId();
+                complaintsVM.complaints.UserNameId = userNameId;
                 if (complaintsVM.complaints.Id == 0)
                 {
                     if (complaintsVM.GeneralNotOrderRelated)
@@ -151,10 +152,8 @@ namespace KTSite.Areas.VAs.Controllers
                     }
                     else//if its not a general ticket, get the storeid based on order
                     {
-                        complaintsVM.complaints.StoreId =
-                            _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).Select(a => a.StoreNameId).
-                            FirstOrDefault();
                         Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                        complaintsVM.complaints.StoreId = ord.StoreNameId;
                         complaintsVM.complaints.ProductName = ord.ProductName;
                         complaintsVM.complaints.CustName = ord.CustName;
                     }
@@ -178,7 +177,7 @@ namespace KTSite.Areas.VAs.Controllers
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == returnUserNameId()).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
     Select(i => new SelectListItem
     {
         Text = i.CustName + "- Id: " + i.Id,
