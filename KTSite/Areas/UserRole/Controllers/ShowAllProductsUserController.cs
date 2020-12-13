@@ -90,20 +90,21 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult DeleteStoreToProduct()
         {
+            string userNameId = returnUserNameId();
             ViewBag.getProductName =
                new Func<int, string>(returnProductName);
             ViewBag.getStoreName =
                new Func<int, string>(returnStoreName);
-            var sellersInventory = _unitOfWork.SellersInventory.GetAll().Where(a => a.UserNameId == returnUserNameId());
+            var sellersInventory = _unitOfWork.SellersInventory.GetAll().Where(a => a.UserNameId == userNameId);
                 return View(sellersInventory);
         }
         public string returnProductName(int productId)
         {
-            return (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.ProductName)).FirstOrDefault();
+            return _unitOfWork.Product.Get(productId).ProductName;
         }
         public string returnStoreName(int storeId)
         {
-            return (_unitOfWork.UserStoreName.GetAll().Where(q => q.Id == storeId).Select(q => q.StoreName)).FirstOrDefault();
+            return _unitOfWork.UserStoreName.Get(storeId).StoreName;
         }
         public string returnUserNameId()
         {

@@ -384,14 +384,11 @@ namespace KTSite.Areas.UserRole.Controllers
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
-                    int oldQuantity = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                       .Select(a => a.Quantity).FirstOrDefault();
-                    int oldProductId = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                        .Select(a => a.ProductId).FirstOrDefault();
-                    double oldCost = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                       .Select(a => a.Cost).FirstOrDefault();
-                    string oldStatus = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                                    .Select(a => a.OrderStatus).FirstOrDefault();
+                    Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
+                    int oldQuantity = ord.Quantity;
+                    int oldProductId = ord.ProductId;
+                    double oldCost = ord.Cost;
+                    string oldStatus = ord.OrderStatus;
                     PaymentBalance paymentBalance = userBalance(uNameId);
                     if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < (orderVM.Orders.Cost - oldCost))
                     {

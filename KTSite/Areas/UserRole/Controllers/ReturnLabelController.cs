@@ -52,7 +52,6 @@ namespace KTSite.Areas.UserRole.Controllers
                                               a.OrderStatus == SD.OrderStatusDone &&
                                        !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
                       Select(i => new SelectListItem
-                      //OrderList = _unitOfWork.ReturnLabel.getAllOrdersOfUser(returnUserNameId()).Select(i => new SelectListItem
                       {
                     Text = i.Id + "-" + i.CustName + "-Quantity: " + i.Quantity,
                     Value = i.Id.ToString()
@@ -75,8 +74,7 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.UserNameId = userNameId;
             ReturnLabelVM returnLabelVM = new ReturnLabelVM()
             {
-                returnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a=>a.Id == Id).FirstOrDefault(),
-                //OrderList = _unitOfWork.ReturnLabel.getAllOrdersOfUser(returnUserNameId()).Select(i => new SelectListItem
+                returnLabel = _unitOfWork.ReturnLabel.Get(Id),
                 OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId &&
                                              a.OrderStatus == SD.OrderStatusDone &&
                                       !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
@@ -213,12 +211,13 @@ namespace KTSite.Areas.UserRole.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
+            string userNameId = returnUserNameId();
             var objFromDb = _unitOfWork.ReturnLabel.Get(id);
             if (objFromDb == null)
             {
                 return Json(new { success = false, message = "Error While Deleting" });
             }
-            PaymentBalance payment = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == returnUserNameId()).FirstOrDefault();
+            PaymentBalance payment = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).FirstOrDefault();
             payment.Balance = payment.Balance + SD.shipping_cost;
             _unitOfWork.ReturnLabel.Remove(objFromDb);
             _unitOfWork.Save();

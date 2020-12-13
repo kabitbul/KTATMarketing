@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KTSite.Models;
@@ -24,12 +23,23 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult Index()
         {
+            string userNameId = returnUserNameId();
             int PendingCount = 0;
             double PendingAmount = 0;
-            ViewBag.NotificationList = _unitOfWork.Notification.GetAll().Where(a => a.Visible);
+            IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible);
+            ViewBag.NotificationList = NotList;
+            if (NotList != null && NotList.Count() > 0)
+            {
+                ViewBag.NotificationEmpty = false;
+            }
+            else
+            {
+                ViewBag.NotificationEmpty = true;
+
+            }
             ViewBag.Name = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
-            ViewBag.Balance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == returnUserNameId()).Select(a=>a.Balance).FirstOrDefault();
-            var paymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == returnUserNameId() && a.Status == SD.PaymentStatusPending);
+            ViewBag.Balance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).Select(a=>a.Balance).FirstOrDefault();
+            var paymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == userNameId && a.Status == SD.PaymentStatusPending);
             foreach (PaymentHistory paymentHist in paymentHistory)
             {
                 PendingCount++;
@@ -40,7 +50,6 @@ namespace KTSite.Areas.UserRole.Controllers
             //Graph Data
             DateTime iterateDate = DateTime.Now.AddMonths(-1);
                 List<DataPoint> dataPoints = new List<DataPoint>();
-            string userNameId =returnUserNameId();
                 var result = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == userNameId).GroupBy(a => a.UsDate)
                        .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
                 while (iterateDate <= DateTime.Now)

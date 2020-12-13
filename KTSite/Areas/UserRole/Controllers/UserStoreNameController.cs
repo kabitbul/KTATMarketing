@@ -25,7 +25,8 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult Index()
         {
-            var userStoreNameList = _unitOfWork.UserStoreName.GetAll().Where(a=>a.UserNameId == returnUserNameId());
+            string userNameId = returnUserNameId();
+            var userStoreNameList = _unitOfWork.UserStoreName.GetAll().Where(a=>a.UserNameId == userNameId);
             ViewBag.existOrder = new Func<string, bool>(existOrder);
             return View(userStoreNameList);
         }

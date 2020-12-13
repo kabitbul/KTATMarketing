@@ -362,12 +362,10 @@ namespace KTSite.Areas.Admin.Controllers
                 
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
-                    int oldQuantity = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                        .Select(a => a.Quantity).FirstOrDefault();
-                    int oldProductId = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                        .Select(a => a.ProductId).FirstOrDefault();
-                    string oldStatus = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id)
-                                    .Select(a => a.OrderStatus).FirstOrDefault();
+                    Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
+                    int oldQuantity = ord.Quantity;
+                    int oldProductId = ord.ProductId;
+                    string oldStatus = ord.OrderStatus;
                     bool fail = false;
                     try
                     {
@@ -377,7 +375,7 @@ namespace KTSite.Areas.Admin.Controllers
                             updateInventory(oldProductId, oldQuantity*(-1));
                             updateWarehouseBalance(oldQuantity*(-1), oldProductId);
                             // if it's a cancellation - we dont want any change but the cancellation it self
-                                orderVM.Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id).FirstOrDefault();
+                                orderVM.Orders = _unitOfWork.Order.Get(orderVM.Orders.Id);
                                 orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
                         }
                         //change from cancel
