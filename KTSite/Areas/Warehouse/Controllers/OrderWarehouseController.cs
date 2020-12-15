@@ -377,7 +377,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                         if (columns[51] != null)
                         {
                             string custName = columns[51].Replace("\"", "");
-                            string custZip = columns[57].Replace("\"", "");
+                            string custZip = columns[57].Replace("\"", "").Replace("=", "");
                             Order order =
                                _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
                                                          .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)

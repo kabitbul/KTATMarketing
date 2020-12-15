@@ -90,7 +90,17 @@
                 },
                 "columns": [
                     { "data": "id", "name": "Id" },
-                    { "data": "orderStatus", "name": "OrderStatus" },
+                    {
+                        "data": "orderStatus", "name": "OrderStatus",
+                        "render": function (data) {
+                            if (data == "Cancelled") {
+                                return `<div class="text-center" style="font-weight:bold;color:Red"><label >${data}</label></div>`
+                            }
+                            else {
+                                return `<div class="text-center"><label >${data}</label></div>`
+                            }
+                        }
+                    },
                     { "data": "productName", "name": "ProductName" },
                     { "data": "stringDate", "name": "StringDate" },
                     { "data": "userNameToShow", "name": "UserNameToShow" },

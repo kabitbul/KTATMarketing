@@ -339,6 +339,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                     orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                     orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                    orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
                     _unitOfWork.Order.Add(orderVM.Orders);
                     updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                     updateSellerBalance(orderVM.Orders.Cost);
@@ -429,6 +430,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                         orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                         orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                        orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
                         _unitOfWork.Order.update(orderVM.Orders);
                     }
                     catch
@@ -550,7 +552,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         }
                         orderVM.Orders.UsDate = DateTime.ParseExact(validDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                         //remove diacritics and comma
-                        orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "");
+                        orderVM.Orders.CustName = RemoveDiacritics(orderVM.Orders.CustName).Replace(",", "").Trim();
                         orderVM.Orders.CustStreet1 = RemoveDiacritics(orderVM.Orders.CustStreet1).Replace(",", "");
                         if (orderVM.Orders.CustStreet2.Length > 0)
                         {
