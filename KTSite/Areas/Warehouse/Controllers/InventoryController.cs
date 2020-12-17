@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 using Newtonsoft.Json;
 
-namespace KTSite.Areas.Admin.Controllers
+namespace KTSite.Areas.Warehouse.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    [Area("Warehouse")]
+    [Authorize(Roles = SD.Role_Warehouse)]
     public class InventoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

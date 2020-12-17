@@ -28,6 +28,18 @@ namespace KTSite.Areas.Admin.Controllers
         public IActionResult Index()
         {
             IEnumerable<Product> product = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName);
+            foreach(Product prod in product)
+            {
+                if (!prod.OwnByWarehouse)
+                {
+                    prod.Cost = 0;
+                    prod.WarehouseProfit = 0;
+                }
+                else
+                {
+                    //prod.WarehouseProfit = prod
+                }
+            }
             ViewBag.getCategoryName =
               new Func<int, string>(getCategoryName);
             ViewBag.Profit =
@@ -98,6 +110,10 @@ namespace KTSite.Areas.Admin.Controllers
             };
             if (ModelState.IsValid)
             {
+                if(!productVM.Product.OwnByWarehouse)
+                {
+                    productVM.Product.WarehouseChinaCost = 0;
+                }
                 string webRootPath = _hostEnvironment.WebRootPath;
                 var files = HttpContext.Request.Form.Files;
                 if (files.Count > 0)

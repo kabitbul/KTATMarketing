@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KTSite.Models;
@@ -28,6 +27,17 @@ namespace KTSite.Areas.Admin.Controllers
         {
             if(User.IsInRole(SD.Role_Admin))
             {
+                IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible).OrderByDescending(a => a.DateMsg);
+                ViewBag.NotificationList = NotList;
+                if (NotList != null && NotList.Count() > 0)
+                {
+                    ViewBag.NotificationEmpty = false;
+                }
+                else
+                {
+                    ViewBag.NotificationEmpty = true;
+
+                }
                 ViewBag.Name = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
                     Select(q => q.Name).FirstOrDefault();
                 ViewBag.OrdersFromChina =_unitOfWork.ChinaOrder.GetAll().

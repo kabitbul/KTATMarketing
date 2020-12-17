@@ -20,6 +20,7 @@ namespace KTSite.Models
         public string ProductURL { get; set; }
         public double Cost { get; set; }
         public double SellersCost { get; set; }
+        public double WarehouseChinaCost { get; set; }
         [Required]
         public double Weight { get; set; }
         [Required]
@@ -42,6 +43,8 @@ namespace KTSite.Models
         public string MadeIn { get; set; }
         public double BestOffer { get; set; }
         public double MinimumPrice { get; set; }
+        [NotMapped]
+        public double WarehouseProfit { get; set; }
 
     }
 }

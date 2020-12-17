@@ -1,108 +1,148 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@{ ViewData["Title"] = "Home Page"; }
 
 <div class="row">
     <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
     @*<h1 class="col-4 text-center" style="font-size:30px;font-weight:bold;color:forestgreen;border-style:inset">
-        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        Balance: @ViewBag.Balance.ToString("0.00")$
-    </h1>*@
+            <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+            Balance: @ViewBag.Balance.ToString("0.00")$
+        </h1>*@
 </div>
 <div class="col-12" style="font:bolder">
     @if (ViewBag.Amount > 0 && ViewBag.PayDate != null)
     {
-        <div class="text-left display-3 p-4 border rounded col-5" style="border-bottom-width:5px">
-            <h1 style="font-size: 20px">
-                <a href="PaymentHistory">Last Payment was placed in @ViewBag.PayDate.ToString("dd/MM/yyyy") For @ViewBag.Amount$</a>
-            </h1>
-        </div>
-    }
-      @if (ViewBag.WaitingForProcess > 0)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="OrderWarehouse">You have @ViewBag.WaitingForProcess Orders Without Tracking number.</a>
-                </h1>
-            </div>
-
-        }
-        @if (ViewBag.ExistProgress)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="OrderWarehouse">Pay Attention, you have Orders In Status: "In Progress"</a>
-                </h1>
-            </div>
-        }
-        @if (ViewBag.missingWeightCount == 1)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="Product">You have a Product Without Weight.</a>
-                </h1>
-            </div>
-        }
-        else
-     if (ViewBag.missingWeightCount > 1)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="Product">You have @ViewBag.missingWeightCount  Products Without Weight.</a>
-                </h1>
-            </div>
-        }
-        @if (ViewBag.WaitingForReturnLabel == 1)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
-                </h1>
-            </div>
-        }
-        else
-          if (ViewBag.WaitingForReturnLabel > 1)
-        {
-            <div class="text-left display-3 p-4 border rounded col-5">
-                <h1 style="font-size: 20px">
-                    <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-                    <a href="Warehouse/ReturnLabelWarehouse">You have @ViewBag.WaitingForReturnLabel  returns , please provide return labels.</a>
-                </h1>
-            </div>
-        }
-    </div>
+<div class="text-left display-3 p-4 border rounded col-5" style="border-bottom-width:5px">
+    <h1 style="font-size: 20px">
+        <a href="PaymentHistory">Last Payment was placed in @ViewBag.PayDate.ToString("dd/MM/yyyy") For @ViewBag.Amount$</a>
+    </h1>
+</div>}
+    @if (ViewBag.WaitingForProcess > 0)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="OrderWarehouse">You have @ViewBag.WaitingForProcess Orders Without Tracking number.</a>
+    </h1>
+</div>}
+    @if (ViewBag.ExistProgress)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="OrderWarehouse">Pay Attention, you have Orders In Status: "In Progress"</a>
+    </h1>
+</div>}
+    @if (ViewBag.missingWeightCount == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="Product">You have a Product Without Weight.</a>
+    </h1>
+</div> }
+            else
+        if (ViewBag.missingWeightCount > 1)
+            {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="Product">You have @ViewBag.missingWeightCount  Products Without Weight.</a>
+    </h1>
+</div>}
+    @if (ViewBag.WaitingForReturnLabel == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
+    </h1>
+</div> }
+            else
+             if (ViewBag.WaitingForReturnLabel > 1)
+            {
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="Warehouse/ReturnLabelWarehouse">You have @ViewBag.WaitingForReturnLabel  returns , please provide return labels.</a>
+    </h1>
+</div>}
+</div>
 <div>
-	<div id="chartContainer" style="height: 370px; width: 70%;"></div>
+    <div id="chartContainer" style="height: 370px; width: 70%;"></div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </div>
+<div>
+    <div class="form-group row">
+        <div class="col-1">
+            <label>From Date</label>
+        </div>
+        <div class="col-2">
+            <input type="date" class="form-control" id="fromDate" />
+        </div>
+        <div class="col-1">
+            <label>To Date</label>
+        </div>
+        <div class="col-2">
+            <input type="date" class="form-control" id="toDate" />
+        </div>
+        <div class="col-2 text-right">
+            <button class="btn btn-primary" style="background-color:forestgreen" onclick="ShowSummary()"><i class="fas fa-eye"></i> &nbsp; Show Summary</button>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label id="strRes" style="font-size:20px"></label>
+    </div>
+</div>
 @section Scripts{
-    <script>
-window.onload = function () {
-    CanvasJS.addColorSet("greenShades",
-        [//colorSet Array
-            "#3CB371"
-        ]);
-var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true,
-    colorSet: "greenShades",
-	title: {
-		text: "Number Of Sold Items Per Day In The Last Month"
-	},
-	axisY: {
-		title: "No. of Items"
-	},
-	data: [{
-		type: "column",
-		dataPoints: @Html.Raw(ViewBag.DataPoints)
-	}]
-});
-chart.render();
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Last Month sales(KT And Warehouse)"
+                },
+                axisY: {
+                    title: "Quantity",
+                },
+                data: [
+                {
+                    type: "stackedColumn",
+                        legendText: "Warehouse",
+                    showInLegend: "true",
+                        dataPoints: @Html.Raw(ViewBag.DataPointsWarehouse),
+                }, {
+                    type: "stackedColumn",
+                        legendText: "KT",
+                    showInLegend: "true",
+                    indexLabel: "#total",
+                    indexLabelPlacement: "outside",
 
-}
+                    dataPoints: @Html.Raw(ViewBag.DataPointsKT),
+                }
+                ]
+            });
+            chart.render();
+        };
+    </script>
+    <script type="text/javascript">
+        function ShowSummary() {
+            var pdata = new FormData();
+            var fromDate = document.getElementById('fromDate').value;
+            var toDate = document.getElementById('toDate').value;
+            $.ajax({
+                type: "POST",
+                dataType: 'JSON',
+                url: "/Warehouse/Home/ShowSummary",
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (data) {
+                    var str = JSON.stringify(data).split(',');
+                    for (i = 0; i < str.length; i++) {
+                        document.getElementById('strRes').innerHTML = document.getElementById('strRes').innerHTML + str[i].replace('"', '').replace('"', '').replace(']', '').replace('[', '') + '</br>';
+                    }
+                },
+                error: function (data) {
+                    $("#divLoader").hide();
+                }
+            });
+        }
     </script>
 }

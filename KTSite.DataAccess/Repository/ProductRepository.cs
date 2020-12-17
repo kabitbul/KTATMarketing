@@ -47,6 +47,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.ProductURL = product.ProductURL;
                 objFromDb.BestOffer = product.BestOffer;
                 objFromDb.MinimumPrice = product.MinimumPrice;
+                objFromDb.WarehouseChinaCost = product.WarehouseChinaCost;
 
             }
         }

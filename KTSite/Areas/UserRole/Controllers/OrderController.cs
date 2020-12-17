@@ -573,6 +573,7 @@ namespace KTSite.Areas.UserRole.Controllers
                             continue;
                         }
                         if (isStoreAuthenticated(orderVM) && orderVM.Orders.ProductId > 0 &&
+                            IsProdavailable(orderVM.Orders.ProductId) &&
                             orderVM.Orders.UsDate <= DateTime.Now && Enumerable.Range(1, 100).Contains(orderVM.Orders.Quantity) &&
                             orderVM.Orders.CustName.Length >0 && orderVM.Orders.CustStreet1.Length > 0 &&
                             Enumerable.Range(5,10).Contains(orderVM.Orders.CustZipCode.Length) &&
@@ -670,6 +671,18 @@ namespace KTSite.Areas.UserRole.Controllers
                 //return RedirectToAction(nameof(Index));
             }
             return View(orderVM.Orders);
+        }
+        public bool IsProdavailable(int ProductId)
+        {
+            Product prod = _unitOfWork.Product.Get(ProductId);
+            if (!prod.AvailableForSellers || prod.OOSForSellers)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         public bool isStoreAuthenticated(OrderVM orderVM)
         {

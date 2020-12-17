@@ -59,7 +59,7 @@ namespace KTSite.Areas.VAs.Controllers
             else
             return _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == storeId).Select(a => a.StoreName).FirstOrDefault();
         }
-        public IActionResult AddTask()
+        public IActionResult AddTask(int? id)
         {
 
             ViewBag.UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
@@ -74,6 +74,10 @@ namespace KTSite.Areas.VAs.Controllers
                   Value = i.Id.ToString()
                 })
             };
+            if (id != null)
+            {
+                adminVATaskVM.AdminVATask = _unitOfWork.adminVATask.Get(id.GetValueOrDefault());
+            }
             ViewBag.ShowMsg = false;
             ViewBag.success = false;
             return View(adminVATaskVM);
@@ -92,9 +96,16 @@ namespace KTSite.Areas.VAs.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
+                if (adminVATaskVM.AdminVATask.Id == 0)
+                {
                     _unitOfWork.adminVATask.Add(adminVATaskVM.AdminVATask);
+                }
+                else
+                {
+                    _unitOfWork.adminVATask.update(adminVATaskVM.AdminVATask);
+                }
 
-                    _unitOfWork.Save();
+                _unitOfWork.Save();
                 ViewBag.success = true;
             }
             AdminVATaskVM adminVATaskVM1 = new AdminVATaskVM()

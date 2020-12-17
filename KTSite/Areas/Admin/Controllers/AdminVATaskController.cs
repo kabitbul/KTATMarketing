@@ -59,7 +59,7 @@ namespace KTSite.Areas.Admin.Controllers
             else
                 return _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == storeId).Select(a => a.StoreName).FirstOrDefault();
         }
-        public IActionResult AddTask()
+        public IActionResult AddTask(int? id)
         {
 
             ViewBag.UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
@@ -74,6 +74,10 @@ namespace KTSite.Areas.Admin.Controllers
                   Value = i.Id.ToString()
                 })
             };
+            if (id != null)
+            {
+                adminVATaskVM.AdminVATask = _unitOfWork.adminVATask.Get(id.GetValueOrDefault());
+            }
             ViewBag.ShowMsg = false;
             ViewBag.success = false;
             return View(adminVATaskVM);
@@ -92,8 +96,14 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
+                if (adminVATaskVM.AdminVATask.Id == 0)
+                {
                     _unitOfWork.adminVATask.Add(adminVATaskVM.AdminVATask);
-
+                }
+                else
+                {
+                    _unitOfWork.adminVATask.update(adminVATaskVM.AdminVATask);
+                }
                     _unitOfWork.Save();
                 ViewBag.success = true;
             }
@@ -121,48 +131,15 @@ namespace KTSite.Areas.Admin.Controllers
             return View();
         }
         #region API CALLS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult PayWarehouse(PaymentHistoryVM paymentHistoryVM)
-        {
-            //when ModelState.IsValid equal to FALSE
-            var errors = ModelState
-            .Where(x => x.Value.Errors.Count > 0)
-            .Select(x => new { x.Key, x.Value.Errors })
-            .ToArray();
-            ViewBag.showMsg = true;
-            string uNameIdWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
-            paymentHistoryVM.PaymentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.UserNameId == uNameIdWarehouse).Select(i => new SelectListItem
-            {
-                Text = i.PaymentTypeAddress,
-                Value = i.Id.ToString()
-            });
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.PaymentHistory.Add(paymentHistoryVM.PaymentHistory);
-               // AddBalanceToWarehouse(paymentHistoryVM.PaymentHistory.Amount);
-                _unitOfWork.Save();
-                ViewBag.Success = true;
-                return View(paymentHistoryVM);
-            }
-            ViewBag.Success = false;
-            return View(paymentHistoryVM);
-        }
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var allObj = _unitOfWork.PaymentHistory.GetAll();
-            return Json(new { data = allObj });
-        }
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var objFromDb = _unitOfWork.PaymentHistory.Get(id);
+            var objFromDb = _unitOfWork.adminVATask.Get(id);
             if(objFromDb == null)
             {
                 return Json(new { success = false, message = "Error While Deleting" });
             }
-            _unitOfWork.PaymentHistory.Remove(objFromDb);
+            _unitOfWork.adminVATask.Remove(objFromDb);
             _unitOfWork.Save();
             return Json(new { success = true, message = "Delete Successfull" });
         }

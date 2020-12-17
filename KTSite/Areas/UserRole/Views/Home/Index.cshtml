@@ -26,7 +26,15 @@
         <ul>
             @foreach (Notification notification in @ViewBag.NotificationList)
             {
-<li class="display-4" style="font-size:20px">@notification.Message</li>            }
+                if (notification.DateMsg.Date >= DateTime.Now.Date.AddDays(-1))
+                {
+                  <li class="display-4" style="font-size:20px;font-weight:bold;color:blue">@notification.Message</li>
+ }
+                            else
+                            {
+        <li class="display-4" style="font-size:20px">@notification.Message</li>}
+
+                        }
         </ul>
     </div>
     }

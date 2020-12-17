@@ -26,7 +26,7 @@ namespace KTSite.Areas.UserRole.Controllers
             string userNameId = returnUserNameId();
             int PendingCount = 0;
             double PendingAmount = 0;
-            IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible);
+            IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible).OrderByDescending(a=>a.DateMsg);
             ViewBag.NotificationList = NotList;
             if (NotList != null && NotList.Count() > 0)
             {

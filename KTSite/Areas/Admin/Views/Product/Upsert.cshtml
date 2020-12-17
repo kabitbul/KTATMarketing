@@ -107,8 +107,17 @@
                     <label asp-for="Product.OwnByWarehouse">Product Own By Warehouse</label>
                 </div>
                 <div class="col-8">
-                    <input type="checkbox" asp-for="Product.OwnByWarehouse" class="form-control" />If Owned by Warehouse Is Checked, value of "Price" Will Be:
+                    <input type="checkbox" asp-for="Product.OwnByWarehouse" class="form-control" onclick="checkboxclick()"/>If Owned by Warehouse Is Checked, value of "Price" Will Be:
                     China Cost + Profit for warehouse.
+                </div>
+            </div>
+            <div class="form-group row" id="chinaCostDiv">
+                <div class="col-4">
+                    <label asp-for="Product.WarehouseChinaCost">China Cost</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.WarehouseChinaCost" class="form-control" />
+                    <span asp-validation-for="Product.WarehouseChinaCost" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
@@ -141,7 +150,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "Select a Category",
-                                                 new { @class = "form-control" })
+                                                           new { @class = "form-control" })
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 </div>
             </div>
@@ -151,7 +160,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.Product.MadeIn, Model.MadeInList,
-                                                 new { @class = "form-control" })
+                                                           new { @class = "form-control" })
                     <span asp-validation-for="Product.MadeIn" class="text-danger"></span>
                 </div>
             </div>
@@ -171,7 +180,7 @@
         <partial name="_EditAndBackToListButton" model="Model.Product.Id" /> }
     else
     {
-        <partial name="_CreateAndBackToListButton" />}
+<partial name="_CreateAndBackToListButton" />}
                 </div>
             </div>
         </div>
@@ -185,7 +194,24 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
-
+    <script language="javascript" type="text/javascript">
+        window.onload = function () {
+            if ($("#Product_OwnByWarehouse").is(':checked')) {
+                $("#chinaCostDiv").show(500);
+            }
+            else {
+                $("#chinaCostDiv").hide(500);
+            }}
+        function checkboxclick() {
+            
+            if ($("#Product_OwnByWarehouse").is(':checked')) {
+                $("#chinaCostDiv").show(500);
+            }
+            else {
+                $("#chinaCostDiv").hide(500);
+            }
+        }
+    </script>
     @if (ViewBag.ShowMsg)
     {
 @if (ViewBag.existProd)
@@ -193,20 +219,17 @@
 <script>
     swal("Error!", "Product Name Already Exist In Your Inventory!", "error")
         .then((value) => { })
-</script>
- }
-else if (ViewBag.failed)
-{
+</script> }
+                    else if (ViewBag.failed)
+                    {
 <script>
     swal("Error!", "Unknown Error!", "error")
         .then((value) => { })
-        </script>
-}
-else if (ViewBag.success)
-    {
-        <script>
-            swal("Success!", "Product Added!", "success")
-        .then((value) => {window.location.href = '/Admin/Product'; })
-</script>
-}}
+</script> }
+                    else if (ViewBag.success)
+                    {
+<script>
+    swal("Success!", "Product Added!", "success")
+        .then((value) => { window.location.href = '/Admin/Product'; })
+</script>}}
 }

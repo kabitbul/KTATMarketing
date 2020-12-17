@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.AdminVATask.StoreId, Model.StoresList,
-                                                                new { @class = "form-control" })
+                                                                     new { @class = "form-control" })
                     <span asp-validation-for="AdminVATask.StoreId" class="text-danger"></span>
                 </div>
             </div>
@@ -44,13 +44,16 @@
             <div class="col-8">
                 <input type="hidden" asp-for="AdminVATask.TaskCompleted" class="form-control" value=false />
             </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="AdminVATask.Id" class="form-control" />
+            </div>
         </div>
         <div class="col-8 pt-4">
             <div class="form-group row">
                 <div class="col-8 offset-4">
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                            <button type="submit" class="btn btn-primary form-control">Submit</button>
                         </div>
                         <div class="col">
                             <a asp-action="Index" class="btn btn-success form-control">Back To List</a>

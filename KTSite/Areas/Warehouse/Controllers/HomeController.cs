@@ -47,29 +47,76 @@ namespace KTSite.Areas.Warehouse.Controllers
             ViewBag.missingWeightCount = missingWeightCount;
             ViewBag.WaitingForReturnLabel = WaitingForReturnLabel;
             DateTime iterateDate = DateTime.Now.AddDays(-30);
-                List<DataPoint> dataPoints = new List<DataPoint>();
-                var result = _unitOfWork.Order.GetAll().Where(a=>a.OrderStatus != SD.OrderStatusCancelled).GroupBy(a => a.UsDate)
+                List<DataPoint> dataPointsKT = new List<DataPoint>();
+                List<DataPoint> dataPointsWarehouse = new List<DataPoint>();
+            var resultWarehouse = _unitOfWork.Order.GetAll().Where(a=>a.OrderStatus != SD.OrderStatusCancelled
+            && isWarehouse(a.ProductId)
+            ).GroupBy(a => a.UsDate)
                        .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
-                while (iterateDate <= DateTime.Now)
+            var resultNotWarehouse = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled
+            && !isWarehouse(a.ProductId)
+            ).GroupBy(a => a.UsDate)
+                       .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
+            while (iterateDate <= DateTime.Now)
                 {
-                  if (result.Exists(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")))
+                  if (resultWarehouse.Exists(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")))
                   {
-                    dataPoints.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(),
-                                          result.Find(x=> x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")).total));
+                    dataPointsWarehouse.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(),
+                                          resultWarehouse.Find(x=> x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")).total));
                   }
                   else
                 {
-                    dataPoints.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(), 0));
+                    dataPointsWarehouse.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(), 0));
                 }
-                    iterateDate = iterateDate.AddDays(1);
+                if (resultNotWarehouse.Exists(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")))
+                {
+                    dataPointsKT.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(),
+                                          resultNotWarehouse.Find(x => x.date.ToString("dd/MM") == iterateDate.ToString("dd/MM")).total));
+                }
+                else
+                {
+                    dataPointsKT.Add(new DataPoint(iterateDate.Day.ToString() + "/" + iterateDate.Month.ToString(), 0));
+                }
+                iterateDate = iterateDate.AddDays(1);
                 }
 
-                ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
-                return View();
+                ViewBag.DataPointsKT = JsonConvert.SerializeObject(dataPointsKT);
+                ViewBag.DataPointsWarehouse = JsonConvert.SerializeObject(dataPointsWarehouse);
+            return View();
             }
+        public bool isWarehouse(int id)
+        {
+            return _unitOfWork.Product.Get(id).OwnByWarehouse;
+        }
+        [HttpPost]
+        public JsonResult ShowSummary(DateTime fromDate, DateTime toDate)
+        {
+            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
+             a.UsDate >= fromDate && a.UsDate <= toDate);
 
-
-		public IActionResult Privacy()
+            List<string> strRes = new List<string>();
+            strRes.Add("Total Orders: " + orderList.Count());
+            strRes.Add("Total Products sold: " + orderList.Sum(a=> a.Quantity));
+            strRes.Add("Total Shipping Cost: " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost)+ "$");
+            var prod = _unitOfWork.Product.GetAll().Where(a=>a.OwnByWarehouse);
+            double totalWarehouseProfit = 0.0;
+            int prodSum = 0;
+            strRes.Add("----------------------");
+            foreach (Product pr in prod)
+            {
+                prodSum = orderList.Where(a => a.ProductId == pr.Id).Sum(a => a.Quantity);
+                strRes.Add(pr.ProductName + " Sold: " + prodSum);
+                strRes.Add("Profit:" + ((pr.Cost - pr.WarehouseChinaCost) * prodSum).ToString("0.00") +"$");
+                strRes.Add("----------------------");
+                totalWarehouseProfit = totalWarehouseProfit + ((pr.Cost - pr.WarehouseChinaCost) * prodSum);
+            }
+            if(totalWarehouseProfit > 0 )
+            {
+                strRes.Add("Total Profit From products Own by warehouse is: " + totalWarehouseProfit.ToString("0.00") + "$");
+            }
+            return Json(strRes);
+        }
+        public IActionResult Privacy()
         {
             return View();
         }

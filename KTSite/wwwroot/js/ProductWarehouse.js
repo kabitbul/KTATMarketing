@@ -11,6 +11,8 @@ function loadDataTable() {
         },
         "columns": [
             { "data": "productName", "width": "10%" },
+            { "data": "cost", "width": "10%" },
+            { "data": "profit", "width": "10%" },
             { "data": "inventoryCount", "width": "10%" },
             { "data": "onTheWayInventory", "width": "10%" },
             {

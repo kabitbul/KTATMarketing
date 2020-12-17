@@ -29,22 +29,34 @@
                     <th>Date Created</th>
                     <th>Task</th>
                     <th>Completed</th>
+                    <th></th>
             </thead>
             @foreach (AdminVATask adminVATask in Model)
             {
-    <tr>
-        <td>@adminVATask.Id</td>
-        <td>@ViewBag.getStore(adminVATask.StoreId)</td>
-        <td>@ViewBag.getUserName(adminVATask.UserNameId)</td>
-        <td>@adminVATask.DateCreated.ToString("dd/MM/yyyy")</td>
-        <td>@adminVATask.TaskToDo</td>
-        @if (adminVATask.TaskCompleted)
-        {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
-    </tr>}
+        <tr>
+            <td>@adminVATask.Id</td>
+            <td>@ViewBag.getStore(adminVATask.StoreId)</td>
+            <td>@ViewBag.getUserName(adminVATask.UserNameId)</td>
+            <td>@adminVATask.DateCreated.ToString("dd/MM/yyyy")</td>
+            <td>@adminVATask.TaskToDo</td>
+            @if (adminVATask.TaskCompleted)
+            {
+        <td>Yes</td>
+ }
+    else
+    {
+        <td>No</td>
+}
+            @if (!adminVATask.TaskCompleted)
+            {
+        <td>
+            <div class="text-center">
+                <a href="/VAs/AdminVATask/AddTask/@adminVATask.Id" class="btn btn-success text-white" style="cursor:pointer">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>
+        </td>}
+        </tr>}
 
         </table>
     </div>
