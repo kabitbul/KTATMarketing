@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KTSite.Models;
@@ -79,7 +78,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                 }
                 iterateDate = iterateDate.AddDays(1);
                 }
-
+            //exist complaints unsolved in warehouse responsibility
+            ViewBag.NumOfComplaints =_unitOfWork.Complaints.GetAll().Where(a => a.WarehouseResponsibility && !a.Solved).Count();
                 ViewBag.DataPointsKT = JsonConvert.SerializeObject(dataPointsKT);
                 ViewBag.DataPointsWarehouse = JsonConvert.SerializeObject(dataPointsWarehouse);
             return View();
@@ -97,7 +97,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             List<string> strRes = new List<string>();
             strRes.Add("Total Orders: " + orderList.Count());
             strRes.Add("Total Products sold: " + orderList.Sum(a=> a.Quantity));
-            strRes.Add("Total Shipping Cost: " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost)+ "$");
+            strRes.Add("Total Shipping Cost: " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost).ToString("0.00")+ "$");
             var prod = _unitOfWork.Product.GetAll().Where(a=>a.OwnByWarehouse);
             double totalWarehouseProfit = 0.0;
             int prodSum = 0;

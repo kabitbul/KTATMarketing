@@ -39,9 +39,9 @@
         <a href="Product">You have a Product Without Weight.</a>
     </h1>
 </div> }
-            else
-        if (ViewBag.missingWeightCount > 1)
-            {
+else
+if (ViewBag.missingWeightCount > 1)
+{
 <div class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
@@ -56,13 +56,21 @@
         <a href="Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
     </h1>
 </div> }
-            else
-             if (ViewBag.WaitingForReturnLabel > 1)
-            {
+else
+    if (ViewBag.WaitingForReturnLabel > 1)
+{
 <div class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
         <a href="Warehouse/ReturnLabelWarehouse">You have @ViewBag.WaitingForReturnLabel  returns , please provide return labels.</a>
+    </h1>
+</div>}
+    @if (ViewBag.NumOfComplaints > 0)
+{
+<div class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="Warehouse/Complaints">You have @ViewBag.NumOfComplaints  complaints , please solve asap.</a>
     </h1>
 </div>}
 </div>

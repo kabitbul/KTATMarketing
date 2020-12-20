@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
@@ -30,15 +28,15 @@ namespace KTSite.Areas.Admin.Controllers
             IEnumerable<Product> product = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName);
             foreach(Product prod in product)
             {
-                if (!prod.OwnByWarehouse)
-                {
-                    prod.Cost = 0;
-                    prod.WarehouseProfit = 0;
-                }
-                else
-                {
-                    //prod.WarehouseProfit = prod
-                }
+                //if (!prod.OwnByWarehouse)
+                //{
+                //    //prod.Cost = 0;
+                //    prod.WarehouseProfit = 0;
+                //}
+                //else
+                //{
+                //    //prod.WarehouseProfit = prod
+                //}
             }
             ViewBag.getCategoryName =
               new Func<int, string>(getCategoryName);
@@ -50,9 +48,18 @@ namespace KTSite.Areas.Admin.Controllers
         {
             double precent;
             double dollar;
-            Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            precent = ((product.SellersCost - product.Cost - SD.shipping_cost) / product.Cost) * 100;
-            dollar = product.SellersCost - product.Cost - SD.shipping_cost;
+            Product product = _unitOfWork.Product.Get(productId);
+            double shipCost;
+            if(product.OwnByWarehouse)
+            {
+                shipCost = SD.shipping_cost_warehouse_items;
+            }
+            else
+            {
+                shipCost = SD.shipping_cost;
+            }
+            precent = ((product.SellersCost - product.Cost - shipCost) / product.Cost) * 100;
+            dollar = product.SellersCost - product.Cost - shipCost;
             return precent.ToString("0.00") + "%(" + dollar.ToString("0.00") + "$)";
 
         }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 

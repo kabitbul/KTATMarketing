@@ -146,7 +146,16 @@ namespace KTSite.Areas.Admin.Controllers
                     //if charge warehouse for shipping
                     if(refundVM.refund.ChargeWarehouse)
                     {
-                        warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost;
+                        int prodId = _unitOfWork.Order.Get(refundVM.refund.OrderId).ProductId;
+                        bool ownByWarehouse2 = _unitOfWork.Product.Get(prodId).OwnByWarehouse;
+                        if (ownByWarehouse2)
+                        {
+                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost_warehouse_items;
+                        }
+                        else
+                        {
+                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost;
+                        }
                     }
                     if(refundVM.refund.RefundQuantity == order.Quantity)
                     {

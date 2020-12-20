@@ -140,7 +140,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 {
                     PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).
                         FirstOrDefault();
-                    if(paymentBalance.Balance < SD.shipping_cost && !paymentBalance.AllowNegativeBalance)
+                    if(paymentBalance.Balance < SD.shipping_cost_for_return && !paymentBalance.AllowNegativeBalance)
                     {
                         ViewBag.InsufficientFunds = true;
                         ViewBag.ShowMsg = true;
@@ -150,10 +150,10 @@ namespace KTSite.Areas.UserRole.Controllers
                     PaymentBalance paymentBalanceWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
                         FirstOrDefault();
                     paymentBalanceWarehouse.Balance = paymentBalanceWarehouse.Balance - SD.shipping_cost;
-                    paymentBalance.Balance = paymentBalance.Balance - SD.shipping_cost;
+                    paymentBalance.Balance = paymentBalance.Balance - SD.shipping_cost_for_return;
                     ViewBag.InvalidQuantity = false;
                     _unitOfWork.ReturnLabel.Add(returnLabelVM.returnLabel);
-                    ViewBag.ReturnCost = SD.shipping_cost;
+                    ViewBag.ReturnCost = SD.shipping_cost_for_return;
                     _unitOfWork.Save();
                     ViewBag.success = true;
                 }
@@ -218,10 +218,10 @@ namespace KTSite.Areas.UserRole.Controllers
                 return Json(new { success = false, message = "Error While Deleting" });
             }
             PaymentBalance payment = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == userNameId).FirstOrDefault();
-            payment.Balance = payment.Balance + SD.shipping_cost;
+            payment.Balance = payment.Balance + SD.shipping_cost_for_return;
             _unitOfWork.ReturnLabel.Remove(objFromDb);
             _unitOfWork.Save();
-            return Json(new { success = true, message = "Delete Successfull, " + SD.shipping_cost +"$ Added Back To Your Balance!" });
+            return Json(new { success = true, message = "Delete Successfull, " + SD.shipping_cost_for_return +"$ Added Back To Your Balance!" });
         }
 
         #endregion
