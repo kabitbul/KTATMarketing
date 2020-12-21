@@ -41,6 +41,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.ProductName = order.ProductName;
                 objFromDb.UserNameToShow = order.UserNameToShow;
                 objFromDb.StoreName = order.StoreName;
+                objFromDb.TrackingUpdated = order.TrackingUpdated;
             }
         }
     }

@@ -2,7 +2,6 @@
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <br />
-<div class="container">
     <div class="row">
         <div class="col-6">
             <h2 class="text-primary">Orders List </h2>
@@ -48,9 +47,12 @@
         </div>
     </div>
     <script language="javascript" type="text/javascript">
-                $("#csvDiv").hide(0);
+        $("#csvDiv").hide(0);
     </script>
     <br />
+    <div class="col-12 text-right">
+        <button class="btn btn-primary" onclick="TrackUpdate()" style="background-color:darkorange"><i class="fas fa-thumbs-up"></i>&nbsp; Updated In Store</button>
+    </div>
     @*<div id="AllOrders">
             <input type="checkbox" id="pos" value=true />  Show All Orders
         </div>*@
@@ -92,6 +94,7 @@
                     <th>Cost</th>
                     <th>Tracking Number</th>
                     <th></th>
+                    <th>Tracking Updated</th>
                 </tr>
             </thead>
             <tr>
@@ -105,10 +108,10 @@
                 <td>Cost</td>
                 <td>Tracking Number</td>
                 <td></td>
+                <td>Tracking Updated</td>
             </tr>
         </table>
     </div>
-</div>
 
 @section Scripts{
     <script>
@@ -154,7 +157,23 @@
                             return `<label>${data}$</label>`
                         }
                     },
-                    { "data": "trackingNumber", "name": "TrackingNumber", "width": "200px" },
+                    {
+                        "data": {
+                            "trackingUpdated": "trackingUpdated",
+                            "trackingNumber": "trackingNumber"
+                        },
+                        "render": function (data) {
+                            if (data.trackingUpdated && data.trackingNumber != null) {
+                                return `<div class="text-center" style="background-color:darkseagreen"><label >${data.trackingNumber}</label></div>`
+                            }
+                            else if (data.trackingNumber != null) {
+                                return `<div class="text-center"><label>${data.trackingNumber}</label></div>`
+                            }
+                            else {
+                                return `<div></div>`
+                            }
+                        }
+                    },
                     {
                         "data": {
                             "orderStatus": "orderStatus",
@@ -165,43 +184,58 @@
                         "render": function (data) {
                             if (data.orderStatus == 'Accepted') {
                                 return `
-                                        <div class="text-center">
-                                            <a href="/UserRole/Order/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </div>
-                                         `}
+                                            <div class="text-center">
+                                                <a href="/UserRole/Order/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                             `}
                             else if (data.orderStatus == 'Done' && data.allowComplaint && data.allowReturn) {
                                 return `
-                                            <div class="text-center">
-                                            <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
-                                            <i class="fas fa-ticket-alt"></i>
-                                            </a>
-                                            </div>
-                                            <div class="text-center">
-                                            <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
-                                            <i class="fas fa-shipping-fast"></i>
-                                            </a>
-                                            </div>
-                                        `}
+                                                <div class="text-center">
+                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
+                                                <i class="fas fa-ticket-alt"></i>
+                                                </a>
+                                                </div>
+                                                <div class="text-center">
+                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                                <i class="fas fa-shipping-fast"></i>
+                                                </a>
+                                                </div>
+                                            `}
                             else if (data.orderStatus == 'Done' && data.allowComplaint) {
                                 return `
-                                            <div class="text-center">
-                                            <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
-                                            <i class="fas fa-ticket-alt"></i>
-                                            </a>
-                                            </div>`
+                                                <div class="text-center">
+                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
+                                                <i class="fas fa-ticket-alt"></i>
+                                                </a>
+                                                </div>`
                             }
                             else if (data.orderStatus == 'Done' && data.allowReturn) {
                                 return `
-                                            <div class="text-center">
-                                            <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
-                                            <i class="fas fa-shipping-fast"></i>
-                                            </a>
-                                            </div>
-                                        `}
+                                                <div class="text-center">
+                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                                <i class="fas fa-shipping-fast"></i>
+                                                </a>
+                                                </div>
+                                            `}
                             else { return `<div></div>` }
                         }, "width": "5%"
+                    },
+                    {
+                        "data": {
+                            "trackingUpdated": "trackingUpdated",
+                            "id": "id",
+                            "orderStatus": "orderStatus",
+                            "isChecked": "isChecked"
+                        },
+                        "render": function (data) {
+                            if (data.orderStatus == 'Done') {
+                                return `<input type="hidden" name="trUpdatedId" value="${data.id}" />
+                                        <input type="checkbox" name="trUpdatedChecked" value="${data.isChecked}" />`
+                            }
+                            else { return `<div></div>` }
+                        }
                     }
                 ],
                 "serverSide": "true",
@@ -237,8 +271,7 @@
 <script>
     swal("Pay Attention: could not save status \"In Progress\" to All orders!", "error")
         .then((value) => { })
-</script>
-}
+</script>}
     <script type="text/javascript">
         function ShowSummary() {
             var pdata = new FormData();
@@ -270,6 +303,46 @@
             else {
                 $("#csvDiv").hide(500);
             }
+        }
+    </script>
+    <script type="text/javascript">
+        function TrackUpdate() {
+            var pdata = new FormData();
+            $("input[name='trUpdatedChecked']:checked").each(function (index, el) {
+                var Id = $(this).siblings("input[type='hidden']").val();
+                pdata.append("Ids", Id);
+            })
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "Order/TrackUpdate",
+                            type: "POST",
+                            data: pdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                swal("Success!", {
+                                    icon: "success",
+                                });
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 100);
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 100);
+                    } else {
+                        swal("Nothing Changed!");
+                    }
+                });
         }
     </script>
 }

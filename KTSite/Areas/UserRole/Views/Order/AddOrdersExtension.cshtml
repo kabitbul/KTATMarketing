@@ -4,7 +4,6 @@
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
     var title = "Add Order"; }
-
 <form method="post" enctype="multipart/form-data">
     <div class="container">
         <div class="row p-8 border">
@@ -26,10 +25,10 @@
                         <img src="~/Images/Error.jpg" alt="Site Logo" style="height:100px; width: 100px" />
                         <label id="resultFailedLabel" style="font-size:18px"></label>
                     </div>
-                    @if(!ViewBag.ShowErrInLabel)
+                    @if (!ViewBag.ShowErrInLabel)
                     {
-                        <script>$("#resultFailed").hide(0);</script>
-                    }
+        <script>$("#resultFailed").hide(0);</script>
+}
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.ProductId" class="form-control" value="5" />
@@ -68,7 +67,7 @@
                 <div class="col-8 offset-4">
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary form-control" id="AddBtn">Add</button>
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" onclick="disableAndRun()">Add</button>
                         </div>
                         <div class="col">
                             <a asp-action="Index" class="btn btn-success form-control">Back To Orders</a>
@@ -83,10 +82,13 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-
+    @if (ViewBag.ShowMsg)
+    {
+<script>$("#AddBtn").hide(0);</script>
+}
     @if (ViewBag.ShowErrInLabel)
     {
-        <script>
+<script>
                // swal("Error Occured!", "@ViewBag.failed", "warning")
                  //               .then((value) => {})
 
@@ -103,38 +105,48 @@
                     document.getElementById('resultFailedLabel').innerHTML =
                         document.getElementById('resultFailedLabel').innerHTML + lines[j] + "<br>";
             }
-            
-        </script>
-    }
-    else if (ViewBag.ShowMsg)
-    {
-<script>$("#resultFailed").hide(0);</script>
-@if (ViewBag.InsufficientFunds)
-{
+
+</script> }
+                else if (ViewBag.ShowMsg)
+                {
+<script>$("#resultFailed").hide(0); $("#AddBtn").attr("disabled", true);</script>
+                    @if (ViewBag.InsufficientFunds)
+                    {
 <script>
                swal("Insufficient Funds!", "@ViewBag.failed", "warning")
                                 .then((value) => {})
-</script> }
-                    else if (ViewBag.failed.Length > 0)
-                    {
+</script>
+ }
+else if (ViewBag.failed.Length > 0)
+{
 <script>
                 swal("Error Occured!", "@ViewBag.failed", "warning")
                                 .then((value) => {})
-</script> }
-                    else if (ViewBag.success && ViewBag.ProcessedLines > 0)
-                    {
+</script>
+ }
+else if (ViewBag.success && ViewBag.ProcessedLines > 0)
+{
 <script>
                swal("Success!", @ViewBag.ProcessedLines + " Orders were Processed Successfully!", "success")
                    .then((value) => { window.location.href = '/UserRole/Order'; })
-</script>
-} }
-else
-{
+</script>} }
+                else
+                {
 <script>
     $("#textareaLabel").show(0);
     $("#textareaOrders").show(0);
     $("#titleDiv").show(0);
     $("#AddBtn").show(0);
     $("#resultFailed").hide(0);
-</script>}
+</script>
+                    <script type="text/javascript">
+                        //window.onload = function(){
+                        //    var table = $('#tblData').DataTable();
+                        //    table.draw();
+                        //}
+                        function disableAndRun() {
+                            $("#AddBtn").hide(0);
+                        }
+                    </script>
+}
 }

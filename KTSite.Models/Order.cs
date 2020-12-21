@@ -61,6 +61,11 @@ namespace KTSite.Models
         public string UserNameToShow { get; set; }
         //[NotMapped]
         public string StoreName { get; set; }
+        [DefaultValue(false)]
+        public bool TrackingUpdated { get; set; }
+        [NotMapped]
+        [DefaultValue(false)]
+        public bool isChecked { get; set; }
         [NotMapped]
         public string FullAddress { get; set; }
         [NotMapped]

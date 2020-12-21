@@ -140,7 +140,7 @@
                             "id": "id"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Accepted') {
+                            if (data.orderStatus == 'Accepted' || data.orderStatus == 'Done') {
                                 return `
                                     <div class="text-center">
                                         <a href="/Warehouse/OrderWarehouse/AddTrackingManually/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
@@ -154,7 +154,8 @@
                 ],
                 "serverSide": "true",
                 "order": [0, "desc"],
-                "processing": "true"
+                "processing": "true",
+                "pageLength": 100
             });
         });
     </script>

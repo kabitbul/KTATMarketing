@@ -288,6 +288,7 @@ namespace KTSite.Areas.Admin.Controllers
             foreach (Order order in orderList)
             {
                 order.AllowComplaint = allowComplaint(order.Id.ToString());
+                order.isChecked = false;
             }
             return Json(new { data = orderList, draw = Request.Form["draw"], recordsTotal = totalRows ,
                         recordsFiltered = totalRowsAfterFiltering});
@@ -748,5 +749,19 @@ namespace KTSite.Areas.Admin.Controllers
         //}
 
         #endregion
+        [HttpPost]
+        public IActionResult TrackUpdate(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Order order = _unitOfWork.Order.Get(Id);
+                if (order.TrackingUpdated)
+                    order.TrackingUpdated = false;
+                else
+                    order.TrackingUpdated = true;
+                _unitOfWork.Save();
+            }
+            return View();
+        }
     }
 }

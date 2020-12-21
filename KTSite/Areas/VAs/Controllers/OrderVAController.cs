@@ -284,6 +284,7 @@ namespace KTSite.Areas.VAs.Controllers
             foreach (Order order in orderList)
             {
                 order.AllowComplaint = allowComplaint(order.Id.ToString());
+                order.isChecked = false;
             }
             return Json(new
             {
@@ -753,5 +754,19 @@ namespace KTSite.Areas.VAs.Controllers
         //}
 
         #endregion
+        [HttpPost]
+        public IActionResult TrackUpdate(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Order order = _unitOfWork.Order.Get(Id);
+                if (order.TrackingUpdated)
+                    order.TrackingUpdated = false;
+                else
+                    order.TrackingUpdated = true;
+                _unitOfWork.Save();
+            }
+            return View();
+        }
     }
 }

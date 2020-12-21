@@ -58,9 +58,9 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             return _unitOfWork.Product.Get(productId).ProductName;
         }
-        public string getWeight(int productId)
+        public string getWeight(int productId, int Quantity)
         {
-            return _unitOfWork.Product.Get(productId).Weight.ToString();
+            return (_unitOfWork.Product.Get(productId).Weight*Quantity).ToString();
         }
         public IActionResult AddTrackingManually(long id)
         {
@@ -185,7 +185,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                     sb.Append(',');
                     sb.Append(order.CustName.Replace(",", "").Replace("\"", "") + ',');
                     sb.Append(order.CustStreet1.Replace(",", "").Replace("\"", "") + ',');
-                    if (order.CustStreet2 == null)
+                    if (string.IsNullOrEmpty(order.CustStreet2))
                     {
                         sb.Append(',');
                     }
@@ -193,11 +193,11 @@ namespace KTSite.Areas.Warehouse.Controllers
                     {
                         sb.Append(order.CustStreet2.Replace(",", "").Replace("\"", "") + ',');
                     }
-                    sb.Append(order.CustCity + ',');
-                    sb.Append(order.CustState + ',');
-                    sb.Append(order.CustZipCode + ',');
+                    sb.Append(order.CustCity.Replace(",", "") + ',');
+                    sb.Append(order.CustState.Replace(",", "") + ',');
+                    sb.Append(order.CustZipCode.Replace(",", "") + ',');
                     sb.Append("US" + ',');
-                    if (order.CustPhone != null)
+                    if (!string.IsNullOrEmpty(order.CustPhone))
                     {
                         sb.Append(order.CustPhone + ',');
                     }
@@ -206,7 +206,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                         sb.Append("999-999-9999" + ',');
                     }
                     sb.Append(order.Quantity.ToString() + ',');
-                    sb.Append(getWeight(order.ProductId) + ',');
+                    sb.Append(getWeight(order.ProductId, order.Quantity) + ',');
 
                             _unitOfWork.Order.Get(order.Id).OrderStatus = SD.OrderStatusInProgress;
                             _db.Orders.Update(_unitOfWork.Order.Get(order.Id));

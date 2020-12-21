@@ -291,6 +291,7 @@ namespace KTSite.Areas.UserRole.Controllers
             {
                 order.AllowComplaint = allowComplaint(order.Id.ToString());
                 order.AllowReturn = allowRetrun(order.Id.ToString());
+                order.isChecked = false;
             }
             return Json(new
             {
@@ -892,6 +893,20 @@ namespace KTSite.Areas.UserRole.Controllers
             {
                 paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
             }
+        }
+        [HttpPost]
+        public IActionResult TrackUpdate(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Order order = _unitOfWork.Order.Get(Id);
+                if (order.TrackingUpdated)
+                    order.TrackingUpdated = false;
+                else
+                    order.TrackingUpdated = true;
+                _unitOfWork.Save();
+            }
+            return View();
         }
     }
 }
