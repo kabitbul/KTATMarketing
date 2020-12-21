@@ -15,6 +15,7 @@
         <thead class="thead-dark">
             <tr class="table-info">
                 <th>User</th>
+                <th>Weekly Average</th>
                 <th>7 Days ago</th>
                 <th>6 Days ago</th>
                 <th>5 Days ago</th>
@@ -23,12 +24,12 @@
                 <th>2 Days ago</th>
                 <th>Yesterday</th>
                 <th>Today</th>
-                <th>Weekly Average</th>
                 <th></th>
             </tr>
         </thead>
         <tr class="table-info">
             <td>User</td>
+            <td>Weekly Average</td>
             <td>7 Days ago</td>
             <td>6 Days ago</td>
             <td>5 Days ago</td>
@@ -37,7 +38,6 @@
             <td>2 Days ago</td>
             <td>Yesterday</td>
             <td>Today</td>
-            <td>Weekly Average</td>
             <td></td>
         </tr>
     </table>
@@ -54,14 +54,6 @@
                 },
                 "columns": [
                     { "data": "userName", "name": "UserName" },
-                    { "data": "sevenDays", "name": "SevenDays" },
-                    { "data": "sixDays", "name": "SixDays" },
-                    { "data": "fiveDays", "name": "FiveDays" },
-                    { "data": "fourDays", "name": "FourDays" },
-                    { "data": "threeDays", "name": "ThreeDays" },
-                    { "data": "twoDays", "name": "TwoDays" },
-                    { "data": "yesterday", "name": "Yesterday" },
-                    { "data": "today", "name": "Today" },
                     {
                         "data": "weeklyAveragestr", "name": "WeeklyAveragestr",
                         "render": function (data) {
@@ -82,6 +74,14 @@
                             }
                         }
                     },
+                    { "data": "sevenDays", "name": "SevenDays" },
+                    { "data": "sixDays", "name": "SixDays" },
+                    { "data": "fiveDays", "name": "FiveDays" },
+                    { "data": "fourDays", "name": "FourDays" },
+                    { "data": "threeDays", "name": "ThreeDays" },
+                    { "data": "twoDays", "name": "TwoDays" },
+                    { "data": "yesterday", "name": "Yesterday" },
+                    { "data": "today", "name": "Today" },
                     {
                         "data": "userNameId", "name": "UserNameId",
                         "render": function (data) {
@@ -96,7 +96,7 @@
                     }
                 ],
                 "serverSide": "true",
-                "order": [1, "asc"],
+                "order": [1, "desc"],
                 "processing": "true",
                 "pageLength": 50
             });

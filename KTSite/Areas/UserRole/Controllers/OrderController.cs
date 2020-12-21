@@ -27,7 +27,8 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             string UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             dynamic myModel = new System.Dynamic.ExpandoObject();
-            myModel.Order = _unitOfWork.Order.GetAll().Where(q=>q.UserNameId == UNameId).Where(q => q.IsAdmin == false);
+            OrderVM orderVM = new OrderVM();
+            myModel.OrderVM = orderVM;//_unitOfWork.Order.GetAll().Where(q=>q.UserNameId == UNameId).Where(q => q.IsAdmin == false);
             ViewBag.errSaveInProgress = false;
             ViewBag.uNameId = UNameId;
             return View(myModel);
@@ -506,6 +507,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     }
                 }
                 var ordersList = allOrders.Split(new string[] { "\"\r\n" },StringSplitOptions.None);
+                ordersList = ordersList.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                 string failedLines = "";
                 int lineNum = 0;
                 foreach(var order in ordersList)
@@ -515,6 +517,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     try
                     {
                         var orderDetails = order.Split(new string[] { "\t" }, StringSplitOptions.None);
+                        orderDetails = orderDetails.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                         addAddressDetailsToVM(orderDetails[4], orderVM);
                         orderVM.Orders.ProductId = getProductIdByName(orderDetails[0]);
                         orderVM.Orders.UserNameId = returnUserNameId();
@@ -706,6 +709,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public void addAddressDetailsToVM(string orderDetails, OrderVM orderVM)
         {
             var addressDetails = orderDetails.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            addressDetails = addressDetails.Where(x => !string.IsNullOrEmpty(x)).ToArray();
             //always appear
             orderVM.Orders.CustName = addressDetails[0];
             orderVM.Orders.CustName = orderVM.Orders.CustName.Substring(1);
@@ -787,6 +791,60 @@ namespace KTSite.Areas.UserRole.Controllers
             orderVM.Orders.CustPhone= "";
             orderVM.Orders.IsAdmin = false;
             orderVM.Orders.OrderStatus = SD.OrderStatusAccepted;
+        }
+        [HttpPost]
+        public ActionResult DownloadCSV(DateTime fromDate, DateTime toDate)
+        {
+            string userNameId = returnUserNameId();
+            string fileName =
+                    DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
+            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.TrackingNumber != null &&
+            a.UsDate >= fromDate && a.UsDate <= toDate).
+                OrderBy(a => a.Id);
+            orderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId);
+            orderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.TrackingNumber != null);
+            orderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.TrackingNumber != null && a.UsDate >= fromDate);
+            orderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.TrackingNumber != null && 
+            a.UsDate >= fromDate && a.UsDate <= toDate);
+            StringBuilder sb = new StringBuilder();
+            ////Header
+            sb.Append("Product,Date,Store,Quantity,Cost,Customer Name,Street1,Street2,City,State,Zip Code,Phone Number,Tracking Number,Carrier");
+            sb.Append("\r\n");
+                    foreach (Order order in orderList)
+                    {
+                       sb.Append(returnProductName(order.ProductId)+ ',');
+                        sb.Append(order.UsDate.Day + "/" + order.UsDate.Month + "/" + order.UsDate.Year+',');
+                        sb.Append(order.StoreName+',');
+                        sb.Append(order.Quantity.ToString() + ',');
+                sb.Append(order.Cost.ToString()+'$' + ',');
+                sb.Append(order.CustName.Replace(",", "").Replace("\"", "") + ',');
+                        sb.Append(order.CustStreet1.Replace(",", "").Replace("\"", "") + ',');
+                        if (order.CustStreet2 == null)
+                        {
+                            sb.Append(',');
+                        }
+                        else
+                        {
+                            sb.Append(order.CustStreet2.Replace(",", "").Replace("\"", "") + ',');
+                       }
+                        sb.Append(order.CustCity + ',');
+                        sb.Append(order.CustState + ',');
+                        sb.Append(order.CustZipCode + ',');
+                        if (order.CustPhone != null)
+                        {
+                            sb.Append(order.CustPhone + ',');
+                        }
+                        else
+                        {
+                            sb.Append(',');
+                        }
+                        sb.Append("=\""+order.TrackingNumber +"\""+ ',');
+                        sb.Append(order.Carrier + ',');
+
+                        //Append new line character.
+                        sb.Append("\r\n");
+                    }
+            return File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", fileName);
         }
         #region API CALLS
         [HttpGet]

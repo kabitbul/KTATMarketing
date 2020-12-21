@@ -27,25 +27,43 @@
             </thead>
             @foreach (PaymentBalance paymentBalance in Model)
             {
+                if (paymentBalance.IsWarehouseBalance)
+                {
+                    <tr style="background-color:darkorange">
+                        <td>@ViewBag.getUserName(paymentBalance.UserNameId).ToString()</td>
+                        <td>@ViewBag.getName(paymentBalance.UserNameId).ToString()</td>
+                        <td>@paymentBalance.Balance.ToString("0.00")$</td>
+                        @if (paymentBalance.AllowNegativeBalance)
+                        {<td>Yes</td>}else{<td>No</td>}
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+                else
+                {
         <tr>
             <td>@ViewBag.getUserName(paymentBalance.UserNameId).ToString()</td>
             <td>@ViewBag.getName(paymentBalance.UserNameId).ToString()</td>
-            <td>@paymentBalance.Balance.ToString("0.00")$</td>
-            @if (paymentBalance.AllowNegativeBalance)
+           @if(paymentBalance.Balance >= 0)
             {
-                <td>Yes</td>
+            <td style="color:forestgreen">@paymentBalance.Balance.ToString("0.00")$</td>
             }
             else
             {
-                <td>No</td>
+            <td style="color:red">@paymentBalance.Balance.ToString("0.00")$</td>
             }
+            @if (paymentBalance.AllowNegativeBalance)
+            {
+        <td>Yes</td> }
+                            else
+                            {
+        <td>No</td>}
             <td>
-                @if(!paymentBalance.IsWarehouseBalance)
+                @if (!paymentBalance.IsWarehouseBalance)
                 {
-                <a onclick=Delete("/Admin/PaymentBalance/Delete/@paymentBalance.Id") class="btn btn-danger text-white" style="cursor:pointer">
-                    <i class="fas fa-trash-alt"></i>&nbsp;
-                </a>
-                }
+        <a onclick=Delete("/Admin/PaymentBalance/Delete/@paymentBalance.Id") class="btn btn-danger text-white" style="cursor:pointer">
+            <i class="fas fa-trash-alt"></i>&nbsp;
+        </a>}
             </td>
             @if (ViewBag.IsUserRole(paymentBalance.Id))
             {
@@ -54,12 +72,14 @@
                 <input type="hidden" asp-for="@paymentBalance.Id" />
                 <input type="checkbox" asp-for="@paymentBalance.isChecked" />
             </div>
-        </td> }
-                        else
-                        {
-        <td></td>
+        </td>
+ }
+    else
+    {
+        <td></td>}
+        </tr>
+   }
 }
-        </tr>            }
         </table>
     </div>
     &nbsp;
@@ -72,7 +92,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[1, "asc"]] });
+            $('#tblData').DataTable({ "order": [[2, "asc"]], "pageLength": 50});
         });</script>
     <script>
         function Delete(url) {
