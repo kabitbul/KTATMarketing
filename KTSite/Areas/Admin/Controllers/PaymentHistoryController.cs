@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -29,6 +25,8 @@ namespace KTSite.Areas.Admin.Controllers
                   new Func<int, string>(getPaymentAddress);
               ViewBag.getPaymentType =
                 new Func<int, string>(getPaymentType);
+            ViewBag.getUserName =
+                new Func<string, string>(getUserName);
             var PaymentHistory =_unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a=>!a.IsAdmin),
                                                          paymentHistory => paymentHistory.SentFromAddressId,
                                                          paymentSentAddress => paymentSentAddress.Id,
@@ -38,6 +36,10 @@ namespace KTSite.Areas.Admin.Controllers
                                                          }).Select(a=>a.paymentHistory);
                 //getHistoryOfAllUsersPayment();
             return View(PaymentHistory);
+        }
+        public string getUserName(string Id)
+        {
+            return _unitOfWork.ApplicationUser.Get(Id).Name;
         }
         public IActionResult ShowWarehousePayment()
         {

@@ -24,6 +24,16 @@ namespace KTSite.Areas.VAs.Controllers
         }
         public IActionResult Index()
         {
+            ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
+            ViewBag.TaskFromAdmin = _unitOfWork.adminVATask.GetAll().Where(q => !q.TaskCompleted).
+                    Join(_unitOfWork.ApplicationUser.GetAll().
+                Where(a => a.Role == SD.Role_Admin),
+                                             adminVATask => adminVATask.UserNameId,
+                                             applicationUser => applicationUser.Id,
+                                             (adminVATask, applicationUser) => new
+                                             {
+                                                 adminVATask
+                                             }).Select(a => a.adminVATask).Count();
             dynamic myModel = new System.Dynamic.ExpandoObject();
             ViewBag.errSaveInProgress = false;
             return View(myModel);
@@ -540,6 +550,7 @@ namespace KTSite.Areas.VAs.Controllers
                         }
                         else
                         {
+                            ViewBag.success = false;
                             if (failedLines.Length == 0)
                             {
                                 failedLines = orderVM.Orders.CustName;
@@ -552,6 +563,7 @@ namespace KTSite.Areas.VAs.Controllers
                     }
                     catch
                     {
+                        ViewBag.success = false;
                         if (failedLines.Length == 0)
                         {
                             failedLines = orderVM.Orders.CustName;
@@ -573,6 +585,7 @@ namespace KTSite.Areas.VAs.Controllers
                 }
                 else
                 {
+                    ViewBag.success = false;
                     if (processedLines == 0)
                     {
                         ViewBag.failed = "Pay Attention: An error occured! No Orders were processed!";
@@ -620,7 +633,8 @@ namespace KTSite.Areas.VAs.Controllers
         }
         public int getProductIdByName(string productName)
         {
-            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName,StringComparison.InvariantCultureIgnoreCase))
+            string prd = productName.Trim();
+            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
         public int getStoreNameId(string storeName)

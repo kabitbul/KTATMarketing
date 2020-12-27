@@ -566,6 +566,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost)
                         {
                             InsufficientFunds = true;
+                            ViewBag.success = false;
                             if (failedLines.Length == 0)
                             {
                                 failedLines = orderVM.Orders.CustName;
@@ -595,6 +596,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         }
                         else
                         {
+                            ViewBag.success = false;
                             if (failedLines.Length == 0)
                             {
                                 failedLines = orderVM.Orders.CustName;
@@ -607,6 +609,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     }
                     catch
                     {
+                        ViewBag.success = false;
                         if (failedLines.Length == 0)
                         {
                             failedLines = orderVM.Orders.CustName;
@@ -640,10 +643,11 @@ namespace KTSite.Areas.UserRole.Controllers
                         ViewBag.failed = "Insufficient Funds! Only " + processedLines + " Orders were Processed Successfully!/n" +
                     "/nFailed Orders: /n/n" + failedLines;
                     }
-                    
+                    ViewBag.success = false;
                 }
                 else if (failedLines.Length > 0)
                 {
+                    ViewBag.success = false;
                     ViewBag.InsufficientFunds = false;
                     if (processedLines == 0)
                     {
@@ -667,6 +671,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 {
                     ViewBag.InsufficientFunds = false;
                     ViewBag.failed = "";
+                    ViewBag.success = true;
                 }
                 ViewBag.ProcessedLines = processedLines;
                 return View(orderVM);
@@ -699,7 +704,8 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public int getProductIdByName(string productName)
         {
-            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName,StringComparison.InvariantCultureIgnoreCase))
+            string prd = productName.Trim();
+            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
         public int getStoreNameId(string storeName, string userNameId)

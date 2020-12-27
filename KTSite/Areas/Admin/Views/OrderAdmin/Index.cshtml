@@ -178,10 +178,11 @@
                             "trackingUpdated": "trackingUpdated",
                             "id": "id",
                             "orderStatus": "orderStatus",
+                            "isAdmin": "isAdmin",
                             "isChecked": "isChecked"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Done') {
+                            if (data.orderStatus == 'Done' && data.isAdmin) {
                                 return `<input type="hidden" name="trUpdatedId" value="${data.id}" />
                                         <input type="checkbox" name="trUpdatedChecked" value="${data.isChecked}" />`
                             }

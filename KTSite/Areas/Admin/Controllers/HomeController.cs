@@ -47,6 +47,15 @@ namespace KTSite.Areas.Admin.Controllers
                     Select(a => a.Balance).FirstOrDefault();
                 ViewBag.CountPendingPayments = _unitOfWork.PaymentHistory.GetAll().
                     Where(a => a.Status == SD.PaymentStatusPending).Count();
+                ViewBag.TaskFromVA = _unitOfWork.adminVATask.GetAll().Where(q=>!q.TaskCompleted).
+                    Join(_unitOfWork.ApplicationUser.GetAll().
+                Where(a => a.Role == SD.Role_VAs),
+                                             adminVATask => adminVATask.UserNameId,
+                                             applicationUser => applicationUser.Id,
+                                             (adminVATask, applicationUser) => new
+                                             {
+                                                 adminVATask
+                                             }).Select(a => a.adminVATask).Count();
                 var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0);
                 double totalInventoryValue = 0; 
                 foreach(Product prod in product)
@@ -63,7 +72,6 @@ namespace KTSite.Areas.Admin.Controllers
                 List<DataPoint> dataPointsUser = new List<DataPoint>();
                 List<DataPoint> dataPointsAdmin = new List<DataPoint>();
                 getStackGraphData2(dataPointsUser, dataPointsAdmin);
-                //getStackGraphData(true, dataPointsAdmin);
                 ViewBag.DataPointsUser = JsonConvert.SerializeObject(dataPointsUser);
                 ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(dataPointsAdmin);
                 return View();
@@ -80,11 +88,7 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 return Redirect("Warehouse/Home");
             }
-            //string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
-            //if (uNameId == null)
-            // {
             return Redirect("Identity/Account/Login");
-            // }
 
         }
 

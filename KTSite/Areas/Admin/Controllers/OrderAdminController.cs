@@ -534,6 +534,7 @@ namespace KTSite.Areas.Admin.Controllers
                         }
                         else
                         {
+                            ViewBag.success = false;
                             if (failedLines.Length == 0)
                             {
                                 failedLines = orderVM.Orders.CustName;
@@ -547,6 +548,7 @@ namespace KTSite.Areas.Admin.Controllers
                     }
                     catch
                     {
+                        ViewBag.success = false;
                         if (failedLines.Length == 0)
                         {
                             failedLines = orderVM.Orders.CustName;
@@ -559,14 +561,14 @@ namespace KTSite.Areas.Admin.Controllers
 
                 }
                 ViewBag.success = true;
-                // if(failedLines.Length == 0 )
-                //{
+                
                 if (failedLines.Length == 0)
                 {
                     ViewBag.failed = "";
                 }
                 else
                 {
+                    ViewBag.success = false;
                     if (processedLines == 0)
                     {
                         ViewBag.failed = "Pay Attention: An error occured! No Orders were processed!";
@@ -615,7 +617,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public int getProductIdByName(string productName)
         {
-            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(productName,StringComparison.InvariantCultureIgnoreCase))
+            string prd = productName.Trim();
+            return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd,StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
         public int getStoreNameId(string storeName)

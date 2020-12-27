@@ -42,7 +42,7 @@
     <td>@ViewBag.getStore(adminVATask.StoreId)</td>
     <td>@ViewBag.getUserName(adminVATask.UserNameId)</td>
     <td>@adminVATask.DateCreated.ToString("dd/MM/yyyy")</td>
-    <td>@adminVATask.TaskToDo</td>
+    <td><textarea readonly>@adminVATask.TaskToDo</textarea></td>
     @if (adminVATask.TaskCompleted)
     {
 <td>Yes</td>

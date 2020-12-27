@@ -8,12 +8,12 @@
     <div class="text-left display-3 p-4 border rounded col-5">
         <h1 style="font-size: 20px">
             <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-            Total Value Of Inventory: <span style="color:seagreen">@ViewBag.totalInventoryValue.ToString("0.00")$</span>
+            Total Value Of Inventory: <span style="color:seagreen;font-weight:bold">@ViewBag.totalInventoryValue.ToString("0.00")$</span>
         </h1>
     </div>
     @if (ViewBag.OrdersFromChina == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         <a href="Admin/ChinaOrder">There Is one Product Ordered more then 45 days ago.</a>
@@ -21,7 +21,7 @@
 </div>}
 else if (ViewBag.OrdersFromChina > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
@@ -37,7 +37,7 @@ else if (ViewBag.OrdersFromChina > 1)
 </div>}
     @if (ViewBag.CountPendingPayments == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:khaki" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         <a href="Admin/PaymentHistory">There is a Pending Payments waiting for your approval!</a>
@@ -46,27 +46,44 @@ else if (ViewBag.OrdersFromChina > 1)
 else
 if (ViewBag.CountPendingPayments > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:khaki" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        <a href="Admin/PaymentHistory">There are @ViewBag.CountPendingPayments Pending Payments waiting for your approval!</a>
+        <a href="/Admin/PaymentHistory">There are @ViewBag.CountPendingPayments Pending Payments waiting for your approval!</a>
     </h1>
 </div>}
     @if (ViewBag.CountArrivingFromChina == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:lightcoral" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        <a href="Admin/ArrivingFromChinaAdmin">A New Shipment Arrived And Is Waiting Your Update!</a>
+        <a href="/Admin/ArrivingFromChinaAdmin">A New Shipment Arrived And Is Waiting Your Update!</a>
     </h1>
 </div>}
 else
 if (ViewBag.CountArrivingFromChina > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div style="background-color:lightcoral" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        <a href="Admin/ArrivingFromChinaAdmin">There are @ViewBag.CountArrivingFromChina Shipments Arrived And Waiting Your Update!</a>
+        <a href="/Admin/ArrivingFromChinaAdmin">There are @ViewBag.CountArrivingFromChina Shipments Arrived And Waiting Your Update!</a>
+    </h1>
+</div>}
+    @if (ViewBag.TaskFromVA == 1)
+    {
+<div style="background-color:lightgreen" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/AdminVATask">You have a Pending Task! Please Refund the customer!</a>
+    </h1>
+</div>}
+    else
+if (ViewBag.TaskFromVA > 1)
+    {
+<div style="background-color:lightgreen" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/AdminVATask">You have @ViewBag.TaskFromVA Pending Tasks! Please Refund the customers!</a>
     </h1>
 </div>}
     <div>

@@ -81,6 +81,10 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                     prInv.DaysToOOS = (double)(prInv.Inventory + prInv.OnTheWay) / prInv.DailyAvg3;
                 }
+                else
+                {
+                    prInv.DaysToOOS = (double)10000;
+                }
                 if (prInv.DaysToOOS != 0)
                     prInv.DaysToOOSstr = prInv.DaysToOOS.ToString("0.00");
                 else

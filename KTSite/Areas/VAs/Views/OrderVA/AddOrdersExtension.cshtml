@@ -67,9 +67,11 @@
             <div class="form-group row">
                 <div class="col-8 offset-4">
                     <div class="row">
-                        <div class="col">
-                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" onclick="disableAndRun()">Add</button>
-                        </div>
+                        @if (!ViewBag.ShowMsg || !ViewBag.success)
+                        {
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary form-control" id="AddBtn" onclick="disableAndRun()">Add</button>
+                    </div>}
                         <div class="col">
                             <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                         </div>
@@ -83,9 +85,6 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    @if (ViewBag.ShowMsg)
-    {
-<script>$("#AddBtn").hide(0);</script>}
     @if (ViewBag.ShowErrInLabel)
     {
 <script>
@@ -123,13 +122,8 @@
 </script>}}
 
     <script type="text/javascript">
-        //window.onload = function(){
-        //    var table = $('#tblData').DataTable();
-        //    table.draw();
-        //}
         function disableAndRun() {
             $("#AddBtn").hide(0);
         }
     </script>
-    /**/
 }
