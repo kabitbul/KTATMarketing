@@ -33,44 +33,44 @@
 </div>}
     @if (ViewBag.missingWeightCount == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightcoral">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Product">You have a Product Without Weight.</a>
+        <a href="Product">You have a Product Without Weight, please update.</a>
     </h1>
 </div> }
 else
 if (ViewBag.missingWeightCount > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div class="text-left display-3 p-4 border rounded col-5"style="background-color:lightcoral">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Product">You have @ViewBag.missingWeightCount  Products Without Weight.</a>
+        <a href="Product">You have @ViewBag.missingWeightCount Products Without Weight, please update.</a>
     </h1>
 </div>}
     @if (ViewBag.WaitingForReturnLabel == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div class="text-left display-3 p-4 border rounded col-5"style="background-color:lightgreen">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
+        <a href="/Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
     </h1>
 </div> }
 else
     if (ViewBag.WaitingForReturnLabel > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightgreen">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Warehouse/ReturnLabelWarehouse">You have @ViewBag.WaitingForReturnLabel  returns , please provide return labels.</a>
+        <a href="/Warehouse/ReturnLabelWarehouse">You have @ViewBag.WaitingForReturnLabel  returns , please provide return labels.</a>
     </h1>
 </div>}
     @if (ViewBag.NumOfComplaints > 0)
 {
-<div class="text-left display-3 p-4 border rounded col-5">
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:khaki">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Warehouse/Complaints">You have @ViewBag.NumOfComplaints  complaints , please solve asap.</a>
+        <a href="/Warehouse/Complaints">You have @ViewBag.NumOfComplaints  tickets , please solve asap.</a>
     </h1>
 </div>}
 </div>

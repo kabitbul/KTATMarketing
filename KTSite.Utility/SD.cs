@@ -25,7 +25,7 @@ namespace KTSite.Utility
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
         public const string ReturningItemDefective = "Defective";
-        public const double shipping_cost = 3.74;
+        public const double shipping_cost = 3.5;
         public const double shipping_cost_warehouse_items = 3.5;
         public const double shipping_cost_for_return = 3.5;
         public const double paypalPercentFees = 3;

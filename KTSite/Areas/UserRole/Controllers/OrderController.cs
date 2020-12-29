@@ -610,13 +610,14 @@ namespace KTSite.Areas.UserRole.Controllers
                     catch
                     {
                         ViewBag.success = false;
+                        string addLine = addToFailedLines(order);
                         if (failedLines.Length == 0)
                         {
-                            failedLines = orderVM.Orders.CustName;
+                            failedLines = addLine;
                         }
                         else
                         {
-                            failedLines = failedLines + "/n" + orderVM.Orders.CustName;
+                            failedLines = failedLines + "/n" + addLine;
                         }
                     }
 
@@ -680,6 +681,27 @@ namespace KTSite.Areas.UserRole.Controllers
                 //return RedirectToAction(nameof(Index));
             }
             return View(orderVM.Orders);
+        }
+        public string addToFailedLines(string order)
+        {
+            //get location of first " 
+            int locStart = order.IndexOf("\"");
+            int locEnd = order.IndexOf("\r",locStart);
+            int locSize;
+            if(locEnd > locStart)
+            {
+                locSize = locEnd - locStart;
+            }
+            else
+            {
+                locSize = 0;
+            }
+
+               if(locSize > 0)
+                return order.Substring(locStart + 1, (locEnd - locStart) - 1);
+               else
+                    return order.Substring(locStart);
+
         }
         public bool IsProdavailable(int ProductId)
         {
