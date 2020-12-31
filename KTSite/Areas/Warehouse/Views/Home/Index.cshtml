@@ -42,22 +42,39 @@
 else
 if (ViewBag.missingWeightCount > 1)
 {
-<div class="text-left display-3 p-4 border rounded col-5"style="background-color:lightcoral">
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightcoral">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
         <a href="Product">You have @ViewBag.missingWeightCount Products Without Weight, please update.</a>
     </h1>
 </div>}
+    @if (ViewBag.NeedCounting == 1)
+    {
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightskyblue">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="ArrivingFromChina">There is a Product you received that needs counting</a>
+    </h1>
+</div> }
+else
+if (ViewBag.NeedCounting > 1)
+{
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightskyblue">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        <a href="ArrivingFromChina">There are  @ViewBag.NeedCounting Products you received that needs counting.</a>
+    </h1>
+</div>}
     @if (ViewBag.WaitingForReturnLabel == 1)
     {
-<div class="text-left display-3 p-4 border rounded col-5"style="background-color:lightgreen">
+<div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightgreen">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
         <a href="/Warehouse/ReturnLabelWarehouse">You have a return , please provide return label.</a>
     </h1>
 </div> }
 else
-    if (ViewBag.WaitingForReturnLabel > 1)
+if (ViewBag.WaitingForReturnLabel > 1)
 {
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightgreen">
     <h1 style="font-size: 20px">
@@ -66,7 +83,7 @@ else
     </h1>
 </div>}
     @if (ViewBag.NumOfComplaints > 0)
-{
+    {
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:khaki">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />

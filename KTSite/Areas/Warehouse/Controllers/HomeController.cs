@@ -80,6 +80,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                 }
             //exist complaints unsolved in warehouse responsibility
             ViewBag.NumOfComplaints =_unitOfWork.Complaints.GetAll().Where(a => a.WarehouseResponsibility && !a.Solved).Count();
+            ViewBag.NeedCounting = _unitOfWork.ArrivingFromChina.GetAll().Where(a => !a.UpdatedByAdmin && a.Quantity == 0).Count();
                 ViewBag.DataPointsKT = JsonConvert.SerializeObject(dataPointsKT);
                 ViewBag.DataPointsWarehouse = JsonConvert.SerializeObject(dataPointsWarehouse);
             return View();

@@ -67,7 +67,7 @@ namespace KTSite.Areas.Admin.Controllers
                 }
                 ViewBag.totalInventoryValue = totalInventoryValue;
                 ViewBag.CountArrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().
-                    Where(a => !a.UpdatedByAdmin).Count();
+                    Where(a => !a.UpdatedByAdmin && a.Quantity != 0).Count();
                 //stack chart user\admin
                 List<DataPoint> dataPointsUser = new List<DataPoint>();
                 List<DataPoint> dataPointsAdmin = new List<DataPoint>();

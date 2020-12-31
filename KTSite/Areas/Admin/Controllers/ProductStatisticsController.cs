@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Runtime.InteropServices;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace KTSite.Areas.Admin.Controllers
@@ -58,7 +51,7 @@ namespace KTSite.Areas.Admin.Controllers
             List<ProductStatistics> productList = new List<ProductStatistics>();
 
             var allWeekOrders = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
-            a.UsDate >= DateTime.Now.AddDays(-7)).OrderBy(a => a.UsDate);
+            a.UsDate >= DateTime.Now.AddDays(-8)).OrderBy(a => a.UsDate);
             initialize(productList);
             int totalRows = productList.Count;
             foreach (Order order in allWeekOrders)
