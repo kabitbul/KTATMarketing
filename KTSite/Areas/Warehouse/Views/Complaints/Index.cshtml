@@ -4,7 +4,6 @@
 }
 
 <br />
-<div class="container">
     <div class="row">
         <div class="col-6">
             <h2 class="text-primary">Tickets List </h2>
@@ -21,6 +20,7 @@
                 <tr class="table-info">
                     <th>Tickets Id</th>
                     <th>Order Id</th>
+                    <th>Date Created</th>
                     <th>Product</th>
                     <th>Customer</th>
                     <th>Store</th>
@@ -29,6 +29,7 @@
                     <th>Solved</th>
                     <th>New Tracking Number</th>
                     <th>Last Updated By</th>
+                    <th>Date Updated</th>
                     <th></th>
 </thead>
 
@@ -37,6 +38,7 @@
         <tr>
             <td>@complaints.Id</td>
             <td>@complaints.OrderId</td>
+            <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
             <td>@complaints.ProductName</td>
             <td>@complaints.CustName</td>
             @if (complaints.StoreId != 0)
@@ -55,6 +57,7 @@
         <td>No</td>}
             <td>@complaints.NewTrackingNumber</td>
             <td>@complaints.HandledBy</td>
+            <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
             @if (!complaints.Solved)
             {
         <td>
@@ -72,7 +75,6 @@
 
         </table>
     </div>
-</div>
     @section Scripts{
         <script>
             $(document).ready(function () {
@@ -81,7 +83,7 @@
         <script>
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
-                    var orderStatus = data[5];
+                    var orderStatus = data[8];
                     if ($('#pos').prop("checked") == true && orderStatus == "No") {
                         return true;
                     } else if ($('#pos').prop("checked") == false) {

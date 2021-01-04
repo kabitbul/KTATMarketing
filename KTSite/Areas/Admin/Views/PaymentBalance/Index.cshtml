@@ -61,7 +61,8 @@
             <td>
                 @if (!paymentBalance.IsWarehouseBalance)
                 {
-        <a onclick=Delete("/Admin/PaymentBalance/Delete/@paymentBalance.Id") class="btn btn-danger text-white" style="cursor:pointer">
+        <a onclick=Delete("/Admin/PaymentBalance/Delete/@paymentBalance.Id") class="btn btn-danger text-white" style="cursor:pointer"
+           data-toggle="tooltip" data-placement="top" title="Delete User Payment">
             <i class="fas fa-trash-alt"></i>&nbsp;
         </a>}
             </td>

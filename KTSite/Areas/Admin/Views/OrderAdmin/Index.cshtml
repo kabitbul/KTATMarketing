@@ -156,14 +156,14 @@
                             if (data.orderStatus == 'Accepted') {
                                 return `
                                 <div class="text-center">
-                                    <a href="/Admin/OrderAdmin/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                    <a href="/Admin/OrderAdmin/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer" data-toggle="tooltip" data-placement="top" title="Edit Order">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
                                  `}
                             else if (data.orderStatus == 'Done' && data.allowComplaint) {
                                 return `
-                                                  <div class="text-center">
+                                                  <div class="text-center" data-toggle="tooltip" data-placement="top" title="Open a Ticket">
                                                     <a href="/Admin/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
                                                     <i class="fas fa-ticket-alt"></i>
                                                     </a>

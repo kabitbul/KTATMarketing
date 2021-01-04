@@ -4,7 +4,6 @@
 }
 
 <br />
-<div class="container">
     <div class="row">
         <div class="col-6">
             <h2 class="text-primary">Tickets List </h2>
@@ -24,12 +23,14 @@
                 <tr class="table-info">
                     <th>Ticket Id</th>
                     <th>Order Id</th>
+                    <th>Date Created</th>
                     <th>Product</th>
                     <th>Customer</th>
                     <th>Store</th>
                     <th>Description</th>
                     <th>Solution</th>
                     <th>Solved</th>
+                    <th>Date Modified</th>
                     <th>New Tracking Number</th>
                     <th>Refunded</th>
                     <th></th>
@@ -40,6 +41,7 @@
         <tr>
             <td>@complaints.Id</td>
             <td>@complaints.OrderId</td>
+            <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
             <td>@complaints.ProductName</td>
             <td>@complaints.CustName</td>
             @if (complaints.StoreId != 0)
@@ -56,6 +58,7 @@
                         else
                         {
         <td>No</td>}
+            <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
             <td>@complaints.NewTrackingNumber</td>
             @if (ViewBag.Refunded(complaints.OrderId.ToString()))
             {
@@ -67,7 +70,8 @@
             {
         <td>
             <div class="text-center">
-                <a href="/UserRole/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer">
+                <a href="/UserRole/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer"
+                   data-toggle="tooltip" data-placement="top" title="Edit Ticket">
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
@@ -80,7 +84,6 @@
 
         </table>
     </div>
-</div>
 
 @section Scripts{
     <script>
@@ -90,7 +93,7 @@
     <script>
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                var solved = data[4];
+                var solved = data[8];
                 if ($('#pos').prop("checked") == false) {
                     return true;
                 } else if ($('#pos').prop("checked") == true && solved == "No") {

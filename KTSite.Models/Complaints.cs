@@ -28,6 +28,10 @@ namespace KTSite.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DefaultValue("Now")]
         public DateTime CreatedDate { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DefaultValue("Now")]
+        public DateTime ModifiedDate { get; set; }
         public string NewTrackingNumber { get; set; }
         [DefaultValue(false)]
         public bool IsAdmin { get; set; }

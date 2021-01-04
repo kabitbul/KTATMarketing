@@ -185,7 +185,8 @@
                             if (data.orderStatus == 'Accepted') {
                                 return `
                                             <div class="text-center">
-                                                <a href="/UserRole/Order/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                                <a href="/UserRole/Order/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer"
+                                                   data-toggle="tooltip" data-placement="top" title="Edit Order">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
@@ -193,12 +194,14 @@
                             else if (data.orderStatus == 'Done' && data.allowComplaint && data.allowReturn) {
                                 return `
                                                 <div class="text-center">
-                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
+                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer"
+                                                 data-toggle="tooltip" data-placement="top" title="Create a ticket for this order">
                                                 <i class="fas fa-ticket-alt"></i>
                                                 </a>
                                                 </div>
                                                 <div class="text-center">
-                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer"
+                                                data-toggle="tooltip" data-placement="top" title="Create a return label for this order">
                                                 <i class="fas fa-shipping-fast"></i>
                                                 </a>
                                                 </div>
@@ -206,7 +209,8 @@
                             else if (data.orderStatus == 'Done' && data.allowComplaint) {
                                 return `
                                                 <div class="text-center">
-                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">
+                                                <a href="/UserRole/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer"
+                                                 data-toggle="tooltip" data-placement="top" title="Create a ticket for this order">
                                                 <i class="fas fa-ticket-alt"></i>
                                                 </a>
                                                 </div>`
@@ -214,7 +218,8 @@
                             else if (data.orderStatus == 'Done' && data.allowReturn) {
                                 return `
                                                 <div class="text-center">
-                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer">
+                                                <a href="/UserRole/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer"
+                                                 data-toggle="tooltip" data-placement="top" title="Create a return label for this order">>
                                                 <i class="fas fa-shipping-fast"></i>
                                                 </a>
                                                 </div>

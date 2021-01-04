@@ -1,9 +1,7 @@
 ﻿@model KTSite.Models.PaymentHistoryVM
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Update Payment";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Update Payment"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -20,7 +18,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.PaymentHistory.SentFromAddressId, Model.PaymentAddress,
-                   new { @class = "form-control" })
+                        new { @class = "form-control" })
                     <span asp-validation-for="PaymentHistory.SentFromAddressId" class="text-danger"></span>
                 </div>
             </div>
@@ -37,7 +35,7 @@
                 <input type="hidden" asp-for="PaymentHistory.Id" class="form-control" />
             </div>
             <div class="col-8">
-                <input type="hidden" asp-for="PaymentHistory.Status" class="form-control" value="Pending" />
+                <input type="hidden" asp-for="PaymentHistory.Status" class="form-control" />
             </div>
             <div class="col-8">
                 <input type="hidden" asp-for="PaymentHistory.UserNameId" class="form-control" value="@ViewBag.uNameId" />
@@ -49,14 +47,14 @@
         <div class="col-8 pt-4">
             <div class="form-group row">
                 <div class="col-8 offset-4">
-                        <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control" asp-route-id="@Model.PaymentHistory.Id">Update</button>
-                            </div>
-                            <div class="col">
-                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
-                            </div>
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" asp-route-id="@Model.PaymentHistory.Id">Update</button>
                         </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -104,12 +102,18 @@
                             window.location.href = '/UserRole/PaymentHistory';
                         }
                     });*@
-              @if(ViewBag.ShowMsg && ViewBag.success)
-              {
+    @if (ViewBag.AlreadyApprovedOrRejected)
+    {
+        <script>
+            swal("Error!", "Payment Is No Longer Pending!", "error")
+                .then((value) => { window.location.href = '/UserRole/PaymentHistory'; });
+        </script>
+    }
+    else if (ViewBag.ShowMsg && ViewBag.success)
+    {
 <script>
     swal("Success!", "Payment Updated, Admin will Approve once Payment Received!", "success")
         .then((value) => { window.location.href = '/UserRole/PaymentHistory'; });
-</script>
-                }
-            }
+</script>                }
+}
 }

@@ -17,7 +17,8 @@ function loadDataTable() {
                 "render": function (data) {
                     return `
                         <div class="text-center">
-                            <a onclick=Delete("/Admin/AdminStore/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer">
+                            <a onclick=Delete("/Admin/AdminStore/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer"
+                                                          data-toggle="tooltip" data-placement="top" title="Delete Store">
                                 <i class="fas fa-trash-alt"></i>&nbsp;
                             </a>
                         </div>

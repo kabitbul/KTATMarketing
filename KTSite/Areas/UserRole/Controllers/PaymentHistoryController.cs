@@ -46,6 +46,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     Value = i.Id.ToString()
                 })
             };
+
+            ViewBag.AlreadyApprovedOrRejected = false;
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
             ViewBag.payoneermsg = false;
@@ -64,7 +66,11 @@ namespace KTSite.Areas.UserRole.Controllers
                     Value = i.Id.ToString()
                 })
             };
-                paymentHistoryVM.PaymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.Id == Id).FirstOrDefault();
+            paymentHistoryVM.PaymentHistory = _unitOfWork.PaymentHistory.Get(Id);
+            if(paymentHistoryVM.PaymentHistory.Status == SD.PaymentStatusPending)
+                ViewBag.AlreadyApprovedOrRejected = false;
+            else
+                ViewBag.AlreadyApprovedOrRejected = true;
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
             ViewBag.payoneermsg = false;
@@ -82,6 +88,7 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddPayment(PaymentHistoryVM paymentHistoryVM)
         {
+            ViewBag.AlreadyApprovedOrRejected = false;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
@@ -109,6 +116,7 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdatePayment(PaymentHistoryVM paymentHistoryVM)
         {
+            ViewBag.AlreadyApprovedOrRejected = false;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
@@ -119,16 +127,23 @@ namespace KTSite.Areas.UserRole.Controllers
             });
             if (ModelState.IsValid)
             {
-                PaymentSentAddress paymentSentAddress =
-                 _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.Id == paymentHistoryVM.PaymentHistory.SentFromAddressId).FirstOrDefault();
-                if (paymentSentAddress.PaymentType == SD.PaymentPaypal)//then fees will apply
+                PaymentHistory phFromDb = _unitOfWork.PaymentHistory.Get(paymentHistoryVM.PaymentHistory.Id);
+                if (phFromDb.Status == SD.PaymentStatusPending)
                 {
-                    paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount - SD.paypalOneTimeFee -
-                        (paymentHistoryVM.PaymentHistory.Amount * SD.paypalPercentFees / 100);
-                }
+                    ViewBag.AlreadyApprovedOrRejected = false;
+                    PaymentSentAddress paymentSentAddress =
+                     _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.Id == paymentHistoryVM.PaymentHistory.SentFromAddressId).FirstOrDefault();
+                    if (paymentSentAddress.PaymentType == SD.PaymentPaypal)//then fees will apply
+                    {
+                        paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount - SD.paypalOneTimeFee -
+                            (paymentHistoryVM.PaymentHistory.Amount * SD.paypalPercentFees / 100);
+                    }
                     _unitOfWork.PaymentHistory.update(paymentHistoryVM.PaymentHistory);
-                _unitOfWork.Save();
-                ViewBag.success = true;
+                    _unitOfWork.Save();
+                    ViewBag.success = true;
+                }
+                else
+                    ViewBag.AlreadyApprovedOrRejected = true;
             }
             return View(paymentHistoryVM);
         }

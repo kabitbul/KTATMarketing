@@ -16,7 +16,7 @@ function loadDataTable() {
                 "render": function (data) {
                     return `
                         <div class="text-center">
-                            <a href="/Admin/Category/Upsert/${data}" class="btn btn-success text-white" style="cursor:pointer">
+                            <a href="/Admin/Category/Upsert/${data}" class="btn btn-success text-white" style="cursor:pointer" data-toggle="tooltip" data-placement="top" title="Edit Category">
                                 <i class="fas fa-edit"></i>
                             </a>
                         </div>

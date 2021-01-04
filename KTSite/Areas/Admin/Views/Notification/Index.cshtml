@@ -48,10 +48,12 @@
     <td>@notification.DateMsg</td>
     <td>
         <div class="text-center">
-            <a href="/Admin/Notification/UpsertNotification/@notification.Id" class="btn btn-success text-white" style="cursor:pointer">
+            <a href="/Admin/Notification/UpsertNotification/@notification.Id" class="btn btn-success text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Edit Notification">
                 <i class="fas fa-edit"></i>
             </a>
-            <a onclick=Delete("/Admin/Notification/Delete/@notification.Id") class="btn btn-danger text-white" style="cursor:pointer">
+            <a onclick=Delete("/Admin/Notification/Delete/@notification.Id") class="btn btn-danger text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Delete Notification">
                 <i class="fas fa-trash-alt"></i>&nbsp;
             </a>
         </div>

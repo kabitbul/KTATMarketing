@@ -67,14 +67,16 @@
         @if (!ViewBag.Refunded(returnLabel.OrderId.ToString()))
             {
         <div class="text-center">
-            <a href="/UserRole/ReturnLabel/UpdateReturnLabel/@returnLabel.Id" class="btn btn-success text-white" style="cursor:pointer">
+            <a href="/UserRole/ReturnLabel/UpdateReturnLabel/@returnLabel.Id" class="btn btn-success text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Edit Return">
                 <i class="fas fa-edit"></i>
             </a>
         </div>}
             @if (!ViewBag.Refunded(returnLabel.OrderId.ToString()) && !ViewBag.HasLabel(returnLabel.Id.ToString()))
             {
                 <div class="text-center">
-                    <a onclick=Delete("/UserRole/ReturnLabel/Delete/@returnLabel.Id") class="btn btn-danger text-white" style="cursor:pointer">
+                    <a onclick=Delete("/UserRole/ReturnLabel/Delete/@returnLabel.Id") class="btn btn-danger text-white" style="cursor:pointer"
+                       data-toggle="tooltip" data-placement="top" title="Delete Return Request">
                         <i class="fas fa-trash-alt"></i>&nbsp;
                     </a>
                 </div>

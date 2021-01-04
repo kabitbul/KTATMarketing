@@ -77,13 +77,30 @@ if (ViewBag.CountArrivingFromChina > 1)
         <a href="/Admin/AdminVATask">You have a Pending Task! Please Refund the customer!</a>
     </h1>
 </div>}
-    else
+else
 if (ViewBag.TaskFromVA > 1)
-    {
+{
 <div style="background-color:lightgreen" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         <a href="/Admin/AdminVATask">You have @ViewBag.TaskFromVA Pending Tasks! Please Refund the customers!</a>
+    </h1>
+</div>}
+    @if (ViewBag.ComplaintsPending == 1)
+    {
+<div style="background-color:burlywood" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/Complaints">You have a Pending Ticket! Please Respond.</a>
+    </h1>
+</div>}
+else
+if (ViewBag.ComplaintsPending > 1)
+{
+<div style="background-color:burlywood" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/Complaints">You have @ViewBag.ComplaintsPending Pending Tickets! Please Respond.</a>
     </h1>
 </div>}
     <div>

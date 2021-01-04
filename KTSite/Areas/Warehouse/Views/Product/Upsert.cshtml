@@ -92,16 +92,38 @@
                 <div class="col-8">
                     <input type="hidden" asp-for="Product.CategoryId" class="form-control" />
                 </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.AvailableForSellers" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.MadeIn" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.ProductASIN" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.ProductURL" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.BestOffer" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.MinimumPrice" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.WarehouseChinaCost" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.ReStock" class="form-control" />
+                </div>
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         @if (Model.Product.Id != 0)
                         {
-                            <partial name="_EditAndBackToListButton" model="Model.Product.Id" />
-                        }
-                        else
-                        {
-                            <partial name="_CreateAndBackToListButton" />
-                        }
+            <partial name="_EditAndBackToListButton" model="Model.Product.Id" /> }
+        else
+        {
+            <partial name="_CreateAndBackToListButton" />}
                     </div>
                 </div>
             </div>

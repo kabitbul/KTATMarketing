@@ -59,11 +59,12 @@
                     {
                         <td>@paymentHistory.Status</td>
                     }
-        @if (paymentHistory.Status != "Approved")
+        @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusPending)
         {
     <td>
         <div class="text-center">
-            <a href="/UserRole/PaymentHistory/UpdatePayment/@paymentHistory.Id" class="btn btn-success text-white" style="cursor:pointer">
+            <a href="/UserRole/PaymentHistory/UpdatePayment/@paymentHistory.Id" class="btn btn-success text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Edit Payment">
                 <i class="fas fa-edit"></i>
             </a>
         </div>

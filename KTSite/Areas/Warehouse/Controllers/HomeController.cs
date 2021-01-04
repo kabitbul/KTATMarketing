@@ -42,7 +42,8 @@ namespace KTSite.Areas.Warehouse.Controllers
             int WaitingForProcess = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).Count();
             ViewBag.WaitingForProcess = WaitingForProcess;
             int WaitingForReturnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a => a.FileURL == null).Count();
-            int missingWeightCount = _unitOfWork.Product.GetAll().Where(a => a.Weight == 0 && a.InventoryCount > 0).Count();
+            int missingWeightCount = _unitOfWork.Product.GetAll().Where(a => a.Weight == 0 && (a.InventoryCount > 0 || 
+            _unitOfWork.ArrivingFromChina.GetAll().Where(b => b.ProductId == a.Id).Count()>0 )).Count();
             ViewBag.missingWeightCount = missingWeightCount;
             ViewBag.WaitingForReturnLabel = WaitingForReturnLabel;
             DateTime iterateDate = DateTime.Now.AddDays(-30);

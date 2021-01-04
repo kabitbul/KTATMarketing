@@ -32,10 +32,12 @@
     <td><textarea readonly>@userGuideline.Guideline</textarea></td>
     <td>
         <div class="text-center">
-            <a href="/Admin/UserGuideline/UpsertUserGuideline/@userGuideline.Id" class="btn btn-success text-white" style="cursor:pointer">
+            <a href="/Admin/UserGuideline/UpsertUserGuideline/@userGuideline.Id" class="btn btn-success text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Edit Guideline">
                 <i class="fas fa-edit"></i>
             </a>
-            <a onclick=Delete("/Admin/UserGuideline/Delete/@userGuideline.Id") class="btn btn-danger text-white" style="cursor:pointer">
+            <a onclick=Delete("/Admin/UserGuideline/Delete/@userGuideline.Id") class="btn btn-danger text-white" style="cursor:pointer"
+               data-toggle="tooltip" data-placement="top" title="Delete Guideline">
                 <i class="fas fa-trash-alt"></i>&nbsp;
             </a>
         </div>
