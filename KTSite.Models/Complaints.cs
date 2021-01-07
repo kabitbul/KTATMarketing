@@ -44,5 +44,6 @@ namespace KTSite.Models
         public int StoreId { get; set; }
         public string ProductName { get; set; }
         public string CustName { get; set; }
+        public string TicketResolution { get; set; }
     }
 }

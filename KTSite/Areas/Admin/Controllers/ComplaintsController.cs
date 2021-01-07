@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -67,27 +62,24 @@ namespace KTSite.Areas.Admin.Controllers
             string uName = "";
             uNameId = returnUserNameId();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
-            //if (Id == null)
-            //{
-                complaintsVM = new ComplaintsVM()
+            complaintsVM = new ComplaintsVM()
+            {
+                complaints = new Complaints(),
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusDone &&
+                                 !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                  Select(i => new SelectListItem
+                  {
+                      Text = i.CustName + "- Id: " + i.Id,
+                      Value = i.Id.ToString()
+                  }),
+                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.IsAdminStore).
+                Select(i => new SelectListItem
                 {
-                    complaints = new Complaints(),
-                    //OrdersList = _unitOfWork.Complaints.getAllOrdersForAdmin().
-                    //Select(i => new SelectListItem
-                    OrdersList = _unitOfWork.Order.GetAll().Where(a=>a.OrderStatus == SD.OrderStatusDone &&
-                                     !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
-                      Select(i => new SelectListItem
-                      {
-                        Text = i.CustName + "- Id: " + i.Id,
-                        Value = i.Id.ToString()
-                    }),
-                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a=>a.IsAdminStore).
-                    Select(i => new SelectListItem
-                    {
-                        Text = i.StoreName,
-                        Value = i.Id.ToString()
-                    })
-                };
+                    Text = i.StoreName,
+                    Value = i.Id.ToString()
+                }),
+                TicketResolutionList = SD.TicketResolution
+            };
             if (Id != null)
             {
                 complaintsVM.complaints.OrderId = Id;
@@ -120,7 +112,8 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             ViewBag.IsAdmin = IsAdmin;
             if(complaintsVM.complaints.OrderId == 0) 
@@ -143,8 +136,6 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                //   complaintsVM.complaints.IsAdmin = _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).
-                //     Select(a => a.IsAdmin).FirstOrDefault();
                 complaintsVM.complaints.IsAdmin = true;
                 complaintsVM.complaints.UserNameId = returnUserNameId();
                 if (complaintsVM.complaints.Id == 0)
@@ -152,6 +143,7 @@ namespace KTSite.Areas.Admin.Controllers
                     if (complaintsVM.GeneralNotOrderRelated)
                     {
                         complaintsVM.complaints.OrderId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     else//if its not a general ticket, get the storeid based on order
                     {
@@ -170,6 +162,7 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         complaintsVM.complaints.OrderId = 0;
                         complaintsVM.complaints.StoreId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     else
                     {
@@ -202,7 +195,8 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             return View(complaintsVM2);
         }
@@ -219,6 +213,7 @@ namespace KTSite.Areas.Admin.Controllers
             if(complaintsVM.GeneralNotOrderRelated)
                 {
                     complaintsVM.complaints.OrderId = 0;
+                    complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                 }
                 if (!complaintsVM.GeneralNotOrderRelated && complaintsVM.complaints.Solved &&
                     complaintsVM.complaints.NewTrackingNumber == null && complaintsVM.complaints.SolutionDesc == null)
@@ -251,7 +246,8 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
             }
             else
@@ -270,7 +266,8 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
             }
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;

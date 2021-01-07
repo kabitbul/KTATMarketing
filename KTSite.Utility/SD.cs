@@ -32,6 +32,9 @@ namespace KTSite.Utility
         public const double paypalOneTimeFee = 0.0;
         public const string MadeInChina = "China";
         public const string MadeInUSA = "USA";
+        public const string NotRelevant = "Not Relevant";
+        public const string Refund = "Refund Order";
+        public const string SendAgain = "Send Again";
         //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =
             @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
@@ -41,6 +44,12 @@ namespace KTSite.Utility
 				[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
      + @"([a-zA-Z0-9]+[\w-]+\.)+[a-zA-Z]{1}[a-zA-Z0-9-]{1,23})$";
 
+        public static List<SelectListItem> TicketResolution = new List<SelectListItem>()
+        {
+          //new SelectListItem() { Text=NotRelevant, Value="NotRelevant"},
+          new SelectListItem() {Text=Refund, Value=Refund},
+          new SelectListItem() {Text=SendAgain, Value=SendAgain}
+        };
         public static List<SelectListItem> MadeInState = new List<SelectListItem>()
         {
           new SelectListItem() { Text=MadeInChina, Value="China"},

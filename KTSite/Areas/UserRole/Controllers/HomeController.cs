@@ -47,6 +47,9 @@ namespace KTSite.Areas.UserRole.Controllers
             }
             ViewBag.PendingCount = PendingCount;
             ViewBag.PendingAmount = PendingAmount;
+            //ViewBag.PendingReturnLabel = _unitOfWork.ReturnLabel.GetAll().
+            //    Where(a => a.UserNameId == userNameId && !a.ReturnDelivered && !string.IsNullOrEmpty(a.FileURL) &&
+             //   a.DateCreated <= DateTime.Now.AddDays(-5)).Count();
             //Graph Data
             DateTime iterateDate = DateTime.Now.AddMonths(-1);
                 List<DataPoint> dataPoints = new List<DataPoint>();

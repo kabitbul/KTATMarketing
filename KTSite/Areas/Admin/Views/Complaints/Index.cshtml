@@ -38,6 +38,7 @@
                     <th>Description</th>
                     <th>Solution</th>
                     <th>Solved</th>
+                    <th>Ticket Resolution</th>
                     <th>New Tracking Number</th>
                     <th>Last Updated By</th>
                     <th>Date Updated</th>
@@ -72,6 +73,7 @@
     {
         <td>No</td>
 }
+            <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
             <td>@complaints.NewTrackingNumber</td>
             <td>@complaints.HandledBy</td>
             <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>

@@ -65,7 +65,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
             }
             else
@@ -83,7 +84,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
                 complaintsVM.complaints.OrderId = Id;
             }
@@ -116,7 +118,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             if (complaintsVM.complaints.OrderId == 0)
             {
@@ -145,6 +148,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     if (complaintsVM.GeneralNotOrderRelated)
                     {
                         complaintsVM.complaints.OrderId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     else//if its not a general ticket, get the storeid based on order
                     {
@@ -163,6 +167,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         complaintsVM.complaints.OrderId = 0;
                         //complaintsVM.complaints.StoreId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
@@ -188,7 +193,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             return View(complaintsVM2);
         }
@@ -205,6 +211,7 @@ namespace KTSite.Areas.UserRole.Controllers
                     if (complaintsVM.GeneralNotOrderRelated)
                     {
                         complaintsVM.complaints.OrderId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
@@ -228,7 +235,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             return View(complaintsVM2);
         }

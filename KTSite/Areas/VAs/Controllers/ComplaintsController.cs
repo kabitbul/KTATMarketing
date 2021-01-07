@@ -67,9 +67,7 @@ namespace KTSite.Areas.VAs.Controllers
             //{
                 complaintsVM = new ComplaintsVM()
                 {
-                    complaints = new Complaints(),
-                    // OrdersList = _unitOfWork.Complaints.getAllOrdersForAdmin().
-                    //Select(i => new SelectListItem
+                    complaints = new Complaints(), 
                     OrdersList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusDone &&
                                      !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
                       Select(i => new SelectListItem
@@ -82,7 +80,8 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 }; 
             if (Id != null)
             {
@@ -116,7 +115,8 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             ViewBag.IsAdmin = IsAdmin;
             if (complaintsVM.complaints.OrderId == 0)
@@ -140,8 +140,6 @@ namespace KTSite.Areas.VAs.Controllers
             string userNameId = returnUserNameId();
             if (ModelState.IsValid)
             {
-                //complaintsVM.complaints.IsAdmin = _unitOfWork.Order.GetAll().Where(a => a.Id == complaintsVM.complaints.OrderId).
-                //    Select(a => a.IsAdmin).FirstOrDefault();
                 complaintsVM.complaints.IsAdmin = true;
                 complaintsVM.complaints.UserNameId = userNameId;
                 if (complaintsVM.complaints.Id == 0)
@@ -149,6 +147,7 @@ namespace KTSite.Areas.VAs.Controllers
                     if (complaintsVM.GeneralNotOrderRelated)
                     {
                         complaintsVM.complaints.OrderId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     else//if its not a general ticket, get the storeid based on order
                     {
@@ -165,6 +164,7 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         complaintsVM.complaints.OrderId = 0;
                         //complaintsVM.complaints.StoreId = 0;
+                        complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                     }
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
                 }
@@ -188,7 +188,8 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                TicketResolutionList = SD.TicketResolution
             };
             return View(complaintsVM2);
         }
@@ -205,6 +206,7 @@ namespace KTSite.Areas.VAs.Controllers
                 if (complaintsVM.GeneralNotOrderRelated)
                 {
                     complaintsVM.complaints.OrderId = 0;
+                    complaintsVM.complaints.TicketResolution = SD.NotRelevant;
                 }
                 if (!complaintsVM.GeneralNotOrderRelated && complaintsVM.complaints.Solved &&
                     complaintsVM.complaints.NewTrackingNumber == null && complaintsVM.complaints.SolutionDesc == null)
@@ -237,7 +239,8 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
             }
             else
@@ -256,7 +259,8 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         Text = i.StoreName,
                         Value = i.Id.ToString()
-                    })
+                    }),
+                    TicketResolutionList = SD.TicketResolution
                 };
             }
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;

@@ -12,6 +12,7 @@ namespace KTSite.Models
         public Complaints complaints { get; set; }
         public IEnumerable<SelectListItem> OrdersList { get; set; }
         public IEnumerable<SelectListItem> StoresList { get; set; }
+        public IEnumerable<SelectListItem> TicketResolutionList { get; set; }
         [DefaultValue(false)]
         public bool GeneralNotOrderRelated { get; set; }
     }

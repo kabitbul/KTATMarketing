@@ -30,6 +30,7 @@
                 <th>Description</th>
                 <th>Solution</th>
                 <th>Solved</th>
+                <th>Ticket Resolution</th>
                 <th>Last Updated By</th>
                 <th>Date Updated</th>
                 <th>New Tracking Number</th>
@@ -45,10 +46,12 @@
         <td>@complaints.Id</td>
         @if (complaints.UserNameId != null)
         {
-    <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td> }
-                    else
-                    {
-    <td></td>}
+    <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td>
+ }
+else
+{
+    <td></td>
+}
         <td>@complaints.OrderId</td>
         <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
         <td>@complaints.ProductName</td>
@@ -57,26 +60,31 @@
         <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
         @if (@complaints.Solved)
         {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
+    <td>Yes</td>
+ }
+else
+{
+    <td>No</td>
+}
+        <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
         <td>@complaints.HandledBy</td>
         <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
         <td>@complaints.NewTrackingNumber</td>
         @if (ViewBag.Refunded(complaints.OrderId.ToString()))
         {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
-        @if (@complaints.WarehouseResponsibility)
-        {
-    <td>Yes</td> }
-                    else
-                    {
+    <td>Yes</td>
+ }
+else
+{
     <td>No</td>
 }
+        @if (@complaints.WarehouseResponsibility)
+        {
+    <td>Yes</td>
+ }
+else
+{
+    <td>No</td>}
         <td>
             <div class="text-center">
                 <input type="hidden" asp-for="@complaints.Id" />
@@ -91,22 +99,25 @@
                 <i class="fas fa-edit"></i>
             </a>
         </div>
-    </td> }
-                    else
-                    {
-                        if (!ViewBag.Refunded(complaints.OrderId.ToString()))
-                        {
+    </td>
+ }
+else
+{
+    if (!ViewBag.Refunded(complaints.OrderId.ToString()))
+    {
     <td>
         <div class="text-center">
             <a href="/VAs/Refund/AddRefund/@complaints.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
                 <i class="fas fa-dollar-sign"></i>
             </a>
         </div>
-    </td> }
-                        else
-                        {
-    <td></td>}
-                    }
+    </td>
+ }
+else
+{
+    <td></td>
+}
+}
     </tr>}
 
     </table>

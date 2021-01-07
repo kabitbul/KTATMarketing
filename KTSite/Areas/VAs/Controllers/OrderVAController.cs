@@ -34,10 +34,15 @@ namespace KTSite.Areas.VAs.Controllers
                                              {
                                                  adminVATask
                                              }).Select(a => a.adminVATask).Count();
+            //ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
             dynamic myModel = new System.Dynamic.ExpandoObject();
             ViewBag.errSaveInProgress = false;
             return View(myModel);
         }
+        //public bool returnIsRefunded(long OrderId)
+        //{
+        //    return _unitOfWork.Refund.GetAll().Any(a => a.OrderId == OrderId);
+        //}
         //allow return if not returned yet or returned part of total quantity
         public bool allowRetrun(string orderId)
         {

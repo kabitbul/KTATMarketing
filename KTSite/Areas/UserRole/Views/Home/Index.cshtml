@@ -9,35 +9,52 @@
         @if (ViewBag.PendingCount == 0)
         {
 <h1 style="font-size: 20px">No Pending Payments</h1> }
-            else
-            {
+else
+{
 <h1 style="font-size: 20px">
     <a href="PaymentHistory">You Have @ViewBag.PendingAmount$ waiting for Admin Approval</a>
 </h1>}
     </div>
     &nbsp;
+    @*@if (ViewBag.PendingReturnLabel == 1)
+    {
+<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-6">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="UserRole/ReturnLabel">Please Note, a return label is waiting for your update. You need to add tracking number and mark as delivered (if arrived to warehouse) in order to be refunded.</a>
+    </h1>
+</div>}
+else if (ViewBag.PendingReturnLabel > 1)
+{
+<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-6">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="UserRole/ReturnLabel">
+            Please Note, @ViewBag.PendingReturnLabel return labels are waiting for your update. You need to add tracking number and mark as delivered (if arrived to warehouse) in order to be refunded.
+        </a>
+    </h1>
+</div>}*@
     @if (!ViewBag.NotificationEmpty)
     {
-    <div class="text-left display-4 p-2 border rounded col-4">
-        <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
-            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-            Important Admin Notifications:
-        </h1>
-        <ul>
-            @foreach (Notification notification in @ViewBag.NotificationList)
+<div class="text-left display-4 p-2 border rounded col-4">
+    <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        Important Admin Notifications:
+    </h1>
+    <ul>
+        @foreach (Notification notification in @ViewBag.NotificationList)
+        {
+            if (notification.DateMsg.Date >= DateTime.Now.Date.AddDays(-1))
             {
-                if (notification.DateMsg.Date >= DateTime.Now.Date.AddDays(-1))
-                {
-                  <li class="display-4" style="font-size:20px;font-weight:bold;color:blue">@notification.Message</li>
+<li class="display-4" style="font-size:20px;font-weight:bold;color:blue">@notification.Message</li>
  }
-                            else
-                            {
-        <li class="display-4" style="font-size:20px">@notification.Message</li>}
+else
+{
+<li class="display-4" style="font-size:20px">@notification.Message</li>}
 
-                        }
-        </ul>
-    </div>
-    }
+                }
+    </ul>
+</div>}
 </div>
 &nbsp;
 <div>

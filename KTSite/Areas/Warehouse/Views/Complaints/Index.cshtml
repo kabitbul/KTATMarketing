@@ -27,6 +27,7 @@
                     <th>Description</th>
                     <th>Solution</th>
                     <th>Solved</th>
+                    <th>Ticket Resolution</th>
                     <th>New Tracking Number</th>
                     <th>Last Updated By</th>
                     <th>Date Updated</th>
@@ -43,18 +44,23 @@
             <td>@complaints.CustName</td>
             @if (complaints.StoreId != 0)
             {
-        <td>@ViewBag.getStore(complaints.StoreId.ToString()).ToString()</td> }
-                        else
-                        {
-        <td></td>}
+        <td>@ViewBag.getStore(complaints.StoreId.ToString()).ToString()</td>
+ }
+    else
+    {
+        <td></td>
+}
             <td><textarea readonly>@complaints.Description</textarea></td>
             <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
             @if (@complaints.Solved)
             {
-        <td>Yes</td> }
-                        else
-                        {
-        <td>No</td>}
+        <td>Yes</td>
+ }
+    else
+    {
+        <td>No</td>
+}
+            <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
             <td>@complaints.NewTrackingNumber</td>
             <td>@complaints.HandledBy</td>
             <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
@@ -66,10 +72,12 @@
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
-        </td> }
-                        else
-                        {
-        <td></td>}
+        </td>
+ }
+    else
+    {
+        <td></td>
+}
         </tr>
             }
 

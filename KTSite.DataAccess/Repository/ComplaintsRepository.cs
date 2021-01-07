@@ -45,6 +45,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.NewTrackingNumber = complaints.NewTrackingNumber;
                 objFromDb.WarehouseResponsibility = complaints.WarehouseResponsibility;
                 objFromDb.ModifiedDate = complaints.ModifiedDate;
+                objFromDb.TicketResolution = complaints.TicketResolution;
             }
         }
     }
