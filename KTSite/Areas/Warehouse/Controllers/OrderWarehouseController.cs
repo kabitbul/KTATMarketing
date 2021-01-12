@@ -123,7 +123,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
             IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).
-                OrderBy(a => getProductName(a.ProductId)).Take(300);
+                OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a=>a.Quantity).Take(300);
             ViewBag.errSaveInProgress = false;
             int lineCounter = 0;
             bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
