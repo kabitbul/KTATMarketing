@@ -4,14 +4,16 @@ using KTSite.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KTSite.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210117084914_paymentBalanceBackup")]
+    partial class paymentBalanceBackup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,9 +347,11 @@ namespace KTSite.DataAccess.Migrations
 
                     b.Property<string>("UserNameId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserNameId");
 
                     b.ToTable("PaymentBalanceBackups");
                 });
@@ -879,6 +883,15 @@ namespace KTSite.DataAccess.Migrations
                 });
 
             modelBuilder.Entity("KTSite.Models.PaymentBalance", b =>
+                {
+                    b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentBalanceBackup", b =>
                 {
                     b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()

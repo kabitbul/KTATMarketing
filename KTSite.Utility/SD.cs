@@ -35,6 +35,7 @@ namespace KTSite.Utility
         public const string NotRelevant = "Not Relevant";
         public const string Refund = "Refund Order";
         public const string SendAgain = "Send Again";
+        public const double payForCounting = 0.02;
         //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =
             @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

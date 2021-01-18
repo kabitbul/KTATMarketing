@@ -103,6 +103,23 @@ if (ViewBag.ComplaintsPending > 1)
         <a href="/Admin/Complaints">You have @ViewBag.ComplaintsPending Pending Tickets! Please Respond.</a>
     </h1>
 </div>}
+    @if (ViewBag.ReturnLabelRefund == 1)
+    {
+<div style="background-color:aquamarine" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/ReturnLabel">A return Label has been delivered! Please Refund.</a>
+    </h1>
+</div>}
+else
+if (ViewBag.ReturnLabelRefund > 1)
+{
+<div style="background-color:aquamarine" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/ReturnLabel">@ViewBag.ReturnLabelRefund return Labels has been delivered! Please Refund.</a>
+    </h1>
+</div>}
     <div>
         <div id="chartContainer" style="height: 370px; width: 70%;"></div>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>

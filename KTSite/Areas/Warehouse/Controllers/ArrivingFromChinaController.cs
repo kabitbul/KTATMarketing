@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -86,13 +81,25 @@ namespace KTSite.Areas.Warehouse.Controllers
             };
             if (ModelState.IsValid)
             {
-
+                if(arrivingFromChinaVM.arrivingFromChina.Quantity > 0)
+                {
+                    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+                    paymentBalance.Balance = paymentBalance.Balance - arrivingFromChinaVM.arrivingFromChina.Quantity * SD.payForCounting;
+                    PaymentHistory paymentHistory = new PaymentHistory();
+                    int sentAddressId = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.PaymentTypeAddress.StartsWith("payForCount") && a.IsAdmin)
+                        .Select(a => a.Id).FirstOrDefault();
+                    paymentHistory.SentFromAddressId = sentAddressId;
+                    paymentHistory.Status = SD.PaymentStatusApproved;
+                    paymentHistory.PayDate = DateTime.Now.Date;
+                    paymentHistory.Amount = (arrivingFromChinaVM.arrivingFromChina.Quantity * SD.payForCounting);
+                    paymentHistory.UserNameId = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
+                    _unitOfWork.PaymentHistory.Add(paymentHistory);
+                }
                _unitOfWork.ArrivingFromChina.Add(arrivingFromChinaVM.arrivingFromChina);
                     _unitOfWork.Save();
                 ViewBag.success = true;
             }
             return View(arrivingFromChinaVM2);
-            //return RedirectToAction(nameof(Index));
         }
         
         [HttpPost]
@@ -101,6 +108,10 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
+            //get original record
+            ArrivingFromChina arrivingFromChinaOld = _unitOfWork.ArrivingFromChina.GetAll().
+                                          Where(a => a.Id == arrivingFromChinaVM.arrivingFromChina.Id).FirstOrDefault();
+            double oldQuantity = arrivingFromChinaOld.Quantity;
             ArrivingFromChinaVM arrivingFromChinaVM2 = new ArrivingFromChinaVM()
             {
                 arrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().Where(a => a.Id == arrivingFromChinaVM.arrivingFromChina.Id).FirstOrDefault(),
@@ -113,7 +124,23 @@ namespace KTSite.Areas.Warehouse.Controllers
             };
             if (ModelState.IsValid)
             {
-                    _unitOfWork.ArrivingFromChina.update(arrivingFromChinaVM.arrivingFromChina);
+                if (arrivingFromChinaVM.arrivingFromChina.Quantity != oldQuantity)
+                {
+                    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+                    paymentBalance.Balance = paymentBalance.Balance - 
+                          (arrivingFromChinaVM.arrivingFromChina.Quantity - oldQuantity) * SD.payForCounting;
+                    PaymentHistory paymentHistory = new PaymentHistory();
+                    int sentAddressId = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.PaymentTypeAddress.StartsWith("payForCount") && a.IsAdmin)
+                    .Select(a => a.Id).FirstOrDefault();
+                    paymentHistory.SentFromAddressId = sentAddressId;
+                    paymentHistory.Status = SD.PaymentStatusApproved;
+                    paymentHistory.PayDate = DateTime.Now.Date;
+                    paymentHistory.Amount = (arrivingFromChinaVM.arrivingFromChina.Quantity - oldQuantity) * SD.payForCounting;
+                    paymentHistory.UserNameId = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
+                    _unitOfWork.PaymentHistory.Add(paymentHistory);
+                }
+
+                _unitOfWork.ArrivingFromChina.update(arrivingFromChinaVM.arrivingFromChina);
                     _unitOfWork.Save();
                 ViewBag.success = true;
             }

@@ -37,6 +37,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<UserGuideline> UserGuidelines { get; set; }
         public DbSet<ArrivingFromChina> arrivingFromChinas { get; set; }
         public DbSet<AdminVATask> adminVaTasks { get; set; }
-
+        public DbSet<PaymentBalanceBackup> PaymentBalanceBackups { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace KTSite.Areas.Admin.Controllers
                                                  adminVATask
                                              }).Select(a => a.adminVATask).Count();
                 ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
-                //ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
+                ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
                 var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0);
                 double totalInventoryValue = 0; 
                 foreach(Product prod in product)
