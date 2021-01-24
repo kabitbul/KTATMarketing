@@ -27,6 +27,7 @@ namespace KTSite.DataAccess.Repository
             UserGuideline = new UserGuidelineRepository(_db);
             ArrivingFromChina = new ArrivingFromChinaRepository(_db);
             adminVATask = new AdminVATaskRepository(_db);
+            paymentBalanceBackup = new PaymentBalanceBackupRepository(_db);
             SP_Call = new SP_Call(_db);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
@@ -47,6 +48,7 @@ namespace KTSite.DataAccess.Repository
         public IUserGuidelineRepository UserGuideline { get; private set; }
         public IArrivingFromChinaRepository ArrivingFromChina { get; private set; }
         public IAdminVATaskRepository adminVATask { get; private set; }
+        public IPaymentBalanceBackupRepository paymentBalanceBackup { get; private set; }
         public ISP_Call SP_Call { get; private set; }
 
         public void Dispose()
