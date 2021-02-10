@@ -1,10 +1,7 @@
 ﻿using KTSite.DataAccess.Data;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace KTSite.DataAccess.Repository
 {
@@ -25,6 +22,10 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.RefundQuantity = refund.RefundQuantity;
                 objFromDb.RefundedBy = refund.RefundedBy;
                 objFromDb.RefundDate = refund.RefundDate;
+                objFromDb.Cost = refund.Cost;
+                objFromDb.Quantity = refund.Quantity;
+                objFromDb.UserNameId = refund.UserNameId;
+                objFromDb.StoreNameId = refund.StoreNameId;
             }
         }
     }

@@ -62,7 +62,9 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.success = true;
             ViewBag.InsufficientFunds = false;
             ViewBag.failed = false;
+            ViewBag.hideAddBtn = false;
             orderVM.Orders.UsDate = DateTime.Now;
+
             return View(orderVM);
         }
         public IActionResult UpdateOrder(int id)
@@ -309,6 +311,7 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.uNameId = uNameId;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
+            ViewBag.hideAddBtn = true;
             PaymentBalance paymentBalance = userBalance(uNameId);
             OrderVM orderVM2 = new OrderVM()
             {
@@ -338,15 +341,23 @@ namespace KTSite.Areas.UserRole.Controllers
                 ViewBag.InsufficientFunds = false;
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
                 {
-                    orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                    orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
-                    orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
-                    orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
-                    _unitOfWork.Order.Add(orderVM.Orders);
-                    updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                    updateSellerBalance(orderVM.Orders.Cost);
-                    updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                    _unitOfWork.Save();
+                    Order lastOrd = _unitOfWork.Order.GetAll().OrderByDescending(a => a.Id).Take(1).FirstOrDefault();
+                    if (lastOrd.CustName != orderVM.Orders.CustName ||
+                        lastOrd.ProductId != orderVM.Orders.ProductId ||
+                        lastOrd.CustStreet1 != orderVM.Orders.CustStreet1 ||
+                        lastOrd.CustZipCode != orderVM.Orders.CustZipCode ||
+                        lastOrd.Quantity != orderVM.Orders.Quantity)
+                    {
+                        orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                        orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                        orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                        orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
+                        _unitOfWork.Order.Add(orderVM.Orders);
+                        updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                        updateSellerBalance(orderVM.Orders.Cost);
+                        updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                        _unitOfWork.Save();
+                    }
                     ViewBag.success = true;
                     ViewBag.failed = false;
                 }

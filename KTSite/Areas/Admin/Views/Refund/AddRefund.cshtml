@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.refund.OrderId, Model.OrdersList,
-                                 new { @class = "form-control" })
+                                                     new { @class = "form-control" })
                         <span asp-validation-for="refund.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -53,6 +53,18 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="refund.RefundDate" class="form-control" value=@DateTime.Now />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.Cost" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.Quantity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.UserNameId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="refund.StoreNameId" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">

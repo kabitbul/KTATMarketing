@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -27,17 +22,29 @@ namespace KTSite.Areas.VAs.Controllers
         {
             var refund = _unitOfWork.Refund.GetAll();
             ViewBag.getStore =
-               new Func<string, string>(getStore);
+               new Func<int, string>(getStore);
+            ViewBag.getUserName = new Func<string, string>(returnUserName);
+            ViewBag.getRefundAmount = new Func<string, string, string, string>(returnRefundAmount);
             return View(refund);
+        }
+        public string returnUserName(string UserNameId)
+        {
+            return
+                _unitOfWork.ApplicationUser.Get(UserNameId).Name;
+        }
+        public string returnRefundAmount(string Cost, string Quantity, string quantityRefund)
+        {
+            double costPerone = Convert.ToDouble(Cost) / Convert.ToInt32(Quantity);
+            return (costPerone * Convert.ToDouble(quantityRefund)).ToString("0.00") + "$";
+
         }
         public string getUserName(string unameId)
         {
             return _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == unameId).Select(a => a.Name).FirstOrDefault();
         }
-        public string getStore(string orderId)
+        public string getStore(int storeNameId)
         {
-             int storeId = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(orderId)).Select(a => a.StoreNameId).FirstOrDefault();
-             return _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == storeId).Select(a => a.StoreName).FirstOrDefault();
+            return _unitOfWork.UserStoreName.Get(storeNameId).StoreName;
         }
         public IActionResult AddRefund(long? Id)//orderId
         {
@@ -45,7 +52,7 @@ namespace KTSite.Areas.VAs.Controllers
             RefundVM refundVM = new RefundVM();
             string uNameId = "";
             string uName = "";
-            
+
             uNameId = returnUserNameId();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name)).FirstOrDefault();
             if (Id == null)
@@ -57,14 +64,14 @@ namespace KTSite.Areas.VAs.Controllers
                     !_unitOfWork.Refund.GetAll().Any(q => q.OrderId == a.Id)).
                     Select(i => new SelectListItem
                     {
-                        Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity ,
+                        Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity,
                         Value = i.Id.ToString()
                     })
                 };
                 ViewBag.UName = uName;
                 ViewBag.ShowMsg = false;
-                ViewBag.success = true;
                 ViewBag.failed = false;
+                ViewBag.success = true;
                 return View(refundVM);
             }
             else
@@ -75,7 +82,7 @@ namespace KTSite.Areas.VAs.Controllers
                     OrdersList = _unitOfWork.Order.GetAll().Where(a => a.Id == Id).
                     Select(i => new SelectListItem
                     {
-                        Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity ,
+                        Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity,
                         Value = i.Id.ToString()
                     })
                 };
@@ -86,8 +93,8 @@ namespace KTSite.Areas.VAs.Controllers
                 }
                 ViewBag.UName = uName;
                 ViewBag.ShowMsg = false;
-                ViewBag.success = true;
                 ViewBag.failed = false;
+                ViewBag.success = true;
                 return View(refundVM);
             }
         }
@@ -100,12 +107,12 @@ namespace KTSite.Areas.VAs.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                Order order  = _unitOfWork.Order.GetAll().Where(a => a.Id == refundVM.refund.OrderId).FirstOrDefault();
-                if(refundVM.refund.FullRefund)
+                Order order = _unitOfWork.Order.Get(refundVM.refund.OrderId);
+                if (refundVM.refund.FullRefund)
                 {
                     refundVM.refund.RefundQuantity = order.Quantity;
                 }
-                if(refundVM.refund.RefundQuantity > order.Quantity || refundVM.refund.RefundQuantity <= 0)
+                if (refundVM.refund.RefundQuantity > order.Quantity || refundVM.refund.RefundQuantity <= 0)
                 {
                     ViewBag.ErrAmount = true;
                     errAmount = true;
@@ -116,20 +123,20 @@ namespace KTSite.Areas.VAs.Controllers
                 }
                 if (!errAmount)
                 {
-                    bool ownByWarehouse = _unitOfWork.Product.GetAll().Where(a => a.Id == order.ProductId).Select(a=>a.OwnByWarehouse).FirstOrDefault();
+                    bool ownByWarehouse = _unitOfWork.Product.Get(order.ProductId).OwnByWarehouse;
                     PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == order.UserNameId).FirstOrDefault();
                     // add refund amount to seller balance
                     double costPerOne = order.Cost / order.Quantity;
-                    paymentBalance.Balance = paymentBalance.Balance + costPerOne*refundVM.refund.RefundQuantity;
+                    paymentBalance.Balance = paymentBalance.Balance + costPerOne * refundVM.refund.RefundQuantity;
                     PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
                     //remove from warehouse if its his product
                     if (ownByWarehouse)
                     {
-                        double productCost = _unitOfWork.Product.GetAll().Where(a => a.Id == order.ProductId).Select(a=>a.Cost).FirstOrDefault();
+                        double productCost = _unitOfWork.Product.Get(order.ProductId).Cost;
                         warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * productCost;
                     }
                     //if charge warehouse for shipping
-                    if(refundVM.refund.ChargeWarehouse)
+                    if (refundVM.refund.ChargeWarehouse)
                     {
                         int prodId = _unitOfWork.Order.Get(refundVM.refund.OrderId).ProductId;
                         bool ownByWarehouse2 = _unitOfWork.Product.Get(prodId).OwnByWarehouse;
@@ -150,11 +157,16 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         order.OrderStatus = SD.OrderStatusPartialRefund;
                     }
+                    refundVM.refund.Cost = order.Cost;
+                    refundVM.refund.Quantity = order.Quantity;
+                    refundVM.refund.UserNameId = order.UserNameId;
+                    refundVM.refund.StoreNameId = order.StoreNameId;
                     _unitOfWork.Order.update(order);
                     _unitOfWork.Refund.Add(refundVM.refund);
                     _unitOfWork.Save();
                     ViewBag.success = true;
                 }
+
                 //return RedirectToAction(nameof(Index));
             }
             RefundVM refundVM2 = new RefundVM()
@@ -162,11 +174,11 @@ namespace KTSite.Areas.VAs.Controllers
                 refund = new Refund(),
                 OrdersList = _unitOfWork.Order.GetAll().Where(a => a.Id == refundVM.refund.OrderId).
                  Select(i => new SelectListItem
-                {
-                    Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity ,
-                    Value = i.Id.ToString()
-                })
-             };
+                 {
+                     Text = i.CustName + "- Id: " + i.Id + " Quantity: " + i.Quantity,
+                     Value = i.Id.ToString()
+                 })
+            };
             return View(refundVM2);
         }
         public string returnUserNameId()
@@ -177,14 +189,14 @@ namespace KTSite.Areas.VAs.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitOfWork.Product.GetAll(includePoperties:"Category");
+            var allObj = _unitOfWork.Product.GetAll(includePoperties: "Category");
             return Json(new { data = allObj });
         }
         [HttpDelete]
         public IActionResult Delete(int id)
         {
             var objFromDb = _unitOfWork.Product.Get(id);
-            if(objFromDb == null)
+            if (objFromDb == null)
             {
                 return Json(new { success = false, message = "Error While Deleting" });
             }

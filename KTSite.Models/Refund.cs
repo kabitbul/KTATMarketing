@@ -26,6 +26,10 @@ namespace KTSite.Models
         [DefaultValue("Now")]
         public DateTime RefundDate { get; set; }
 
+        public double Cost { get; set; }
+        public int Quantity { get; set; }
+        public string UserNameId { get; set; }
+        public int StoreNameId { get; set; }
         [NotMapped]
         public bool FullRefund { get; set; }
         [NotMapped]

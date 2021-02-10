@@ -137,7 +137,6 @@ namespace KTSite.Areas.Admin.Controllers
                 }
                 iterateDate = iterateDate.AddDays(1);
                 }
-
         }
     }
 }

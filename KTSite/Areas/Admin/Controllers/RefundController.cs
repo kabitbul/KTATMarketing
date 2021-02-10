@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -27,21 +22,19 @@ namespace KTSite.Areas.Admin.Controllers
         {
             var refund = _unitOfWork.Refund.GetAll();
             ViewBag.getStore =
-               new Func<string, string>(getStore);
+               new Func<int, string>(getStore);
             ViewBag.getUserName = new Func<string, string>(returnUserName);
-            ViewBag.getRefundAmount = new Func<string, string, string>(returnRefundAmount);
+            ViewBag.getRefundAmount = new Func<string, string, string, string>(returnRefundAmount);
             return View(refund);
         }
-        public string returnUserName(string OrderId)
+        public string returnUserName(string UserNameId)
         {
-            Order order = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(OrderId)).FirstOrDefault();
-            return 
-                _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == order.UserNameId).Select(a => a.Name).FirstOrDefault();
+            return
+                _unitOfWork.ApplicationUser.Get(UserNameId).Name;
         }
-        public string returnRefundAmount(string OrderId,string quantityRefund)
+        public string returnRefundAmount(string Cost, string Quantity,string quantityRefund)
         {
-            Order order = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(OrderId)).FirstOrDefault();
-            double costPerone = order.Cost / order.Quantity;
+            double costPerone = Convert.ToDouble(Cost) / Convert.ToInt32(Quantity);
             return (costPerone * Convert.ToDouble(quantityRefund)).ToString("0.00") + "$";
 
         }
@@ -49,10 +42,9 @@ namespace KTSite.Areas.Admin.Controllers
         {
             return _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == unameId).Select(a => a.Name).FirstOrDefault();
         }
-        public string getStore(string orderId)
+        public string getStore(int storeNameId)
         {
-             int storeId = _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(orderId)).Select(a => a.StoreNameId).FirstOrDefault();
-             return _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == storeId).Select(a => a.StoreName).FirstOrDefault();
+            return _unitOfWork.UserStoreName.Get(storeNameId).StoreName;
         }
         public IActionResult AddRefund(long? Id)//orderId
         {
@@ -115,7 +107,7 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                Order order  = _unitOfWork.Order.GetAll().Where(a => a.Id == refundVM.refund.OrderId).FirstOrDefault();
+                Order order = _unitOfWork.Order.Get(refundVM.refund.OrderId); 
                 if(refundVM.refund.FullRefund)
                 {
                     refundVM.refund.RefundQuantity = order.Quantity;
@@ -131,7 +123,7 @@ namespace KTSite.Areas.Admin.Controllers
                 }
                 if (!errAmount)
                 {
-                    bool ownByWarehouse = _unitOfWork.Product.GetAll().Where(a => a.Id == order.ProductId).Select(a=>a.OwnByWarehouse).FirstOrDefault();
+                    bool ownByWarehouse = _unitOfWork.Product.Get(order.ProductId).OwnByWarehouse;
                     PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == order.UserNameId).FirstOrDefault();
                     // add refund amount to seller balance
                     double costPerOne = order.Cost / order.Quantity;
@@ -140,7 +132,7 @@ namespace KTSite.Areas.Admin.Controllers
                     //remove from warehouse if its his product
                     if (ownByWarehouse)
                     {
-                        double productCost = _unitOfWork.Product.GetAll().Where(a => a.Id == order.ProductId).Select(a=>a.Cost).FirstOrDefault();
+                        double productCost = _unitOfWork.Product.Get(order.ProductId).Cost;
                         warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * productCost;
                     }
                     //if charge warehouse for shipping
@@ -165,14 +157,15 @@ namespace KTSite.Areas.Admin.Controllers
                     {
                         order.OrderStatus = SD.OrderStatusPartialRefund;
                     }
+                    refundVM.refund.Cost = order.Cost;
+                    refundVM.refund.Quantity = order.Quantity;
+                    refundVM.refund.UserNameId = order.UserNameId;
+                    refundVM.refund.StoreNameId = order.StoreNameId;
                     _unitOfWork.Order.update(order);
                     _unitOfWork.Refund.Add(refundVM.refund);
                     _unitOfWork.Save();
                     ViewBag.success = true;
                 }
-                
-                
-
 
                 //return RedirectToAction(nameof(Index));
             }

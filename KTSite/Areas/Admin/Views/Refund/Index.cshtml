@@ -35,17 +35,17 @@
         <tr>
             <td>@refund.Id</td>
             <td>@refund.OrderId</td>
-            <td>@ViewBag.getUserName(refund.OrderId.ToString()).ToString()</td>
+            <td>@ViewBag.getUserName(refund.UserNameId)</td>
             @if (refund.OrderId != 0)//store
             {
-        <td>@ViewBag.getStore(refund.OrderId.ToString()).ToString()</td>
+        <td>@ViewBag.getStore(refund.StoreNameId)</td>
  }
     else
     {
         <td></td>
 }
             <td>@refund.RefundQuantity</td>
-            <td>@ViewBag.getRefundAmount(refund.OrderId.ToString(),refund.RefundQuantity.ToString()).ToString()</td>
+            <td>@ViewBag.getRefundAmount(refund.Cost.ToString(), refund.Quantity.ToString(),refund.RefundQuantity.ToString()).ToString()</td>
             <td>@refund.RefundedBy</td>
             <td>@refund.RefundDate</td>
         </tr>

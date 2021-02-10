@@ -227,6 +227,121 @@ namespace KTSite.Areas.Warehouse.Controllers
             return File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", fileName);
         }
         [HttpPost]
+        public ActionResult ExportNew()
+        {
+            string fileName =
+                    DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + "_NEW.csv";
+            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).
+                OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a => a.Quantity).Take(300);
+            ViewBag.errSaveInProgress = false;
+            int lineCounter = 0;
+            bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
+            if (existInProgress)
+            {
+                dynamic myModel = new System.Dynamic.ExpandoObject();
+                myModel.Order = _unitOfWork.Order.GetAll();
+                myModel.ordercsv = new List<KTSite.Areas.Warehouse.Views.OrderWarehouse.CSVOrderLine>();
+                ViewBag.getProductName =
+                   new Func<int, string>(returnProductName);
+                ViewBag.getStoreName =
+                   new Func<int, string>(returnStoreName);
+                ViewBag.getCost =
+                              new Func<int, double, double>(returnCost);
+                ViewBag.errSaveInProgress = false;
+                ViewBag.ExistInProgress = true;
+                ViewBag.NoOrdersMsg = false;
+                //throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
+                return View("Index", myModel);
+            }
+            if (orderList.Count() == 0)
+            {
+                dynamic myModel = new System.Dynamic.ExpandoObject();
+                myModel.Order = _unitOfWork.Order.GetAll();
+                myModel.ordercsv = new List<KTSite.Areas.Warehouse.Views.OrderWarehouse.CSVOrderLine>();
+                ViewBag.getProductName =
+                   new Func<int, string>(returnProductName);
+                ViewBag.getStoreName =
+                   new Func<int, string>(returnStoreName);
+                ViewBag.getCost =
+                              new Func<int, double, double>(returnCost);
+                ViewBag.errSaveInProgress = false;
+                ViewBag.ExistInProgress = false;
+                ViewBag.NoOrdersMsg = true;
+                //throw new Exception(String.Format("exceptStatusNoAcceptedLeft"));
+                return View("Index", myModel);
+            }
+            StringBuilder sb = new StringBuilder();
+            //Header
+            sb.Append("OrderID,OrderDate,OrderValue,RequestedService,Name,ShipToCompany,Address1,Address2,Address3" +
+                ",State,City,PostalCode,Country,Phone,Email,TotalWeightInOz,Length,Width,Height,Notes,Notes2,GiftWrap,GiftMessage");
+            sb.Append("\r\n");
+            using (var dbContextTransaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (Order order in orderList)
+                    {
+                        if (lineCounter >= 300)
+                        {
+                            break;
+                        }
+                        sb.Append(order.Id.ToString() + ',');
+                        sb.Append(order.UsDate.Date.ToString("MM/dd/yyyy") + ',');
+                        sb.Append("0" + ',');
+                        sb.Append(',');
+                        sb.Append(order.CustName.Replace(",", "").Replace("\"", "") + ',');
+                        sb.Append(',');
+                        sb.Append(order.CustStreet1.Replace(",", "").Replace("\"", "") + ',');
+                        if (string.IsNullOrEmpty(order.CustStreet2))
+                        {
+                            sb.Append(',');
+                        }
+                        else
+                        {
+                            sb.Append(order.CustStreet2.Replace(",", "").Replace("\"", "") + ',');
+                        }
+                        sb.Append(',');
+                        sb.Append(order.CustState.Replace(",", "") + ',');
+                        sb.Append(order.CustCity.Replace(",", "") + ',');
+                        sb.Append(order.CustZipCode.Replace(",", "") + ',');
+                        sb.Append("US" + ',');
+                        if (!string.IsNullOrEmpty(order.CustPhone))
+                        {
+                            sb.Append(order.CustPhone + ',');
+                        }
+                        else
+                        {
+                            sb.Append("999-999-9999" + ',');
+                        }
+                        sb.Append(',');
+                        sb.Append((Convert.ToDouble(getWeight(order.ProductId, order.Quantity))*16).ToString() + ',');
+                        sb.Append(',');
+                        sb.Append(',');
+                        sb.Append(',');
+                        sb.Append(getProductName(order.ProductId) + "- " + order.Quantity + ',');
+                        sb.Append(',');
+                        sb.Append(',');
+                        sb.Append(',');
+
+                        _unitOfWork.Order.Get(order.Id).OrderStatus = SD.OrderStatusInProgress;
+                        _db.Orders.Update(_unitOfWork.Order.Get(order.Id));
+                        //setInProgressStatus(order.Id);
+
+                        //Append new line character.
+                        sb.Append("\r\n");
+                        lineCounter++;
+                    }
+                    _db.SaveChanges();
+                    dbContextTransaction.Commit();
+                }
+                catch
+                {
+                    ViewBag.errSaveInProgress = true;
+                }
+            }
+            return File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", fileName);
+        }
+        [HttpPost]
         public ActionResult GetList()
         {
             //Server Side parameters
@@ -374,10 +489,10 @@ namespace KTSite.Areas.Warehouse.Controllers
                     foreach (String line in lines)
                     {
                         string[] columns = line.Split(',');
-                        if (columns[51] != null)
+                        if (columns[52] != null)
                         {
-                            string custName = columns[51].Replace("\"", "");
-                            string custZip = columns[57].Replace("\"", "").Replace("=", "");
+                            string custName = columns[52].Replace("\"", "");
+                            string custZip = columns[58].Replace("\"", "").Replace("=", "");
                             Order order =
                                _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
                                                          .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)
@@ -390,8 +505,6 @@ namespace KTSite.Areas.Warehouse.Controllers
                                 order.Carrier = columns[2].Replace("\"", "");
                                 order.OrderStatus = SD.OrderStatusDone;
                                 _db.Orders.Update(order);
-                                //_unitOfWork.Order.update(order);
-                                //_unitOfWork.Save();
                             }
                         }
                     }
@@ -399,6 +512,67 @@ namespace KTSite.Areas.Warehouse.Controllers
                     dbContextTransaction.Commit();
                 }
                     success = 1;
+                excep = "Tracking Updated Succesfully!";
+            }
+            catch
+            {
+                success = 0;
+                excep = "There was an Error, some orders were not updated!";
+            }
+            return Json(new { excep, success });
+        }
+        [HttpPost]
+        public JsonResult SubmitNew(IFormFile CSVFileNew)
+        {
+            int success = 0;
+            string excep = "";
+            var result = new StringBuilder();
+            try
+            {
+                using (var reader = new StreamReader(CSVFileNew.OpenReadStream()))
+                {
+                    if (reader.Peek() <= 1)
+                    {
+                        success = 0;
+                        excep = "File is Empty";
+                        return Json(new { excep, success });
+                    }
+                    while (reader.Peek() >= 0)
+                        result.AppendLine(reader.ReadLine());
+                }
+                string[] lines = result.ToString().Split(Environment.NewLine.ToCharArray());
+                lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                using (var dbContextTransaction = _db.Database.BeginTransaction())
+                {
+                    foreach (String line in lines)
+                    {
+                        string[] columns = line.Split(',');
+                        if (columns[4] != null)
+                        {
+                            string detailsLine = columns[4].Replace("\"", "");
+                            string custName = columns[51].Replace("\"", "");
+                            string custZip = columns[57].Replace("\"", "").Replace("=", "");
+                            Order order =
+                               _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress &&
+                                                                detailsLine.Contains(a.CustName.Replace(",", ""), StringComparison.InvariantCultureIgnoreCase) &&
+                                                                detailsLine.Contains(a.CustZipCode.Substring(0, 5).Replace(",", ""), StringComparison.InvariantCultureIgnoreCase) &&
+                                                                columns[18].Contains(a.ProductName, StringComparison.InvariantCultureIgnoreCase) &&
+                                                                columns[18].Contains(a.Quantity.ToString(), StringComparison.InvariantCultureIgnoreCase) &&
+                                                                a.TrackingNumber == null)
+                                                         .FirstOrDefault();
+                            if (order != null)
+                            {
+                                order.TrackingNumber = columns[7].Replace("\"", "").Replace("=", "");
+                                order.Carrier = columns[9].Replace("\"", "");
+                                order.OrderStatus = SD.OrderStatusDone;
+                                _db.Orders.Update(order);
+                            }
+                        }
+                    }
+                    _db.SaveChanges();
+                    dbContextTransaction.Commit();
+                }
+                success = 1;
                 excep = "Tracking Updated Succesfully!";
             }
             catch
@@ -426,8 +600,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                 {
                     orderVM.Orders.OrderStatus = SD.OrderStatusDone;
                     orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                    orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
-                    orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                    //orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                    //orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                     _unitOfWork.Order.update(orderVM.Orders);
                     _unitOfWork.Save();
                     ViewBag.success = true;

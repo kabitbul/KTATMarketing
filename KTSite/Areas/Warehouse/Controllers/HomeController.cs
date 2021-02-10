@@ -94,10 +94,11 @@ namespace KTSite.Areas.Warehouse.Controllers
         public JsonResult ShowSummary(DateTime fromDate, DateTime toDate)
         {
             var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
+             a.OrderStatus != SD.OrderStatusAccepted &&
              a.UsDate >= fromDate && a.UsDate <= toDate);
 
             List<string> strRes = new List<string>();
-            strRes.Add("Total Orders: " + orderList.Count());
+            strRes.Add("Total Orders Shipped: " + orderList.Count());
             strRes.Add("Total Products sold: " + orderList.Sum(a=> a.Quantity));
             strRes.Add("Total Shipping Cost: " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost).ToString("0.00")+ "$");
             var prod = _unitOfWork.Product.GetAll().Where(a=>a.OwnByWarehouse);

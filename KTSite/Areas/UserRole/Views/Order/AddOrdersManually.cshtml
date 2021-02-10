@@ -123,9 +123,12 @@
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                           @if (!ViewBag.hideAddBtn)
+                           {
+                               <div class="col">
+                                <button type="submit" class="btn btn-primary form-control" id="AddBtn">Add</button>
                             </div>
+                           }
                             <div class="col">
                                 <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                             </div>
@@ -140,13 +143,52 @@
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
-    <script>
+    @*<script>
+        $('#AddBtn').submit(function (event) {
+            window.alert('in submit');
+            if ($(this).find('.input-validation-error').length == 0) {
+                //$(this).find(':submit').attr('disabled', 'disabled');
+                window.alert('no err');
+            }
+            else { window.alert('has err'); }
+        });
         tinymce.init({
             selector: 'textarea',
             plugins: 'lists',
             menubar: 'file edit format'
         });
-    </script>
+    </script>*@
+    @*<script type="text/javascript">
+        //function disableAndRun() {
+        $('#AddBtn').click(function () {
+            //if ($("form").valid()) {
+            //    window.alert('valid');
+            //} else {
+            //    window.alert('NOT VALID');
+            //}
+            //$("#AddBtn").hide();
+            //$('body').append('<div id="over" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
+            //sleep(400);
+            // $("#AddBtn").show(0);
+            sleep(400);
+            
+        });
+        $('#AddBtn').submit(function () {
+            window.alert('in submit');
+            if ($(this).find('.input-validation-error').length == 0) {
+                //$(this).find(':submit').attr('disabled', 'disabled');
+                window.alert('no err');
+            }
+            else { window.alert('has err');}
+        });
+        function sleep(milliseconds) {
+            const date = Date.now();
+            let currentDate = null;
+            do {
+                currentDate = Date.now();
+            } while (currentDate - date < milliseconds);
+        }
+    </script>*@
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
     @if (ViewBag.ShowMsg)
     {

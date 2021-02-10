@@ -1,7 +1,5 @@
 ﻿@model IEnumerable<Refund>
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <br />
 <div class="container">
@@ -12,7 +10,7 @@
     </div>
     <div class="row">
         <div class="col-12 text-right">
-            <a class="btn btn-primary" asp-action="AddRefund" style="background-color:forestgreen" ><i class="fas fa-plus"></i> &nbsp; Issue Refund</a>
+            <a class="btn btn-primary" asp-action="AddRefund" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Issue Refund</a>
         </div>
     </div>
     <br />
@@ -22,39 +20,40 @@
                 <tr class="table-info">
                     <th>Refund Id</th>
                     <th>Order Id</th>
+                    <th>User</th>
                     <th>Store</th>
-                    <th>Quantity To Refund</th>
+                    <th>Refund Quantity</th>
+                    <th>Refund Amount</th>
                     <th>Refunded By</th>
                     <th>Refund Date</th>
             </thead>
 
             @foreach (Refund refund in Model)
             {
-        <tr>
-            <td>@refund.Id</td>
-            <td>@refund.OrderId</td>
-            @if (refund.OrderId != 0)//store
-            {
-                <td>@ViewBag.getStore(refund.OrderId.ToString()).ToString()</td>
-            }
-            else
-            {
-                <td></td>
-            }
-            <td>@refund.RefundQuantity</td>
-            <td>@refund.RefundedBy</td>
-            <td>@refund.RefundDate</td>
-        </tr>
-            }
+<tr>
+    <td>@refund.Id</td>
+    <td>@refund.OrderId</td>
+    <td>@ViewBag.getUserName(refund.UserNameId)</td>
+    @if (refund.OrderId != 0)//store
+    {
+<td>@ViewBag.getStore(refund.StoreNameId)</td> }
+                else
+                {
+<td></td>}
+    <td>@refund.RefundQuantity</td>
+    <td>@ViewBag.getRefundAmount(refund.Cost.ToString(), refund.Quantity.ToString(), refund.RefundQuantity.ToString()).ToString()</td>
+    <td>@refund.RefundedBy</td>
+    <td>@refund.RefundDate</td>
+</tr>            }
 
         </table>
     </div>
 </div>
-    @section Scripts{
-        <script>
-            $(document).ready(function () {
-                $('#tblData').DataTable({ "order": [[0, "desc"]] });
-            });</script>
-    }
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({ "order": [[0, "desc"]] });
+        });</script>
+}
 
 
