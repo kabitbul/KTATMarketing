@@ -40,9 +40,9 @@ namespace KTSite.Areas.Admin.Controllers
                 }
                 ViewBag.Name = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
                     Select(q => q.Name).FirstOrDefault();
-                ViewBag.OrdersFromChina =_unitOfWork.ChinaOrder.GetAll().
-                    Where(a => a.DateOrdered.Date <= (DateTime.Now.AddDays(-45).Date)
-                  && a.QuantityReceived == 0).Count();
+                //ViewBag.OrdersFromChina =_unitOfWork.ChinaOrder.GetAll().
+                //    Where(a => a.DateOrdered.Date <= (DateTime.Now.AddDays(-45).Date)
+                //  && a.QuantityReceived == 0).Count();
                 ViewBag.WarehouseBalanceLow = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
                     Select(a => a.Balance).FirstOrDefault();
                 ViewBag.CountPendingPayments = _unitOfWork.PaymentHistory.GetAll().

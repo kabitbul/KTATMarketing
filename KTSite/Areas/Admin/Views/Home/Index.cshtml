@@ -11,7 +11,7 @@
             Total Value Of Inventory: <span style="color:seagreen;font-weight:bold">@ViewBag.totalInventoryValue.ToString("0.00")$</span>
         </h1>
     </div>
-    @if (ViewBag.OrdersFromChina == 1)
+    @*@if (ViewBag.OrdersFromChina == 1)
     {
 <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
@@ -26,7 +26,7 @@ else if (ViewBag.OrdersFromChina > 1)
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
         <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
     </h1>
-</div>}
+</div>}*@
     @if (ViewBag.WarehouseBalanceLow <= 1000)
     {
 <div class="text-left display-3 p-4 border rounded col-5">

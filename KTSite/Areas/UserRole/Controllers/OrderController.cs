@@ -352,6 +352,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                         orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                         orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
+                        orderVM.Orders.CustZipCode = orderVM.Orders.CustZipCode.Trim();
                         _unitOfWork.Order.Add(orderVM.Orders);
                         updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                         updateSellerBalance(orderVM.Orders.Cost);
