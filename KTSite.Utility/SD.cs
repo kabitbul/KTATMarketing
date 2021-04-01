@@ -25,9 +25,9 @@ namespace KTSite.Utility
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
         public const string ReturningItemDefective = "Defective";
-        public const double shipping_cost = 3.71;
-        public const double shipping_cost_warehouse_items = 3.5;
-        public const double shipping_cost_for_return = 3.5;
+        public const double shipping_cost = 4;
+        public const double shipping_cost_warehouse_items = 4;
+        public const double shipping_cost_for_return = 4;
         public const double paypalPercentFees = 3;
         public const double paypalOneTimeFee = 0.0;
         public const string MadeInChina = "China";

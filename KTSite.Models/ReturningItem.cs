@@ -16,7 +16,7 @@ namespace KTSite.Models
         [Required]
         public string ItemStatus { get; set; }
         [Required]
-        [Range(1, 200)]
+        [Range(1, 10000)]
         public int Quantity { get; set; }
         public string? Comments { get; set; }
         [DataType(DataType.Date)]

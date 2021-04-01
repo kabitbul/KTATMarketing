@@ -469,6 +469,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             int success = 0;
             string excep = "";
             var result = new StringBuilder();
+            bool existFail = false;
             try
             {
                 using (var reader = new StreamReader(CSVFile.OpenReadStream()))
@@ -488,6 +489,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                 {
                     foreach (String line in lines)
                     {
+                        try { 
                         string[] columns = line.Split(',');
                         if (columns[52] != null)
                         {
@@ -508,11 +510,25 @@ namespace KTSite.Areas.Warehouse.Controllers
                             }
                         }
                     }
+                    catch
+            {
+                            existFail = true;
+            }
+                    }
                     _db.SaveChanges();
                     dbContextTransaction.Commit();
                 }
+                if (!existFail)
+                {
                     success = 1;
-                excep = "Tracking Updated Succesfully!";
+                    excep = "Tracking Updated Succesfully!";
+                }
+                else
+                {
+                    success = 0;
+                    excep = "There was an Error, some orders were not updated!";
+                }
+
             }
             catch
             {
