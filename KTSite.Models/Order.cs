@@ -10,6 +10,7 @@ namespace KTSite.Models
         [Key]
         public long Id { get; set; }
         [Required]
+        [MaxLength(15)]
         public string OrderStatus { get; set; }
         [Required]
         public int ProductId { get; set; }
