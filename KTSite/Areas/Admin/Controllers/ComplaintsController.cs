@@ -62,24 +62,48 @@ namespace KTSite.Areas.Admin.Controllers
             string uName = "";
             uNameId = returnUserNameId();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
-            complaintsVM = new ComplaintsVM()
+            if (Id != null)
             {
-                complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusDone &&
-                                 !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                complaintsVM = new ComplaintsVM()
+                {
+                    complaints = new Complaints(),
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.Id == Id).
                   Select(i => new SelectListItem
                   {
                       Text = i.CustName + "- Id: " + i.Id,
                       Value = i.Id.ToString()
                   }),
-                StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.IsAdminStore).
+                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.IsAdminStore).
                 Select(i => new SelectListItem
                 {
                     Text = i.StoreName,
                     Value = i.Id.ToString()
                 }),
-                TicketResolutionList = SD.TicketResolution
-            };
+                    TicketResolutionList = SD.TicketResolution
+                };
+            }
+            else
+            {
+                complaintsVM = new ComplaintsVM()
+                {
+                    complaints = new Complaints(),
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusDone &&
+                                     !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                  Select(i => new SelectListItem
+                  {
+                      Text = i.CustName + "- Id: " + i.Id,
+                      Value = i.Id.ToString()
+                  }),
+                    StoresList = _unitOfWork.UserStoreName.GetAll().Where(a => a.IsAdminStore).
+                Select(i => new SelectListItem
+                {
+                    Text = i.StoreName,
+                    Value = i.Id.ToString()
+                }),
+                    TicketResolutionList = SD.TicketResolution
+                };
+            }
+            
             if (Id != null)
             {
                 complaintsVM.complaints.OrderId = Id;
@@ -184,7 +208,8 @@ namespace KTSite.Areas.Admin.Controllers
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone
+                && a.Id == complaintsVM.complaints.OrderId).
     Select(i => new SelectListItem
     {
         Text = i.CustName + "- Id: " + i.Id,
