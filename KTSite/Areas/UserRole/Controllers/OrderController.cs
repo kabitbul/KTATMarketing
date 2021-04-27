@@ -332,7 +332,7 @@ namespace KTSite.Areas.UserRole.Controllers
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost)
+                if (paymentBalance == null || (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost))
                 {
                     ViewBag.InsufficientFunds = true;
                     ViewBag.failed = false;
@@ -575,7 +575,7 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.CustStreet2 = RemoveDiacritics(orderVM.Orders.CustStreet2).Replace(",", "");
                         }
                         PaymentBalance paymentBalance = userBalance(uNameId);
-                        if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost)
+                        if (paymentBalance == null || (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < orderVM.Orders.Cost))
                         {
                             InsufficientFunds = true;
                             ViewBag.success = false;

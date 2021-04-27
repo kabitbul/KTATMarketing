@@ -31,5 +31,21 @@ namespace KTSite.Controllers
                        Select(a => a.Balance).FirstOrDefault();
             return Content(Balance.ToString("0.00") + "$");
         }
+        //public JsonResult GetUserDetails()
+        //{
+        //    string uName =
+        //        (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Email).FirstOrDefault());
+        //    return Content(uName);
+        //}
+        public JsonResult GetUserDetails(DateTime fromDate, DateTime toDate)
+        {
+            List<string> strRes = new List<string>();
+            var appUser = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).FirstOrDefault();
+            strRes.Add(appUser.Name);
+            strRes.Add(appUser.Email);
+            DateTime currDate = DateTime.Now;
+            strRes.Add(((DateTimeOffset)currDate).ToUnixTimeSeconds().ToString());
+            return Json(strRes);
+        }
     }
 }

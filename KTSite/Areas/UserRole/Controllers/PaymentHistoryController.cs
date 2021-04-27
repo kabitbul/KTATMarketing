@@ -99,6 +99,18 @@ namespace KTSite.Areas.UserRole.Controllers
             });
             if (ModelState.IsValid)
             {
+                //if a new user, create payment balance 
+                PaymentBalance pb =  _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
+                if (pb == null)
+                {
+                    PaymentBalance paymentBalance = new PaymentBalance();
+                    paymentBalance.UserNameId = uNameId;
+                    paymentBalance.Balance = 0;
+                    paymentBalance.IsWarehouseBalance = false;
+                    paymentBalance.AllowNegativeBalance = false;
+                    _unitOfWork.PaymentBalance.Add(paymentBalance);
+                    _unitOfWork.Save();
+                }
                 PaymentSentAddress paymentSentAddress =
                  _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.Id == paymentHistoryVM.PaymentHistory.SentFromAddressId).FirstOrDefault();
                 if (paymentSentAddress.PaymentType == SD.PaymentPaypal)//then fees will apply

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
@@ -73,6 +76,11 @@ namespace KTSite.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Required]
             public string Name { get; set; }
+            public string StreetAddress { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+            public string PostalCode { get; set; }
+            public string PhoneNumber { get; set; }
             public string Role { get; set; }
 
             public IEnumerable<SelectListItem> RoleList { get; set; }
@@ -84,7 +92,7 @@ namespace KTSite.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             Input = new InputModel()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                RoleList = _roleManager.Roles.Where(x=> x.Name != "Admin").Select(x => x.Name).Select(i => new SelectListItem
                 {
                     Text = i,
                     Value = i
@@ -100,16 +108,103 @@ namespace KTSite.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            bool existErr = false;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser
+                //fields validations
+                bool validPhone; 
+                if (Input.PhoneNumber == null)
                 {
-                    UserName = Input.Email,
-                    Name = Input.Name,
-                    Email = Input.Email,
-                    Role = Input.Role,
-                    EmailConfirmed = true
-                };
+                    validPhone = false;
+                }
+                else
+                {
+                    validPhone = Regex.IsMatch(Input.PhoneNumber, SD.MatchPhonePattern);
+                }
+                if(!validPhone && (Input.Role == null || Input.Role == "Users"))
+                {
+                    ModelState.AddModelError(string.Empty, "Phone Not Valid.");
+                    existErr = true;
+                }
+                if(Input.StreetAddress == null && (Input.Role == null || Input.Role == "Users"))
+                {
+                    ModelState.AddModelError(string.Empty, "Street Can't be empty.");
+                    existErr = true;
+                }
+                if (Input.City == null && (Input.Role == null || Input.Role == "Users"))
+                {
+                    ModelState.AddModelError(string.Empty, "City Can't be empty.");
+                    existErr = true;
+                }
+                if (Input.State == null && (Input.Role == null || Input.Role == "Users"))
+                {
+                    ModelState.AddModelError(string.Empty, "State Can't be empty.");
+                    existErr = true;
+                }
+                if (Input.PostalCode == null && (Input.Role == null || Input.Role == "Users"))
+                {
+                    ModelState.AddModelError(string.Empty, "Postal code Can't be empty.");
+                    existErr = true;
+                }
+                if (existErr && (Input.Role == null || Input.Role == "Users"))
+                {
+                    Input = new InputModel()
+                    {
+                        RoleList = _roleManager.Roles.Where(x => x.Name != "Admin").Select(x => x.Name).Select(i => new SelectListItem
+                        {
+                            Text = i,
+                            Value = i
+                        })
+                    };
+                    return Page();
+                }
+                //fields validations
+                var user = new ApplicationUser();
+                if (Input.Role == null)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = Input.Email,
+                        Name = Input.Name,
+                        Email = Input.Email,
+                        PhoneNumber = Input.PhoneNumber,
+                        StreetAddress = Input.StreetAddress,
+                        City = Input.City,
+                        State = Input.State,
+                        PostalCode = Input.PostalCode,
+                        Role = "Users",
+                        EmailConfirmed = false
+                    };
+                }
+                else
+                {
+                    if (Input.Role == "Users")
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = Input.Email,
+                            Name = Input.Name,
+                            Email = Input.Email,
+                            StreetAddress = Input.StreetAddress,
+                            City = Input.City,
+                            State = Input.State,
+                            PostalCode = Input.PostalCode,
+                            Role = Input.Role,
+                            EmailConfirmed = false
+                        };
+                    }
+                    else
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = Input.Email,
+                            Name = Input.Name,
+                            Email = Input.Email,
+                            Role = Input.Role,
+                            EmailConfirmed = true
+                        };
+                    }
+                }    
                  var result = _userManager.CreateAsync(user, Input.Password).GetAwaiter().GetResult();
                 if (result.Succeeded)
                 {
@@ -119,13 +214,13 @@ namespace KTSite.Areas.Identity.Pages.Account
                     if (user.Role == null)
                     {
                         await _userManager.AddToRoleAsync(user, SD.Role_Users);
+                        _userManager.Options.SignIn.RequireConfirmedEmail = true;
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, user.Role);
                     }
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if(Input.Role == null)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
@@ -134,7 +229,17 @@ namespace KTSite.Areas.Identity.Pages.Account
                         if (user.Role == null)//user is signing in and not by admin
                         {
                             await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
+                            string userNameId =
+                                _unitOfWork.ApplicationUser.GetAll().Where(a => a.Email == Input.Email && a.Name == Input.Name
+                                ).Select(a => a.Id).FirstOrDefault();
+                            PaymentBalance paymentBalance = new PaymentBalance();
+                            paymentBalance.UserNameId = userNameId;
+                            paymentBalance.Balance = 0;
+                            paymentBalance.IsWarehouseBalance = false;
+                            paymentBalance.AllowNegativeBalance = false;
+                            _unitOfWork.PaymentBalance.Add(paymentBalance);
+                            _unitOfWork.Save();
+                            
                         }
                         else
                         {
@@ -151,8 +256,53 @@ namespace KTSite.Areas.Identity.Pages.Account
                                 paymentBalance.AllowNegativeBalance = false;
                                 _unitOfWork.PaymentBalance.Add(paymentBalance);
                                 _unitOfWork.Save();
-                    
-                            
+                                //email confirmation start
+                                var senderEmail = new MailAddress("ktatmarketing1@gmail.com", "KT");
+                                var receiverEmail = new MailAddress(Input.Email, "Receiver");
+                                var password = "sendmailsmail";
+                                var sub = "Email Confirmation";
+                                var user2 = await _userManager.FindByEmailAsync(Input.Email);
+                                if (user2 == null || (await _userManager.IsEmailConfirmedAsync(user2)))
+                                {
+                                    // Don't reveal that the user does not exist or is not confirmed
+                                    return RedirectToPage("./ForgotPasswordConfirmation");
+                                }
+                                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user2);
+                                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                                var callbackUrl = Url.Page(
+                                    "/Account/ConfirmEmail",
+                                    pageHandler: null,
+                                    values: new { userId = user.Id, code = code },
+                                    protocol: Request.Scheme);
+                                //var body = $"Please Confirm email Here {HtmlEncoder.Default.Encode(callbackUrl)}.";
+                                var body = $"Please Confirm email Here {callbackUrl}.";
+                                var smtp = new SmtpClient
+                                {
+                                    Host = "smtp.gmail.com",
+                                    Port = 587,
+                                    EnableSsl = true,
+                                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                                    UseDefaultCredentials = false,
+                                    Credentials = new NetworkCredential(senderEmail.Address, password)
+                                };
+
+                                smtp.UseDefaultCredentials = false;
+                                smtp.Credentials = new NetworkCredential(senderEmail.Address, password);
+                                smtp.EnableSsl = true;
+                                using (var mess = new MailMessage(senderEmail, receiverEmail)
+                                {
+                                    Subject = "Email Confirmation",
+                                    Body = body
+                                })
+                                {
+                                    smtp.Send(mess);
+                                    //return LocalRedirect(returnUrl);
+                                    //return RedirectToPage("./Login");
+
+                                }
+                                //email confirmation end
+
                             }
                             else if(Input.Role == SD.Role_Warehouse)
                             {
@@ -185,13 +335,12 @@ namespace KTSite.Areas.Identity.Pages.Account
             }
             Input = new InputModel()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                RoleList = _roleManager.Roles.Where(x => x.Name != "Admin").Select(x => x.Name).Select(i => new SelectListItem
                 {
                     Text = i,
                     Value = i
                 })
             };
-
             // If we got this far, something failed, redisplay form
             return Page();
         }

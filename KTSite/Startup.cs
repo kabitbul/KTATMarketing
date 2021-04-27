@@ -37,11 +37,20 @@ namespace KTSite
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            //For confirmation during registration
+            //services.AddIdentity<IdentityUser, IdentityRole>(
+            //    opts =>
+            //    {
+            //        opts. .RequireConfirmedEmail = true;
+            //    }
+            //    );
+
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDbinitializer, Dbinitializer>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
+            
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
@@ -68,7 +77,6 @@ namespace KTSite
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
             dbinitializer.Initialize();

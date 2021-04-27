@@ -39,183 +39,181 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.IsInRole(SD.Role_Admin))
                         {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                                                    <li class="nav-item dropdown">
-                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            Users
-                                                        </a>
-                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">
-                                                                Users List\Add User
-                                                            </a>
-                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="SellersStatistics" asp-action="Index">User Statistics</a>
-                                                        </div>
-                                                    </li>
-                                                                    <li class="nav-item dropdown">
-                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                            Categories/Products
-                                                                        </a>
-                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
-                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
-                                                                        </div>
-                                                                    </li>
-                                                                                    <li class="nav-item dropdown">
-                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                            Orders
-                                                                                        </a>
-                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="ChinaOrder" asp-action="Index">China Orders</a>
-                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="OrderAdmin" asp-action="Index">Orders</a>
-                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="ArrivingFromChinaAdmin" asp-action="Index">Shipments Arrived Warehouse</a>
-                                                                                        </div>
-                                                                                    </li>
-                                                                                                    <li class="nav-item dropdown">
-                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                            Stores
-                                                                                                        </a>
-                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="AdminStore" asp-action="Index">Admin Stores</a>
-                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="AdminStore" asp-action="AllUsersStores">Users Stores</a>
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                                    <li class="nav-item dropdown">
-                                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                            Payments
-                                                                                                                        </a>
-                                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentSentAddress" asp-action="Index">List Of Payments Addresses</a>
-                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentBalance" asp-action="Index">Balance For All Users</a>
-                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentHistory" asp-action="Index">Approve Payments</a>
-                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentHistory" asp-action="PayWarehouse">Pay Warehouse</a>
-                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentBalanceBackup" asp-action="Index">Balance Backup History</a>
-                                                                                                                        </div>
-                                                                                                                    </li>
-                                                                                                                                    <li class="nav-item dropdown">
-                                                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                                            Customer Service
-                                                                                                                                        </a>
-                                                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Complaints" asp-action="Index">Tickets</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Refund" asp-action="Index">Refunds</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="AdminVATask" asp-action="Index">VA Tasks</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="ReturnLabel" asp-action="Index">Return Labels</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Notification" asp-action="Index">Notifications</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="UserGuideline" asp-action="Index">User Guideline</a>
-                                                                                                                                        </div>
-                                                                                                                                    </li>
-                                                                                                                                                    <li class="nav-item dropdown">
-                                                                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                                                            Inventory And statistics
-                                                                                                                                                        </a>
-                                                                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Inventory" asp-action="Index">Inventory</a>
-                                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryAnalysis" asp-action="Index">Check Inventory</a>
-                                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
-                                                                                                                                                            <a class="dropdown-item" asp-area="Admin" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
-                                                                                                                                                        </div>
-                                                                                                                                                    </li>
-}
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Users
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">
+                                        Users List\Add User
+                                    </a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="SellersStatistics" asp-action="Index">User Statistics</a>
+                                </div>
+                            </li>
+                                            <li class="nav-item dropdown">
+                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Categories/Products
+                                                </a>
+                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
+                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
+                                                </div>
+                                            </li>
+                                                            <li class="nav-item dropdown">
+                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                    Orders
+                                                                </a>
+                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ChinaOrder" asp-action="Index">China Orders</a>
+                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="OrderAdmin" asp-action="Index">Orders</a>
+                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ArrivingFromChinaAdmin" asp-action="Index">Shipments Arrived Warehouse</a>
+                                                                </div>
+                                                            </li>
+                                                                            <li class="nav-item dropdown">
+                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    Stores
+                                                                                </a>
+                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AdminStore" asp-action="Index">Admin Stores</a>
+                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AdminStore" asp-action="AllUsersStores">Users Stores</a>
+                                                                                </div>
+                                                                            </li>
+                                                                                            <li class="nav-item dropdown">
+                                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                    Payments
+                                                                                                </a>
+                                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentSentAddress" asp-action="Index">List Of Payments Addresses</a>
+                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentBalance" asp-action="Index">Balance For All Users</a>
+                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentHistory" asp-action="Index">Approve Payments</a>
+                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentHistory" asp-action="PayWarehouse">Pay Warehouse</a>
+                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="PaymentBalanceBackup" asp-action="Index">Balance Backup History</a>
+                                                                                                </div>
+                                                                                            </li>
+                                                                                                            <li class="nav-item dropdown">
+                                                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                                    Customer Service
+                                                                                                                </a>
+                                                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Complaints" asp-action="Index">Tickets</a>
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Refund" asp-action="Index">Refunds</a>
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AdminVATask" asp-action="Index">VA Tasks</a>
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ReturnLabel" asp-action="Index">Return Labels</a>
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Notification" asp-action="Index">Notifications</a>
+                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="UserGuideline" asp-action="Index">User Guideline</a>
+                                                                                                                </div>
+                                                                                                            </li>
+                                                                                                                            <li class="nav-item dropdown">
+                                                                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                                                    Inventory And statistics
+                                                                                                                                </a>
+                                                                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Inventory" asp-action="Index">Inventory</a>
+                                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryAnalysis" asp-action="Index">Check Inventory</a>
+                                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
+                                                                                                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
+                                                                                                                                </div>
+                                                                                                                            </li>}
                         @if (User.IsInRole(SD.Role_Users))
                         {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="UserRole" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-area="UserRole" asp-controller="ShowAllProductsUser" asp-action="Index">Products</a>
-                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" asp-area="UserRole" asp-controller="Order" asp-action="Index">Orders</a>
-                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <a class="nav-link" asp-area="UserRole" asp-controller="UserStoreName" asp-action="Index">My Stores</a>
-                                                                    </li>
-                                                                                    <li class="nav-item dropdown">
-                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                            Payments
-                                                                                        </a>
-                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentSentAddress" asp-action="Index">Add Payment Option</a>
-                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentHistory" asp-action="Index">Payment History</a>
-                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentHistory" asp-action="AddPayment">Load Balance</a>
-                                                                                            @*<div class="dropdown-divider"></div>*@
-                                                                                        </div>
-                                                                                    </li>
-                                                                                                    <li class="nav-item dropdown">
-                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                            Support
-                                                                                                        </a>
-                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="Complaints" asp-action="Index">Tickets</a>
-                                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="ReturnLabel" asp-action="Index">Returns</a>
-                                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="UserGuideline" asp-action="Index">User Guideline</a>
-                                                                                                            <a class="dropdown-item" asp-area="UserRole" asp-controller="Refund" asp-action="Index">Refunds</a>
-                                                                                                            @*<div class="dropdown-divider"></div>*@
-                                                                                                        </div>
-                                                                                                    </li>
-}
+            <li class="nav-item">
+                <a class="nav-link" asp-area="UserRole" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="UserRole" asp-controller="ShowAllProductsUser" asp-action="Index">Products</a>
+                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" asp-area="UserRole" asp-controller="Order" asp-action="Index">Orders</a>
+                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" asp-area="UserRole" asp-controller="UserStoreName" asp-action="Index">My Stores</a>
+                                                            </li>
+                                                                            <li class="nav-item dropdown">
+                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    Payments
+                                                                                </a>
+                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentSentAddress" asp-action="Index">Add Payment Option</a>
+                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentHistory" asp-action="Index">Payment History</a>
+                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="PaymentHistory" asp-action="AddPayment">Load Balance</a>
+                                                                                    @*<div class="dropdown-divider"></div>*@
+                                                                                </div>
+                                                                            </li>
+                                                                                            <li class="nav-item dropdown">
+                                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                    Support
+                                                                                                </a>
+                                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="Complaints" asp-action="Index">Tickets</a>
+                                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="ReturnLabel" asp-action="Index">Returns</a>
+                                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="UserGuideline" asp-action="Index">User Guideline</a>
+                                                                                                    <a class="dropdown-item" asp-area="UserRole" asp-controller="Refund" asp-action="Index">Refunds</a>
+                                                                                                    @*<div class="dropdown-divider"></div>*@
+                                                                                                </div>
+                                                                                            </li>}
                         @if (User.IsInRole(SD.Role_VAs))
                         {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="VAs" asp-controller="OrderVA" asp-action="Index">Orders</a>
-                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-area="VAs" asp-controller="Complaints" asp-action="Index">Tickets</a>
-                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" asp-area="VAs" asp-controller="ReturnLabel" asp-action="Index">Return Labels</a>
-                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <a class="nav-link" asp-area="VAs" asp-controller="AdminVATask" asp-action="Index">Admin Tasks</a>
-                                                                    </li>
-                                                                                    <li class="nav-item">
-                                                                                        <a class="nav-link" asp-area="VAs" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
-                                                                                    </li>
-                                                                                                    <li class="nav-item">
-                                                                                                        <a class="nav-link" asp-area="VAs" asp-controller="Products" asp-action="Index">Products</a>
-                                                                                                    </li>}
+            <li class="nav-item">
+                <a class="nav-link" asp-area="VAs" asp-controller="OrderVA" asp-action="Index">Orders</a>
+            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="VAs" asp-controller="Complaints" asp-action="Index">Tickets</a>
+                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" asp-area="VAs" asp-controller="ReturnLabel" asp-action="Index">Return Labels</a>
+                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" asp-area="VAs" asp-controller="AdminVATask" asp-action="Index">Admin Tasks</a>
+                                                            </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" asp-area="VAs" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
+                                                                            </li>
+                                                                                            <li class="nav-item">
+                                                                                                <a class="nav-link" asp-area="VAs" asp-controller="Products" asp-action="Index">Products</a>
+                                                                                            </li>
+}
                         @if (User.IsInRole(SD.Role_Warehouse))
                         {
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="Warehouse" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-area="Warehouse" asp-controller="OrderWarehouse" asp-action="Index">Orders</a>
-                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" asp-area="Warehouse" asp-controller="Product" asp-action="Index">Weight</a>
-                                                    </li>
-                                                                    <li class="nav-item">
-                                                                        <a class="nav-link" asp-area="Warehouse" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
-                                                                    </li>
-                                                                                    <li class="nav-item dropdown">
-                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                            Support
-                                                                                        </a>
-                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                            <a class="dropdown-item" asp-area="Warehouse" asp-controller="Complaints" asp-action="Index">Tickets</a>
-                                                                                            <a class="dropdown-item" asp-area="Warehouse" asp-controller="ReturnLabelWarehouse" asp-action="Index">Return Labels</a>
-                                                                                            @*<div class="dropdown-divider"></div>*@
-                                                                                        </div>
-                                                                                    </li>
-                                                                                                    <li class="nav-item">
-                                                                                                        <a class="nav-link" asp-area="Warehouse" asp-controller="PaymentHistory" asp-action="Index">Payments</a>
-                                                                                                    </li>
-                                                                                                                    <li class="nav-item">
-                                                                                                                        <a class="nav-link" asp-area="Warehouse" asp-controller="ArrivingFromChina" asp-action="Index">Shipment From China</a>
-                                                                                                                    </li>
-                                                                                                                                    <li class="nav-item dropdown">
-                                                                                                                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                                            Inventory And statistics
-                                                                                                                                        </a>
-                                                                                                                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                                                                                                                            <a class="dropdown-item" asp-area="Warehouse" asp-controller="Inventory" asp-action="Index">Inventory</a>
-                                                                                                                                            <a class="dropdown-item" asp-area="Warehouse" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
-                                                                                                                                        </div>
-                                                                                                                                    </li>
-}
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Warehouse" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Warehouse" asp-controller="OrderWarehouse" asp-action="Index">Orders</a>
+                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" asp-area="Warehouse" asp-controller="Product" asp-action="Index">Weight</a>
+                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" asp-area="Warehouse" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
+                                                            </li>
+                                                                            <li class="nav-item dropdown">
+                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                    Support
+                                                                                </a>
+                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                    <a class="dropdown-item" asp-area="Warehouse" asp-controller="Complaints" asp-action="Index">Tickets</a>
+                                                                                    <a class="dropdown-item" asp-area="Warehouse" asp-controller="ReturnLabelWarehouse" asp-action="Index">Return Labels</a>
+                                                                                    @*<div class="dropdown-divider"></div>*@
+                                                                                </div>
+                                                                            </li>
+                                                                                            <li class="nav-item">
+                                                                                                <a class="nav-link" asp-area="Warehouse" asp-controller="PaymentHistory" asp-action="Index">Payments</a>
+                                                                                            </li>
+                                                                                                            <li class="nav-item">
+                                                                                                                <a class="nav-link" asp-area="Warehouse" asp-controller="ArrivingFromChina" asp-action="Index">Shipment From China</a>
+                                                                                                            </li>
+                                                                                                                            <li class="nav-item dropdown">
+                                                                                                                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                                                    Inventory And statistics
+                                                                                                                                </a>
+                                                                                                                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                                                                                                    <a class="dropdown-item" asp-area="Warehouse" asp-controller="Inventory" asp-action="Index">Inventory</a>
+                                                                                                                                    <a class="dropdown-item" asp-area="Warehouse" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
+                                                                                                                                </div>
+                                                                                                                            </li>}
                     </ul>
                 </div>
             </div>
@@ -286,6 +284,58 @@ else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
         </div>
     </footer>
     @RenderSection("Scripts", required: false)
+    @if (!User.IsInRole(SD.Role_Warehouse) && !User.IsInRole(SD.Role_Admin) && !User.IsInRole(SD.Role_VAs))
+    {
+@if (User.IsInRole(SD.Role_Users))
+{
+<script>
+    $.ajax({
+        type: "POST",
+        dataType: 'JSON',
+        url: "/Home/GetUserDetails",
+        success: function (data) {
+            var str = JSON.stringify(data).split(',');
+            var Uname = str[0].replace('"', '').replace('"', '').replace('[', '').replace(']', '');
+            var Uemail = str[1].replace('"', '').replace('"', '').replace('[', '').replace(']', '');
+            window.intercomSettings = {
+                app_id: "utrywaxp",
+                name: Uname, // Full name
+                email: Uemail, // Email address
+                created_at: str[2] // Signup date as a Unix timestamp
+            };
+
+        },//end of success
+        error: function (response) {
+            console.log(response.responseText);
+        }
+    })
+</script>
+
+                    @*<script>
+                        // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/utrywaxp'
+                        (function () { var w = window; var ic = w.Intercom; if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); } else { var d = document; var i = function () { i.c(arguments); }; i.q = []; i.c = function (args) { i.q.push(args); }; w.Intercom = i; var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); } } })();
+                    </script>*@ 
+                    }
+                                    else
+                                    {
+                    <script>
+                        window.intercomSettings = {
+                            app_id: "utrywaxp"
+                        };
+                    </script>}}
+    <script>
+        // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/utrywaxp'
+        (function () {
+            var w = window; var ic = w.Intercom;
+            if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); }
+            else {
+                var d = document; var i = function () { i.c(arguments); };
+                i.q = []; i.c = function (args) { i.q.push(args); };
+                w.Intercom = i;
+                var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); }
+            }
+        })();
+    </script>
 </body>
 </html>
 @section Scripts

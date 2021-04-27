@@ -39,6 +39,9 @@
                     <p>
                         <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                     </p>
+                    <p>
+                      <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                    </p>
                     <p class="col-12 text-right">
                         <a href='https://www.facebook.com/KT-Deals-104743574839234' target="_blank">
                             <img src='@Url.Content("~/Images/facebook.jpg")' style="height:120px; width: 420px" />
