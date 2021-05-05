@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace KTSite.Areas.Identity.Pages.Account
+namespace KTSite.Areas.Identity.Pages
 {
     [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -11,11 +11,11 @@ namespace KTSite.Areas.Identity.Pages.Account
     {
         public string RequestId { get; set; }
 
-        //public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
         public void OnGet()
         {
-           // RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace KTSite.Areas.UserRole.Controllers
             //Graph Data
             DateTime iterateDate = DateTime.Now.AddMonths(-1);
                 List<DataPoint> dataPoints = new List<DataPoint>();
-                var result = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == userNameId).GroupBy(a => a.UsDate)
+                var result = _unitOfWork.Order.GetAll().Where(a=>a.UserNameId == userNameId && a.OrderStatus != SD.OrderStatusCancelled).GroupBy(a => a.UsDate)
                        .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
                 while (iterateDate <= DateTime.Now)
                 {
