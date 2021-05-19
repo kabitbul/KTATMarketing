@@ -7,7 +7,7 @@
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
-        <div class="row p-3 border">
+        <div class="row p-3 border" onchange="showBtn()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="col-12 border-bottom">
                 <h2 class="text-primary">@title</h2>
@@ -30,9 +30,16 @@
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
-                            </div>
+                            @if (!ViewBag.ShowMsg)
+                            {
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:block" onclick="disableAndRun()">Add</button>
+                        </div> }
+                    else
+                    {
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:none" onclick="disableAndRun()">Add</button>
+                        </div>}
                             <div class="col">
                                 <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                             </div>
@@ -76,4 +83,15 @@ else if (ViewBag.success)
     swal("Success!", "Store Added To your List!", "success")
         .then((value) => { window.location.href = '/UserRole/UserStoreName'; })
 </script>}}
+     <script type="text/javascript">
+        function disableAndRun() {
+            $("#AddBtn").hide(0);
+            //document.getElementById('AddBtn').setAttribute('disabled', true)
+        }
+    </script>
+    <script type="text/javascript">
+        function showBtn() {
+            $("#AddBtn").show(0);
+        }
+    </script>
 }

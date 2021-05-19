@@ -12,14 +12,14 @@
             <div class="col-12 border-bottom">
                 <h2 class="text-primary">@title</h2>
             </div>
-            <div class="col-8 pt-4">
+            <div class="col-8 pt-4" onchange="showBtn()">
                 <div class="form-group row">
                     <div class="col-4">
                         <label asp-for="Orders.ProductId">Product</label>
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                 new { @class = "form-control" })
+                                      new { @class = "form-control" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                                 new { @class = "form-control" })
+                                      new { @class = "form-control" })
                         <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
                     </div>
                 </div>
@@ -42,11 +42,11 @@
                         <span asp-validation-for="Orders.Quantity" class="text-danger"></span>
                     </div>
                 </div>
-                    <div class="col-8">
-                        <input type="hidden" asp-for="Orders.UsDate" class="form-control" value=@DateTime.Now.Date />
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.UsDate" class="form-control" value=@DateTime.Now.Date />
 
-                        <span asp-validation-for="Orders.UsDate" class="text-danger"></span>
-                    </div>
+                    <span asp-validation-for="Orders.UsDate" class="text-danger"></span>
+                </div>
                 <div class="form-group row">
                     <div class="col-4">
                         <label asp-for="Orders.CustName">Customer Name</label>
@@ -89,7 +89,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                 new { @class = "form-control" })
+                                      new { @class = "form-control" })
                         <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
@@ -125,13 +125,15 @@
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
-                            </div>
-                            <div class="col">
-                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
-                            </div>
-                        </div>
+                            @if (!ViewBag.ShowMsg)
+                            {
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" onclick="disableAndRun()">Add</button>
+                        </div>}
+                                        <div class="col">
+                                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                                        </div>
+                                                    </div>
                     </div>
                 </div>
             </div>
@@ -157,13 +159,26 @@
 <script>
     swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "error")
         .then((value) => { })
-</script> }
-                    else if(ViewBag.success)
-                    {
+</script>
+ }
+else if (ViewBag.success)
+{
 <script>
     swal("Success!", "Your Order Got Saved Successfully!", "success")
         .then((value) => { window.location.href = '/Admin/OrderAdmin'; })
-</script>}}
+</script>
+}}
+    <script type="text/javascript">
+        function disableAndRun() {
+            $("#AddBtn").hide(0);
+            //document.getElementById('AddBtn').setAttribute('disabled', true)
+        }
+    </script>
+    <script type="text/javascript">
+        function showBtn() {
+            $("#AddBtn").show(0);
+        }
+    </script>
 }
 
 

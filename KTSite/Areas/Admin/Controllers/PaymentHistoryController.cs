@@ -136,7 +136,16 @@ namespace KTSite.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 _unitOfWork.PaymentHistory.Add(paymentHistoryVM.PaymentHistory);
-                AddBalanceToWarehouse(paymentHistoryVM.PaymentHistory.Amount);
+                string payTypeName = _unitOfWork.PaymentSentAddress.GetAll().Where(a=> a.Id == paymentHistoryVM.PaymentHistory.SentFromAddressId).
+                    Select(a=>a.PaymentTypeAddress).FirstOrDefault();
+                if (payTypeName.StartsWith("payFor", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    AddBalanceToWarehouse((paymentHistoryVM.PaymentHistory.Amount*-1));
+                }
+                else
+                {
+                    AddBalanceToWarehouse(paymentHistoryVM.PaymentHistory.Amount);
+                }
                 _unitOfWork.Save();
                 ViewBag.Success = true;
                 return View(paymentHistoryVM);

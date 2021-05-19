@@ -3,7 +3,7 @@
 @model KTSite.Models.ComplaintsVM
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-                var title = "Add a Ticket"; }
+    var title = "Add a Ticket"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -12,14 +12,14 @@
             <div class="col-12 border-bottom">
                 <h2 class="text-primary">@title</h2>
             </div>
-            <div class="col-8 pt-4">
+            <div class="col-8 pt-4" onchange="showBtn()">
                 <div class="form-group row" id="orderDiv">
                     <div class="col-4">
                         <label asp-for="complaints.OrderId">Order</label>
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
-                                                     new { @class = "form-control" })
+                                                          new { @class = "form-control" })
                         <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
-                                                                    new { @class = "form-control" })
+                                                                         new { @class = "form-control" })
                         <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.TicketResolution, Model.TicketResolutionList,
-                                                          new { @class = "form-control" })
+                                                               new { @class = "form-control" })
                         <span asp-validation-for="complaints.TicketResolution" class="text-danger"></span>
                     </div>
                 </div>
@@ -82,9 +82,17 @@
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         <div class="row">
+                            @if (!ViewBag.ShowMsg)
+                            {
                             <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                                <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:block" onclick="disableAndRun()">Add</button>
+                            </div> }
+                                    else
+                                    {
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:none" onclick="disableAndRun()">Add</button>
                             </div>
+                                    }
                             <div class="col">
                                 <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                             </div>
@@ -120,5 +128,17 @@
 <script>
     swal("Success!", "Ticked Added!", "success")
         .then((value) => { window.location.href = '/UserRole/Complaints'; })
-</script>}
+</script>
+}
+    <script type="text/javascript">
+        function disableAndRun() {
+            $("#AddBtn").hide(0);
+            //document.getElementById('AddBtn').setAttribute('disabled', true)
+        }
+    </script>
+    <script type="text/javascript">
+        function showBtn() {
+            $("#AddBtn").show(0);
+        }
+    </script>
 }

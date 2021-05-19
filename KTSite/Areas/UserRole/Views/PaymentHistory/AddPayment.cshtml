@@ -1,9 +1,7 @@
 ﻿@model KTSite.Models.PaymentHistoryVM
 
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Load Balance";
-}
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Load Balance"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -14,14 +12,14 @@
                 <h4 class="text-primary">(Paypal/Payoneer: KTOnlineMarketing1@gmail.com)</h4>
             </div>
         </div>
-        <div class="col-8 pt-4">
+        <div class="col-8 pt-4" onchange="showBtn()">
             <div class="form-group row">
                 <div class="col-4">
                     <label asp-for="PaymentHistory.SentFromAddressId">Payment Address</label>
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.PaymentHistory.SentFromAddressId, Model.PaymentAddress,
-                   new { @class = "form-control" })
+                        new { @class = "form-control" })
                     <span asp-validation-for="PaymentHistory.SentFromAddressId" class="text-danger"></span>
                 </div>
             </div>
@@ -50,14 +48,21 @@
         <div class="col-8 pt-4">
             <div class="form-group row">
                 <div class="col-8 offset-4">
-                        <div class="row">
-                            <div class="col">
-                                <button type="submit" class="btn btn-primary form-control">Load Balance</button>
-                            </div>
-                            <div class="col">
-                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
-                            </div>
+                    <div class="row">
+                        @if (!ViewBag.ShowMsg)
+                        {
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:block" onclick="disableAndRun()">Add</button>
+                    </div> }
+                else
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:none" onclick="disableAndRun()">Add</button>
+                    </div>}
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,12 +110,21 @@
                             window.location.href = '/UserRole/PaymentHistory';
                         }
                     });*@
-              @if(ViewBag.ShowMsg && ViewBag.success)
-              {
+    @if (ViewBag.ShowMsg && ViewBag.success)
+    {
 <script>
     swal("Success!", "Payment Added To Your List, Admin will Approve once Payment Received!", "success")
         .then((value) => { window.location.href = '/UserRole/PaymentHistory'; });
-</script>
-                }
-            }
+</script>                }
+    <script type="text/javascript">
+        function disableAndRun() {
+            $("#AddBtn").hide(0);
+            //document.getElementById('AddBtn').setAttribute('disabled', true)
+        }
+    </script>
+    <script type="text/javascript">
+        function showBtn() {
+            $("#AddBtn").show(0);
+        }
+    </script>
 }

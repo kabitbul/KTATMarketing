@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+
 
 namespace KTSite.Models
 {
@@ -19,7 +19,7 @@ namespace KTSite.Models
         public ApplicationUser ApplicationUser { get; set; }
 
         [Required]
-        [Range(50, 50000)]
+        [Range(1, 50000)]
         public double Amount { get; set; }
         [DefaultValue(false)]
         public string Status { get; set; }// status Pending/Approved

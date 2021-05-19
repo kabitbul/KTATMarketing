@@ -12,14 +12,14 @@
             <div class="col-12 border-bottom">
                 <h2 class="text-primary">@title</h2>
             </div>
-            <div class="col-8 pt-4">
+            <div class="col-8 pt-4" onchange="showBtn()">
                 <div class="form-group row">
                     <div class="col-4">
                         <label asp-for="Orders.ProductId">Product</label>
                     </div>
-                    <div class="col-8">
+                    <div class="col-8" >
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                      new { @class = "form-control" })
+                                                     new { @class = "form-control" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                                      new { @class = "form-control" })
+                                                     new { @class = "form-control" })
                         <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                      new { @class = "form-control" })
+                                                     new { @class = "form-control" })
                         <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         <label asp-for="Orders.CustZipCode">Zip Code</label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Orders.CustZipCode" class="form-control" />
+                        <input asp-for="Orders.CustZipCode" class="form-control"/>
                         <span asp-validation-for="Orders.CustZipCode" class="text-danger"></span>
                     </div>
                 </div>
@@ -123,12 +123,16 @@
                 <div class="form-group row">
                     <div class="col-8 offset-4">
                         <div class="row">
-                           @if (!ViewBag.hideAddBtn)
-                           {
-                               <div class="col">
-                                <button type="submit" class="btn btn-primary form-control" id="AddBtn">Add</button>
-                            </div>
-                           }
+                            @if (!ViewBag.ShowMsg)
+                            {
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:block" onclick="disableAndRun()">Add</button>
+                        </div> }
+                    else
+                    {
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control" id="AddBtn" style="display:none" onclick="disableAndRun()">Add</button>
+                        </div>}
                             <div class="col">
                                 <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
                             </div>
@@ -144,51 +148,51 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
     @*<script>
-        $('#AddBtn').submit(function (event) {
-            window.alert('in submit');
-            if ($(this).find('.input-validation-error').length == 0) {
-                //$(this).find(':submit').attr('disabled', 'disabled');
-                window.alert('no err');
-            }
-            else { window.alert('has err'); }
-        });
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'lists',
-            menubar: 'file edit format'
-        });
-    </script>*@
+            $('#AddBtn').submit(function (event) {
+                window.alert('in submit');
+                if ($(this).find('.input-validation-error').length == 0) {
+                    //$(this).find(':submit').attr('disabled', 'disabled');
+                    window.alert('no err');
+                }
+                else { window.alert('has err'); }
+            });
+            tinymce.init({
+                selector: 'textarea',
+                plugins: 'lists',
+                menubar: 'file edit format'
+            });
+        </script>*@
     @*<script type="text/javascript">
-        //function disableAndRun() {
-        $('#AddBtn').click(function () {
-            //if ($("form").valid()) {
-            //    window.alert('valid');
-            //} else {
-            //    window.alert('NOT VALID');
-            //}
-            //$("#AddBtn").hide();
-            //$('body').append('<div id="over" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
-            //sleep(400);
-            // $("#AddBtn").show(0);
-            sleep(400);
-            
-        });
-        $('#AddBtn').submit(function () {
-            window.alert('in submit');
-            if ($(this).find('.input-validation-error').length == 0) {
-                //$(this).find(':submit').attr('disabled', 'disabled');
-                window.alert('no err');
+            //function disableAndRun() {
+            $('#AddBtn').click(function () {
+                //if ($("form").valid()) {
+                //    window.alert('valid');
+                //} else {
+                //    window.alert('NOT VALID');
+                //}
+                //$("#AddBtn").hide();
+                //$('body').append('<div id="over" style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
+                //sleep(400);
+                // $("#AddBtn").show(0);
+                sleep(400);
+
+            });
+            $('#AddBtn').submit(function () {
+                window.alert('in submit');
+                if ($(this).find('.input-validation-error').length == 0) {
+                    //$(this).find(':submit').attr('disabled', 'disabled');
+                    window.alert('no err');
+                }
+                else { window.alert('has err');}
+            });
+            function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } while (currentDate - date < milliseconds);
             }
-            else { window.alert('has err');}
-        });
-        function sleep(milliseconds) {
-            const date = Date.now();
-            let currentDate = null;
-            do {
-                currentDate = Date.now();
-            } while (currentDate - date < milliseconds);
-        }
-    </script>*@
+        </script>*@
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
     @if (ViewBag.ShowMsg)
     {
@@ -197,19 +201,33 @@
 <script>
     swal("Insufficient Funds, Cannot Continue With Transaction!", "Insufficient Funds.", "error")
         .then((value) => { })
-</script> }
-                    else if (ViewBag.failed)
-                    {
+</script>
+ }
+else if (ViewBag.failed)
+{
 <script>
     swal("Pay Attention: Could Not Authenticate!", "Please Contact Admin. ", "warning")
         .then((value) => { })
-</script> }
-                    else if (ViewBag.success)
-                    {
+</script>
+ }
+else if (ViewBag.success)
+{
 <script>
     swal("Success!", "Your Order Got Saved Successfully!", "success")
         .then((value) => { window.location.href = '/UserRole/Order'; })
-</script>}}
+</script>
+}}
+    <script type="text/javascript">
+        function disableAndRun() {
+            $("#AddBtn").hide(0);
+            //document.getElementById('AddBtn').setAttribute('disabled', true)
+        }
+    </script>
+    <script type="text/javascript">
+        function showBtn() {
+            $("#AddBtn").show(0);
+        }
+    </script>
 }
 
 
