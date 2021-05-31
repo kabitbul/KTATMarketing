@@ -68,13 +68,13 @@ namespace KTSite.Areas.UserRole.Controllers
             userStoreName.UserName = User.Identity.Name;
             userStoreName.IsAdminStore = false;
             int countStores = _unitOfWork.UserStoreName.GetAll().Where(q => q.UserNameId == userStoreName.UserNameId).Count();
-            if(countStores >=8)
+            if(countStores >=20)
             {
                 ViewBag.MaxStores = true;
             }
             if (ModelState.IsValid)
             {
-                if (!storeExist && countStores < 8)
+                if (!storeExist && countStores < 20)
                 {
                     _unitOfWork.UserStoreName.Add(userStoreName);
 

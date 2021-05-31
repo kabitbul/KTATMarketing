@@ -33,6 +33,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.ProductName = product.ProductName;
                 objFromDb.Cost = product.Cost;
                 objFromDb.SellersCost = product.SellersCost;
+                objFromDb.ShippingCharge = product.ShippingCharge;
                 objFromDb.Weight = product.Weight;
                 objFromDb.OnTheWayInventory = product.OnTheWayInventory;
                 objFromDb.ReStock = product.ReStock;

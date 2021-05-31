@@ -49,17 +49,17 @@ namespace KTSite.Areas.Admin.Controllers
             double precent;
             double dollar;
             Product product = _unitOfWork.Product.Get(productId);
-            double shipCost;
-            if(product.OwnByWarehouse)
-            {
-                shipCost = SD.shipping_cost_warehouse_items;
-            }
-            else
-            {
-                shipCost = SD.shipping_cost;
-            }
-            precent = ((product.SellersCost - product.Cost - shipCost) / product.Cost) * 100;
-            dollar = product.SellersCost - product.Cost - shipCost;
+           // double shipCost;
+            //if(product.OwnByWarehouse)
+            //{
+            //    shipCost = SD.shipping_cost_warehouse_items;
+            //}
+            //else
+            //{
+            //    shipCost = SD.shipping_cost;
+            //}
+            precent = ((product.SellersCost - product.Cost - product.ShippingCharge) / product.Cost) * 100;
+            dollar = product.SellersCost - product.Cost - product.ShippingCharge;
             return precent.ToString("0.00") + "%(" + dollar.ToString("0.00") + "$)";
 
         }

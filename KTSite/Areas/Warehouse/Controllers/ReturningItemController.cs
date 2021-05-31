@@ -114,11 +114,11 @@ namespace KTSite.Areas.Warehouse.Controllers
             Product product =_unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
             product.InventoryCount = product.InventoryCount - quantity;
         }
-        public void updateWarehouseBalance(int quantity)
-        {
-            PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
-            paymentBalance.Balance = paymentBalance.Balance - (quantity * SD.shipping_cost);
-        }
+        //public void updateWarehouseBalance(int quantity)
+        //{
+        //    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+        //    paymentBalance.Balance = paymentBalance.Balance - (quantity * SD.shipping_cost);
+        //}
         
         #region API CALLS
         [HttpGet]

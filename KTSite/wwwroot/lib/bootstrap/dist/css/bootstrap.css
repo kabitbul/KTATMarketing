@@ -2746,7 +2746,32 @@ a.btn.disabled,
 fieldset:disabled a.btn {
     pointer-events: none;
 }
+.btnHover {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 12px;
+    width: 400px
+}
 
+.btnHover1 {
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #4CAF50;
+}
+
+.btnHover1:hover {
+    background-color: white;
+    color: #4CAF50;
+}
 .btn-primary {
     color: #fff;
     background-color: #2c3e50;
@@ -2783,7 +2808,6 @@ fieldset:disabled a.btn {
         .show > .btn-primary.dropdown-toggle:focus {
             box-shadow: 0 0 0 0.2rem rgba(76, 91, 106, 0.5);
         }
-
 .btn-secondary {
     color: #fff;
     background-color: #95a5a6;

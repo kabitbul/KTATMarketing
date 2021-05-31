@@ -20,6 +20,7 @@ namespace KTSite.Models
         public string ProductURL { get; set; }
         public double Cost { get; set; }
         public double SellersCost { get; set; }
+        public double ShippingCharge { get; set; }
         public double WarehouseChinaCost { get; set; }
         [Required]
         public double Weight { get; set; }

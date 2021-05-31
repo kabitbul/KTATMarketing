@@ -100,7 +100,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             List<string> strRes = new List<string>();
             strRes.Add("Total Orders Shipped: " + orderList.Count());
             strRes.Add("Total Products sold: " + orderList.Sum(a=> a.Quantity));
-            strRes.Add("Total Shipping Cost: " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost).ToString("0.00")+ "$");
+            strRes.Add("Total Shipping Cost(not Accurate, By 4$ for all items): " + (orderList.Sum(a => a.Quantity) * SD.shipping_cost).ToString("0.00")+ "$");
             var prod = _unitOfWork.Product.GetAll().Where(a=>a.OwnByWarehouse);
             double totalWarehouseProfit = 0.0;
             int prodSum = 0;

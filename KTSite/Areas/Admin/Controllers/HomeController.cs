@@ -90,7 +90,7 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 return Redirect("Warehouse/Home");
             }
-            return Redirect("Identity/Account/Login");
+            return Redirect("UserRole/HomeAnonym");
 
         }
         public bool returnIsRefunded(long OrderId)

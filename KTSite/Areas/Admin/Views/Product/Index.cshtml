@@ -21,6 +21,7 @@
                 <th>ASIN</th>
                 <th>Cost</th>
                 <th>SellersCost</th>
+                <th>ShippingCost</th>
                 <th>Profit%</th>
                 <th>Inventory Count</th>
                 <th>On The Way</th>
@@ -53,6 +54,7 @@ else
     </td>
     <td>@product.Cost$</td>
     <td>@product.SellersCost$</td>
+    <td>@product.ShippingCharge$</td>
     <td>@ViewBag.Profit(product.Id)</td>
     <td>@product.InventoryCount</td>
     <td>@product.OnTheWayInventory</td>

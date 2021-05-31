@@ -927,11 +927,13 @@ namespace KTSite.Areas.UserRole.Controllers
             PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
             if (product.OwnByWarehouse)
             {
-                paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items + product.Cost));
+                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items + product.Cost));
+                paymentBalance.Balance = paymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
             }
             else
             {
-                paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+                paymentBalance.Balance = paymentBalance.Balance - (quantity * (product.ShippingCharge));
             }
         }
         [HttpPost]

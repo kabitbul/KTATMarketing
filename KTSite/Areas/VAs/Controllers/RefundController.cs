@@ -140,13 +140,16 @@ namespace KTSite.Areas.VAs.Controllers
                     {
                         int prodId = _unitOfWork.Order.Get(refundVM.refund.OrderId).ProductId;
                         bool ownByWarehouse2 = _unitOfWork.Product.Get(prodId).OwnByWarehouse;
+                        double shipCharge = _unitOfWork.Product.Get(prodId).ShippingCharge;
                         if (ownByWarehouse2)
                         {
-                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost_warehouse_items;
+                            //warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost_warehouse_items;
+                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * shipCharge;
                         }
                         else
                         {
-                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost;
+                            //warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost;
+                            warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * shipCharge;
                         }
                     }
                     if (refundVM.refund.RefundQuantity == order.Quantity)

@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
 namespace KTSite.Areas.UserRole.Controllers
 {
     [Area("UserRole")]
+    [AllowAnonymous]
     [Authorize(Roles = SD.Role_Users)]
     public class ShowAllProductsUserController : Controller
     {
@@ -40,7 +38,14 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.uName = uName;
             ViewBag.getStoreName =
                new Func<int,string>(returnStoreName);
+            ViewBag.getCategory =
+                  new Func<int, string>(getCategory);
+            ViewBag.IsAuthenticated = User.Identity.IsAuthenticated;
             return View(myModel);
+        }
+        public string getCategory(int Id)
+        {
+            return _unitOfWork.Category.GetAll().Where(a => a.Id == Id).Select(a => a.Name).FirstOrDefault();
         }
         public IActionResult AddStoreToProduct(int Id)
         {
