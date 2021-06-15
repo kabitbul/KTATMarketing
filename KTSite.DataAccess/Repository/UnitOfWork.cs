@@ -29,6 +29,7 @@ namespace KTSite.DataAccess.Repository
             adminVATask = new AdminVATaskRepository(_db);
             paymentBalanceBackup = new PaymentBalanceBackupRepository(_db);
             SP_Call = new SP_Call(_db);
+            logsData = new LogsDataRepository(_db);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
@@ -50,6 +51,7 @@ namespace KTSite.DataAccess.Repository
         public IAdminVATaskRepository adminVATask { get; private set; }
         public IPaymentBalanceBackupRepository paymentBalanceBackup { get; private set; }
         public ISP_Call SP_Call { get; private set; }
+        public ILogsDataRepository logsData { get; private set; }
 
         public void Dispose()
         {

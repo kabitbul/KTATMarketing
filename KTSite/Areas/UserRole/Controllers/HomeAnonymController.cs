@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Utility;
 using Microsoft.AspNetCore.Authorization;
+using System.Web.WebPages;
 
 namespace KTSite.Areas.UserRole.Controllers
 {
@@ -26,7 +27,10 @@ namespace KTSite.Areas.UserRole.Controllers
         }
         public IActionResult Index()
         {
-            
+            //var phone = new DefaultDisplayMode("Phone")
+            //{
+            //    ContextCondition = ctx => ctx.GetOverriddenUserAgent() != null && ctx.GetOverriddenUserAgent().Contains("iPhone")
+            //};
                 return View();
             }
     }

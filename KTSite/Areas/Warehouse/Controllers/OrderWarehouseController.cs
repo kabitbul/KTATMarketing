@@ -470,6 +470,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             string excep = "";
             var result = new StringBuilder();
             bool existFail = false;
+            int countRec = 0;
             try
             {
                 using (var reader = new StreamReader(CSVFile.OpenReadStream()))
@@ -483,6 +484,13 @@ namespace KTSite.Areas.Warehouse.Controllers
                     while (reader.Peek() >= 0)
                         result.AppendLine(reader.ReadLine());
                 }
+                LogsData log4 = new LogsData();
+                log4.Msg1 = "update tracking numbers - start";
+                log4.Msg2 = "";
+                log4.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                log4.CreatedDate = DateTime.Now;
+                _unitOfWork.logsData.Add(log4);
+                _unitOfWork.Save();
                 string[] lines = result.ToString().Split(Environment.NewLine.ToCharArray());
                 lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                 using (var dbContextTransaction = _db.Database.BeginTransaction())
@@ -507,13 +515,23 @@ namespace KTSite.Areas.Warehouse.Controllers
                                 order.Carrier = columns[2].Replace("\"", "");
                                 order.OrderStatus = SD.OrderStatusDone;
                                 _db.Orders.Update(order);
+                                    countRec++;
                             }
                         }
                     }
                     catch
             {
+                            LogsData log2 = new LogsData();
                             existFail = true;
-            }
+                            string[] columns = line.Split(',');
+                            log2.Msg1 = "updateTrackingNumbers failed -- customer: " + columns[52].Replace("\"", "") + " zipCode: " + columns[58].Replace("\"", "").Replace("=", "");
+                            log2.Msg2 = "";
+                            log2.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                            log2.CreatedDate = DateTime.Now;
+                            _unitOfWork.logsData.Add(log2);
+                            _unitOfWork.Save();
+
+                        }
                     }
                     _db.SaveChanges();
                     dbContextTransaction.Commit();
@@ -533,8 +551,22 @@ namespace KTSite.Areas.Warehouse.Controllers
             catch
             {
                 success = 0;
+                LogsData log3 = new LogsData();
                 excep = "There was an Error, some orders were not updated!";
+                log3.Msg1 = "update tracking numbers - general error orders updated: "+ countRec;
+                log3.Msg2 = "";
+                log3.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                log3.CreatedDate = DateTime.Now;
+                _unitOfWork.logsData.Add(log3);
+                _unitOfWork.Save();
             }
+            LogsData log = new LogsData();
+            log.Msg1 = "update tracking numbers - end";
+            log.Msg2 = "successfully updated " + countRec + " orders";
+            log.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+            log.CreatedDate = DateTime.Now;
+            _unitOfWork.logsData.Add(log);
+            _unitOfWork.Save();
             return Json(new { excep, success });
         }
         [HttpPost]

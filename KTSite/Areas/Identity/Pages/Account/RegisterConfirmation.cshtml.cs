@@ -98,7 +98,7 @@ namespace KTSite.Areas.Identity.Pages.Account
             })
             {
                 smtp.Send(mess);
-                return LocalRedirect(returnUrl);
+                //return LocalRedirect(returnUrl);
                 //return RedirectToPage("./Login");
 
             }

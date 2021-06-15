@@ -112,40 +112,40 @@ namespace KTSite.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 //fields validations
-                bool validPhone; 
-                if (Input.PhoneNumber == null)
-                {
-                    validPhone = false;
-                }
-                else
-                {
-                    validPhone = Regex.IsMatch(Input.PhoneNumber, SD.MatchPhonePattern);
-                }
-                if(!validPhone && (Input.Role == null || Input.Role == "Users"))
-                {
-                    ModelState.AddModelError(string.Empty, "Phone Not Valid.");
-                    existErr = true;
-                }
-                if(Input.StreetAddress == null && (Input.Role == null || Input.Role == "Users"))
-                {
-                    ModelState.AddModelError(string.Empty, "Street Can't be empty.");
-                    existErr = true;
-                }
-                if (Input.City == null && (Input.Role == null || Input.Role == "Users"))
-                {
-                    ModelState.AddModelError(string.Empty, "City Can't be empty.");
-                    existErr = true;
-                }
-                if (Input.State == null && (Input.Role == null || Input.Role == "Users"))
-                {
-                    ModelState.AddModelError(string.Empty, "State Can't be empty.");
-                    existErr = true;
-                }
-                if (Input.PostalCode == null && (Input.Role == null || Input.Role == "Users"))
-                {
-                    ModelState.AddModelError(string.Empty, "Postal code Can't be empty.");
-                    existErr = true;
-                }
+                //bool validPhone; 
+                //if (Input.PhoneNumber == null)
+                //{
+                //    validPhone = false;
+                //}
+                //else
+                //{
+                //    validPhone = Regex.IsMatch(Input.PhoneNumber, SD.MatchPhonePattern);
+                //}
+                //if(!validPhone && (Input.Role == null || Input.Role == "Users"))
+                //{
+                //    ModelState.AddModelError(string.Empty, "Phone Not Valid.");
+                //    existErr = true;
+                //}
+                //if(Input.StreetAddress == null && (Input.Role == null || Input.Role == "Users"))
+                //{
+                //    ModelState.AddModelError(string.Empty, "Street Can't be empty.");
+                //    existErr = true;
+                //}
+                //if (Input.City == null && (Input.Role == null || Input.Role == "Users"))
+                //{
+                //    ModelState.AddModelError(string.Empty, "City Can't be empty.");
+                //    existErr = true;
+                //}
+                //if (Input.State == null && (Input.Role == null || Input.Role == "Users"))
+                //{
+                //    ModelState.AddModelError(string.Empty, "State Can't be empty.");
+                //    existErr = true;
+                //}
+                //if (Input.PostalCode == null && (Input.Role == null || Input.Role == "Users"))
+                //{
+                //    ModelState.AddModelError(string.Empty, "Postal code Can't be empty.");
+                //    existErr = true;
+                //}
                 if (existErr && (Input.Role == null || Input.Role == "Users"))
                 {
                     Input = new InputModel()
