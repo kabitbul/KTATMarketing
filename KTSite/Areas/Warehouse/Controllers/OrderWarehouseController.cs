@@ -487,12 +487,13 @@ namespace KTSite.Areas.Warehouse.Controllers
                 LogsData log4 = new LogsData();
                 log4.Msg1 = "update tracking numbers - start";
                 log4.Msg2 = "";
-                log4.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                log4.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
                 log4.CreatedDate = DateTime.Now;
                 _unitOfWork.logsData.Add(log4);
                 _unitOfWork.Save();
                 string[] lines = result.ToString().Split(Environment.NewLine.ToCharArray());
                 lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                var OrdersInProgress = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress && a.TrackingNumber == null);
                 using (var dbContextTransaction = _db.Database.BeginTransaction())
                 {
                     foreach (String line in lines)
@@ -503,13 +504,15 @@ namespace KTSite.Areas.Warehouse.Controllers
                         {
                             string custName = columns[52].Replace("\"", "");
                             string custZip = columns[58].Replace("\"", "").Replace("=", "");
-                            Order order =
-                               _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
-                                                         .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)
-                                                         .Where(a => a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5))//compare first 5
-                                                         .Where(a => a.TrackingNumber == null)
-                                                         .FirstOrDefault();
-                            if (order != null)
+                                Order order =
+                                        OrdersInProgress.Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName &&
+                                                                    a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5)).FirstOrDefault();
+                               //_unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
+                                 //                        .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)
+                                   //                      .Where(a => a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5))//compare first 5
+                                     //                    .Where(a => a.TrackingNumber == null)
+                                       //                  .FirstOrDefault();
+                                if (order != null)
                             {
                                 order.TrackingNumber = columns[1].Replace("\"", "").Replace("=", "");
                                 order.Carrier = columns[2].Replace("\"", "");
@@ -526,7 +529,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                             string[] columns = line.Split(',');
                             log2.Msg1 = "updateTrackingNumbers failed -- customer: " + columns[52].Replace("\"", "") + " zipCode: " + columns[58].Replace("\"", "").Replace("=", "");
                             log2.Msg2 = "";
-                            log2.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                            log2.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
                             log2.CreatedDate = DateTime.Now;
                             _unitOfWork.logsData.Add(log2);
                             _unitOfWork.Save();
@@ -555,7 +558,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                 excep = "There was an Error, some orders were not updated!";
                 log3.Msg1 = "update tracking numbers - general error orders updated: "+ countRec;
                 log3.Msg2 = "";
-                log3.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+                log3.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
                 log3.CreatedDate = DateTime.Now;
                 _unitOfWork.logsData.Add(log3);
                 _unitOfWork.Save();
@@ -563,7 +566,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             LogsData log = new LogsData();
             log.Msg1 = "update tracking numbers - end";
             log.Msg2 = "successfully updated " + countRec + " orders";
-            log.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Select(q => q.UserName).FirstOrDefault();
+            log.CreatedBy = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
             log.CreatedDate = DateTime.Now;
             _unitOfWork.logsData.Add(log);
             _unitOfWork.Save();
