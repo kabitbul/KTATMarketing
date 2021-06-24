@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                      new { @class = "form-control" })
+                                           new { @class = "form-control" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                                      new { @class = "form-control" })
+                                           new { @class = "form-control" })
                         <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
                     </div>
                 </div>
@@ -85,21 +85,21 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-4">
-                        <label asp-for="Orders.CustState">State</label>
+                        <label asp-for="Orders.CustZipCode">Zip Code</label>
                     </div>
                     <div class="col-8">
-                        @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                      new { @class = "form-control" })
-                        <span asp-validation-for="Orders.CustState" class="text-danger"></span>
+                        <input asp-for="Orders.CustZipCode" class="form-control" onchange="change()" />
+                        <span asp-validation-for="Orders.CustZipCode" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-4">
-                        <label asp-for="Orders.CustZipCode">Zip Code</label>
+                        <label asp-for="Orders.CustState">State</label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Orders.CustZipCode" class="form-control" />
-                        <span asp-validation-for="Orders.CustZipCode" class="text-danger"></span>
+                        @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
+                                           new { @class = "form-control" })
+                        <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -177,6 +177,123 @@ else if (ViewBag.success)
     <script type="text/javascript">
         function showBtn() {
             $("#AddBtn").show(0);
+        }
+    </script>
+    <script type="text/javascript">
+        function change() {
+            var zipCode = document.getElementById("Orders_CustZipCode").value;
+            zipCode = zipCode.split('-')[0];
+            if (zipCode.startsWith('0')) {
+                zipCode = zipCode.substring(1);
+            }
+            //get only first 4/5 digits
+            //if first dig is 0 remove it
+            if ((zipCode >= 35000 && zipCode <= 35299) || (zipCode >= 35400 && zipCode <= 36999))
+                document.getElementById("Orders_CustState").value = 'AL';
+            else if (zipCode >= 99500 && zipCode <= 99999)
+                document.getElementById("Orders_CustState").value = 'AK';
+            else if ((zipCode >= 85000 && zipCode <= 85399) || (zipCode >= 85500 && zipCode <= 85799) || (zipCode >= 85900 && zipCode <= 85099) ||
+                (zipCode >= 86300 && zipCode <= 86599))
+                document.getElementById("Orders_CustState").value = 'AZ';
+            else if (zipCode >= 71600 && zipCode <= 72999)
+                document.getElementById("Orders_CustState").value = 'AR';
+            else if ((zipCode >= 90000 && zipCode <= 90899) || (zipCode >= 91000 && zipCode <= 92899) || (zipCode >= 99000 && zipCode <= 96199))
+                document.getElementById("Orders_CustState").value = 'CA';
+            else if (zipCode >= 80000 && zipCode <= 81699)
+                document.getElementById("Orders_CustState").value = 'CO';
+            else if ((zipCode >= 6000 && zipCode <= 6389) || (zipCode >= 6391 && zipCode <= 6999))
+                document.getElementById("Orders_CustState").value = 'CT';
+            else if ((zipCode >= 20000 && zipCode <= 20099) || (zipCode >= 20200 && zipCode <= 20599) || (zipCode >= 56900 && zipCode <= 56999))
+                document.getElementById("Orders_CustState").value = 'DC';
+            else if (zipCode >= 19700 && zipCode <= 19999)
+                document.getElementById("Orders_CustState").value = 'DE';
+            else if ((zipCode >= 32000 && zipCode <= 33999) || (zipCode >= 34100 && zipCode <= 34199) || (zipCode >= 34200 && zipCode <= 34299) ||
+                (zipCode >= 34400 && zipCode <= 34499) || (zipCode >= 34600 && zipCode <= 34699) || (zipCode >= 34700 && zipCode <= 34799) ||
+                (zipCode >= 34900 && zipCode <= 34999))
+                document.getElementById("Orders_CustState").value = 'FL';
+            else if ((zipCode >= 30000 && zipCode <= 31999) || (zipCode >= 39800 && zipCode <= 39999))
+                document.getElementById("Orders_CustState").value = 'GA';
+            else if ((zipCode >= 96700 && zipCode <= 96799) || (zipCode >= 96800 && zipCode <= 96899))
+                document.getElementById("Orders_CustState").value = 'HI';
+            else if (zipCode >= 83200 && zipCode <= 83899)
+                document.getElementById("Orders_CustState").value = 'ID';
+            else if ((zipCode >= 60000 && zipCode <= 62099) || (zipCode >= 62200 && zipCode <= 62999))
+                document.getElementById("Orders_CustState").value = 'IL';
+            else if (zipCode >= 46000 && zipCode <= 47999)
+                document.getElementById("Orders_CustState").value = 'IN';
+            else if ((zipCode >= 50000 && zipCode <= 51699) || (zipCode >= 52000 && zipCode <= 52899))
+                document.getElementById("Orders_CustState").value = 'IA';
+            else if ((zipCode >= 66000 && zipCode <= 66299) || (zipCode >= 66400 && zipCode <= 67999))
+                document.getElementById("Orders_CustState").value = 'KS';
+            else if (zipCode >= 40000 && zipCode <= 42799)
+                document.getElementById("Orders_CustState").value = 'KY';
+            else if ((zipCode >= 70000 && zipCode <= 70199) || (zipCode >= 70300 && zipCode <= 70899) || (zipCode >= 71000 && zipCode <= 71499))
+                document.getElementById("Orders_CustState").value = 'LA';
+            else if (zipCode >= 3900 && zipCode <= 4999)
+                document.getElementById("Orders_CustState").value = 'ME';
+            else if ((zipCode >= 20600 && zipCode <= 21299) || (zipCode >= 21400 && zipCode <= 21999))
+                document.getElementById("Orders_CustState").value = 'MD';
+            else if ((zipCode >= 1000 && zipCode <= 2799) || (zipCode >= 5500 && zipCode <= 5599))
+                document.getElementById("Orders_CustState").value = 'MA';
+            else if (zipCode >= 48000 && zipCode <= 49999)
+                document.getElementById("Orders_CustState").value = 'MI';
+            else if ((zipCode >= 55000 && zipCode <= 55199) || (zipCode >= 55300 && zipCode <= 56799))
+                document.getElementById("Orders_CustState").value = 'MN';
+            else if (zipCode >= 38600 && zipCode <= 39799)
+                document.getElementById("Orders_CustState").value = 'MS';
+            else if ((zipCode >= 63000 && zipCode <= 63199) || (zipCode >= 63300 && zipCode <= 64199) || (zipCode >= 64400 && zipCode <= 65899))
+                document.getElementById("Orders_CustState").value = 'MO';
+            else if (zipCode >= 59000 && zipCode <= 59999)
+                document.getElementById("Orders_CustState").value = 'MT';
+            else if ((zipCode >= 68000 && zipCode <= 68199) || (zipCode >= 68300 && zipCode <= 69399))
+                document.getElementById("Orders_CustState").value = 'NE';
+            else if ((zipCode >= 88900 && zipCode <= 89199) || (zipCode >= 89300 && zipCode <= 89599) || (zipCode >= 89700 && zipCode <= 89899))
+                document.getElementById("Orders_CustState").value = 'NV';
+            else if (zipCode >= 3000 && zipCode <= 3899)
+                document.getElementById("Orders_CustState").value = 'NH';
+            else if (zipCode >= 7000 && zipCode <= 8999)
+                document.getElementById("Orders_CustState").value = 'NJ';
+            else if ((zipCode >= 87000 && zipCode <= 87199) || (zipCode >= 87300 && zipCode <= 87599) || (zipCode >= 87700 && zipCode <= 88499))
+                document.getElementById("Orders_CustState").value = 'NM';
+            else if ((zipCode >= 500 && zipCode <= 599) || (zipCode == 6390) || (zipCode >= 10000 && zipCode <= 14999))
+                document.getElementById("Orders_CustState").value = 'NY';
+            else if (zipCode >= 27000 && zipCode <= 28999)
+                document.getElementById("Orders_CustState").value = 'NC';
+            else if (zipCode >= 58000 && zipCode <= 58899)
+                document.getElementById("Orders_CustState").value = 'ND';
+            else if (zipCode >= 43000 && zipCode <= 45999)
+                document.getElementById("Orders_CustState").value = 'OH';
+            else if ((zipCode >= 73000 && zipCode <= 73199) || (zipCode >= 73400 && zipCode <= 74199) || (zipCode >= 74300 && zipCode <= 74999))
+                document.getElementById("Orders_CustState").value = 'OK';
+            else if (zipCode >= 97000 && zipCode <= 97999)
+                document.getElementById("Orders_CustState").value = 'OR';
+            else if (zipCode >= 15000 && zipCode <= 19699)
+                document.getElementById("Orders_CustState").value = 'PA';
+            else if (zipCode >= 2800 && zipCode <= 2999)
+                document.getElementById("Orders_CustState").value = 'RI';
+            else if (zipCode >= 29000 && zipCode <= 29999)
+                document.getElementById("Orders_CustState").value = 'SC';
+            else if (zipCode >= 57000 && zipCode <= 57799)
+                document.getElementById("Orders_CustState").value = 'SD';
+            else if (zipCode >= 37000 && zipCode <= 38599)
+                document.getElementById("Orders_CustState").value = 'TN';
+            else if ((zipCode >= 73300 && zipCode <= 73399) || (zipCode >= 75000 && zipCode <= 77099) || (zipCode >= 77200 && zipCode <= 79999))
+                document.getElementById("Orders_CustState").value = 'TX';
+            else if (zipCode >= 84000 && zipCode <= 84799)
+                document.getElementById("Orders_CustState").value = 'UT';
+            else if ((zipCode >= 5000 && zipCode <= 5499) || (zipCode >= 5600 && zipCode <= 5999))
+                document.getElementById("Orders_CustState").value = 'VT';
+            else if ((zipCode >= 20100 && zipCode <= 20199) || (zipCode >= 22000 && zipCode <= 24699))
+                document.getElementById("Orders_CustState").value = 'VA';
+            else if ((zipCode >= 98000 && zipCode <= 98699) || (zipCode >= 98800 && zipCode <= 99499))
+                document.getElementById("Orders_CustState").value = 'WA';
+            else if (zipCode >= 24700 && zipCode <= 26899)
+                document.getElementById("Orders_CustState").value = 'WV';
+            else if ((zipCode >= 53000 && zipCode <= 53299) || (zipCode >= 53400 && zipCode <= 53599) || (zipCode >= 53700 && zipCode <= 54999))
+                document.getElementById("Orders_CustState").value = 'WI';
+            else if ((zipCode >= 82000 && zipCode <= 83199) || (zipCode >= 83400 && zipCode <= 83499))
+                document.getElementById("Orders_CustState").value = 'WY';
+
         }
     </script>
 }
