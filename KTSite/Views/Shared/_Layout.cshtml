@@ -116,7 +116,8 @@
                                                                                                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
                                                                                                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="ReturningItem" asp-action="Index">Inventory Update</a>
                                                                                                                                 </div>
-                                                                                                                            </li>}
+                                                                                                                            </li>
+}
                         @if (User.IsInRole(SD.Role_Users))
                         {
             <li class="nav-item">
@@ -154,9 +155,10 @@
                                                                                                     @*<div class="dropdown-divider"></div>*@
                                                                                                 </div>
                                                                                             </li>
-                                                                                            <li class="nav-item">
-                                                                                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Help">Tutorial</a>
-                                                                                            </li>}
+                                                                                                            <li class="nav-item">
+                                                                                                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Help">Tutorial</a>
+                                                                                                            </li>
+}
                         @if (User.IsInRole(SD.Role_VAs))
                         {
             <li class="nav-item">
@@ -176,8 +178,7 @@
                                                                             </li>
                                                                                             <li class="nav-item">
                                                                                                 <a class="nav-link" asp-area="VAs" asp-controller="Products" asp-action="Index">Products</a>
-                                                                                            </li>
-}
+                                                                                            </li>}
                         @if (User.IsInRole(SD.Role_Warehouse))
                         {
             <li class="nav-item">
@@ -216,7 +217,8 @@
                                                                                                                                     <a class="dropdown-item" asp-area="Warehouse" asp-controller="Inventory" asp-action="Index">Inventory</a>
                                                                                                                                     <a class="dropdown-item" asp-area="Warehouse" asp-controller="ProductStatistics" asp-action="Index">Product Statistics</a>
                                                                                                                                 </div>
-                                                                                                                            </li>}
+                                                                                                                            </li>
+}
                     </ul>
                 </div>
             </div>
@@ -275,20 +277,167 @@ else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
                 });</script>
         </span>
     </h1>
-</div>}
+</div>} @************************start user notifications*******************@
+        @if (User.IsInRole(SD.Role_Users))
+        {
+<div class="row">
+    <h1 class="text-left col-6" style="font-size:30px">
+        <span id="returnhellouser">
+            <script>
+                $(function () {
+                    $.ajax({
+                        type: "Get",
+                        url: "/Home/GetHelloUser",
+                        success: function (data) {
+                            //update the page content.
+                            $('#returnhellouser').html(""); //clear the content
+                            $('#returnhellouser').html(data); //add the latest data.
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                        }
+                    });
+                });
+            </script>
+        </span>
+    </h1>
+    @*<h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>*@
+</div>
+                <div class="row">
+                    <div class="col-12" style="font:message-box">
+                        <div class="text-left display-3 p-4 border rounded col-5">
+                            <a href="PaymentHistory">
+                                <h1 style="font-size: 20px">
+                                    <span id="returnpaymentnotification">
+                                        <script>
+                                            $(function () {
+                                                $.ajax({
+                                                    type: "Get",
+                                                    url: "/Home/GetUserPendingPayment",
+                                                    success: function (data) {
+                                                        //update the page content.
+                                                        $('#returnpaymentnotification').html(""); //clear the content
+                                                        $('#returnpaymentnotification').html(data); //add the latest data.
+                                                    },
+                                                    error: function (response) {
+                                                        console.log(response.responseText);
+                                                    }
+                                                });
+                                            });
+                                        </script>
+                                    </span>
+                                </h1>
+                            </a>
+                        </div>
+                    </div>&nbsp;
+                </div> @*<div class="col-8">
+                                        <span id="notificationempty" style="display: none;">
+                                            1
+                                        </span>
+                                    </div>*@
+    <div class="row">
+        <div class="col-12" style="font:message-box">
+            <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
+                <img id="bellIcon" src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+                <span id="returnimpadminnotification">
+                    <script>
+                        $(function () {
+                            $.ajax({
+                                type: "Get",
+                                url: "/Home/GetAdminNotHeader",
+                                success: function (data) {
+                                    //update the page content.
+                                    $('#returnimpadminnotification').html(""); //clear the content
+                                    $('#returnimpadminnotification').html(data); //add the latest data.
+                                    if (data == "") {
+                                        document.getElementById('bellIcon').style.display = 'none';
+                                    }
+                                },
+                                error: function (response) {
+                                    console.log(response.responseText);
+                                }
+                            });
+                        });
+                    </script>
+                </span>
+            </h1>
+            <ul id="notlist">
+                <script>
+                    $(function () {
+                        $.ajax({
+                            type: "Get",
+                            dataType: 'JSON',
+                            url: "/Home/GetAdminNotifications",
+                            success: function (data) {
+                                var str = JSON.stringify(data).split(',');
+                                for (i = 0; i < str.length; i++)
+                                {
+                                    str[i] = str[i].replace('[', '').replace(']', '').replace('"', '').replace('"', '');
+                                    if (str[i].charAt(0) == '1') {
+                                        var item = document.createElement('li');
+                                        var node = document.createTextNode(str[i].substr(1));
+                                        item.appendChild(node);
+                                        item.style.color = "blue";
+                                        item.style.fontWeight = "bold";
+                                        item.style.fontSize = "20px";
+                                        const element = document.getElementById("notlist");
+                                        element.appendChild(item);
+                                    }
+                                    else if (str[i].charAt(0) == '0') {
+                                        var item = document.createElement('li');
+                                        var node = document.createTextNode(str[i].substr(1));
+                                        item.appendChild(node);
+                                        item.style.fontSize = "20px";
+                                        const element = document.getElementById("notlist");
+                                        element.appendChild(item);
+                                    }
+                                }
+                            },
+                            error: function (response) {
+                                console.log(response.responseText);
+                            }
+                        });
+                    });
+                </script>
+            </ul>
+        </div>&nbsp;
+    </div>
+    
+                                            @*@if (!ViewBag.NotificationEmpty)
+                                                                                                                    {
+                                                                                                    <div class="text-left display-4 p-2 border rounded col-4">
+                                                                                                        <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
+                                                                                                            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+                                                                                                            Important Admin Notifications:
+                                                                                                        </h1>
+                                                                                                        <ul>
+                                                                                                            @foreach (Notification notification in @ViewBag.NotificationList)
+                                                                                                            {
+                                                                                                                if (notification.DateMsg.Date >= DateTime.Now.Date.AddDays(-1))
+                                                                                                                {
+                                                                                        <li class="display-4" style="font-size:20px;font-weight:bold;color:blue">@notification.Message</li> }
+                                                                                                                else
+                                                                                                                {
+                                                                                        <li class="display-4" style="font-size:20px">@notification.Message</li>
+                                                                }
+
+                                                                                }
+                                                                                                        </ul>
+                                                                                                    </div>}
+                                                                                                                                </div>*@ }@************************end of user notifications*******************@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
-
-    <footer class="border-top footer text-white-50 bg-primary">
-        <div class="container-fluid">
-            &copy; 2020 - KT AT Online Marketing LTD
         </div>
-    </footer>
-    @RenderSection("Scripts", required: false)
-    @if (!User.IsInRole(SD.Role_Warehouse) && !User.IsInRole(SD.Role_Admin) && !User.IsInRole(SD.Role_VAs))
-    {
+
+        <footer class="border-top footer text-white-50 bg-primary">
+            <div class="container-fluid">
+                &copy; 2020 - KT AT Online Marketing LTD
+            </div>
+        </footer>
+        @RenderSection("Scripts", required: false)
+        @if (!User.IsInRole(SD.Role_Warehouse) && !User.IsInRole(SD.Role_Admin) && !User.IsInRole(SD.Role_VAs))
+        {
 @if (User.IsInRole(SD.Role_Users))
 {
 <script>
@@ -313,33 +462,31 @@ else if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Warehouse))
         }
     })
 </script>
-
-                    @*<script>
-                        // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/utrywaxp'
-                        (function () { var w = window; var ic = w.Intercom; if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); } else { var d = document; var i = function () { i.c(arguments); }; i.q = []; i.c = function (args) { i.q.push(args); }; w.Intercom = i; var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); } } })();
-                    </script>*@ 
-                    }
-                                    else
-                                    {
-                    <script>
-                        window.intercomSettings = {
-                            app_id: "utrywaxp"
-                        };
-                    </script>}}
-    <script>
+@*<script>
         // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/utrywaxp'
-        (function () {
-            var w = window; var ic = w.Intercom;
-            if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); }
-            else {
-                var d = document; var i = function () { i.c(arguments); };
-                i.q = []; i.c = function (args) { i.q.push(args); };
-                w.Intercom = i;
-                var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); }
-            }
-        })();
-    </script>
-</body>
+        (function () { var w = window; var ic = w.Intercom; if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); } else { var d = document; var i = function () { i.c(arguments); }; i.q = []; i.c = function (args) { i.q.push(args); }; w.Intercom = i; var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); } } })();
+    </script>*@ }
+else
+{
+<script>
+    window.intercomSettings = {
+        app_id: "utrywaxp"
+    };
+</script>}}
+        <script>
+            // We pre-filled your app ID in the widget URL: 'https://widget.intercom.io/widget/utrywaxp'
+            (function () {
+                var w = window; var ic = w.Intercom;
+                if (typeof ic === "function") { ic('reattach_activator'); ic('update', w.intercomSettings); }
+                else {
+                    var d = document; var i = function () { i.c(arguments); };
+                    i.q = []; i.c = function (args) { i.q.push(args); };
+                    w.Intercom = i;
+                    var l = function () { var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://widget.intercom.io/widget/utrywaxp'; var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); }; if (w.attachEvent) { w.attachEvent('onload', l); } else { w.addEventListener('load', l, false); }
+                }
+            })();
+        </script>
+    </body>
 </html>
 @section Scripts
 {

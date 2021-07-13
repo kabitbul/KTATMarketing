@@ -1,11 +1,11 @@
 ﻿@{ ViewData["Title"] = "Home Page"; }
 
 
-<div class="row">
+@*<div class="row">
     <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
-</div>
+</div>*@
 <div class="col-12" style="font:message-box">
-    <div class="text-left display-3 p-4 border rounded col-5">
+    @*<div class="text-left display-3 p-4 border rounded col-5">
         @if (ViewBag.PendingCount == 0)
         {
 <h1 style="font-size: 20px">No Pending Payments</h1> }
@@ -15,7 +15,7 @@ else
     <a href="PaymentHistory">You Have @ViewBag.PendingAmount.ToString("0.00")$ waiting for Admin Approval</a>
 </h1>}
     </div>
-    &nbsp;
+    &nbsp;*@
     @*@if (ViewBag.PendingReturnLabel == 1)
     {
 <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-6">
@@ -34,7 +34,7 @@ else if (ViewBag.PendingReturnLabel > 1)
         </a>
     </h1>
 </div>}*@
-    @if (!ViewBag.NotificationEmpty)
+    @*@if (!ViewBag.NotificationEmpty)
     {
 <div class="text-left display-4 p-2 border rounded col-4">
     <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
@@ -54,7 +54,7 @@ else
 
                 }
     </ul>
-</div>}
+</div>}*@
 </div>
 &nbsp;
 <div>
