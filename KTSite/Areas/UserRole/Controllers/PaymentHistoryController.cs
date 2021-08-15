@@ -160,7 +160,7 @@ namespace KTSite.Areas.UserRole.Controllers
             string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             PaymentHistory paymentHistory = new PaymentHistory();
             paymentHistory.UserNameId = uNameId;
-            paymentHistory.Amount = amount;
+            paymentHistory.Amount = amount*0.97;
             paymentHistory.PayDate = DateTime.Now;
             paymentHistory.SentFromAddressId = 0;
             paymentHistory.Status = SD.PaymentStatusApproved;
