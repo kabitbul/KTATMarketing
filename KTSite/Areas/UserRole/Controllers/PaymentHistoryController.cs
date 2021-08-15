@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -40,9 +35,9 @@ namespace KTSite.Areas.UserRole.Controllers
             PaymentHistoryVM paymentHistoryVM = new PaymentHistoryVM()
             {
                 PaymentHistory = new PaymentHistory(),
-                PaymentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a=> a.UserNameId == uNameId).Select(i => new SelectListItem
+                PaymentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a=> a.UserNameId == uNameId && a.PaymentType == SD.PaymentPayoneer).Select(i => new SelectListItem
                 {
-                    Text = i.PaymentTypeAddress + " - " + i.PaymentType,
+                    Text = i.PaymentTypeAddress,
                     Value = i.Id.ToString()
                 })
             };
@@ -158,6 +153,25 @@ namespace KTSite.Areas.UserRole.Controllers
                     ViewBag.AlreadyApprovedOrRejected = true;
             }
             return View(paymentHistoryVM);
+        }
+        [HttpPost]
+        public JsonResult UpdateBalance(double amount)
+        {
+            string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+            PaymentHistory paymentHistory = new PaymentHistory();
+            paymentHistory.UserNameId = uNameId;
+            paymentHistory.Amount = amount;
+            paymentHistory.PayDate = DateTime.Now;
+            paymentHistory.SentFromAddressId = 0;
+            paymentHistory.Status = SD.PaymentStatusApproved;
+
+            PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == paymentHistory.UserNameId).FirstOrDefault();
+            paymentBalance.Balance = paymentBalance.Balance + (paymentHistory.Amount*0.97);
+            _unitOfWork.Save();
+            _unitOfWork.PaymentHistory.Add(paymentHistory);
+            _unitOfWork.Save();
+            
+            return Json("success");
         }
         #region API CALLS
         [HttpGet]

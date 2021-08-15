@@ -232,9 +232,8 @@ else if (ViewBag.success)
         function change() {
             var zipCode = document.getElementById("Orders_CustZipCode").value;
             zipCode = zipCode.split('-')[0];
-            if (zipCode.startsWith('0'))
-            {
-               zipCode = zipCode.substring(1);
+            if (zipCode.startsWith('0')) {
+                zipCode = zipCode.substring(1);
             }
             //get only first 4/5 digits
             //if first dig is 0 remove it
@@ -242,13 +241,11 @@ else if (ViewBag.success)
                 document.getElementById("Orders_CustState").value = 'AL';
             else if (zipCode >= 99500 && zipCode <= 99999)
                 document.getElementById("Orders_CustState").value = 'AK';
-            else if ((zipCode >= 85000 && zipCode <= 85399) || (zipCode >= 85500 && zipCode <= 85799) || (zipCode >= 85900 && zipCode <= 85099) ||
-                   (zipCode >= 86300 && zipCode <= 86599))
+            else if ((zipCode >= 85000 && zipCode <= 85399) || (zipCode >= 85500 && zipCode <= 85799) || (zipCode >= 85099 && zipCode <= 85900) ||
+                (zipCode >= 86300 && zipCode <= 86599))
                 document.getElementById("Orders_CustState").value = 'AZ';
             else if (zipCode >= 71600 && zipCode <= 72999)
                 document.getElementById("Orders_CustState").value = 'AR';
-            else if ((zipCode >= 90000 && zipCode <= 90899) || (zipCode >= 91000 && zipCode <= 92899) || (zipCode >= 99000 && zipCode <= 96199))
-                document.getElementById("Orders_CustState").value = 'CA';
             else if (zipCode >= 80000 && zipCode <= 81699)
                 document.getElementById("Orders_CustState").value = 'CO';
             else if ((zipCode >= 6000 && zipCode <= 6389) || (zipCode >= 6391 && zipCode <= 6999))
@@ -327,8 +324,6 @@ else if (ViewBag.success)
                 document.getElementById("Orders_CustState").value = 'SD';
             else if (zipCode >= 37000 && zipCode <= 38599)
                 document.getElementById("Orders_CustState").value = 'TN';
-            else if ((zipCode >= 73300 && zipCode <= 73399) || (zipCode >= 75000 && zipCode <= 77099) || (zipCode >= 77200 && zipCode <= 79999))
-                document.getElementById("Orders_CustState").value = 'TX';
             else if (zipCode >= 84000 && zipCode <= 84799)
                 document.getElementById("Orders_CustState").value = 'UT';
             else if ((zipCode >= 5000 && zipCode <= 5499) || (zipCode >= 5600 && zipCode <= 5999))
@@ -343,8 +338,13 @@ else if (ViewBag.success)
                 document.getElementById("Orders_CustState").value = 'WI';
             else if ((zipCode >= 82000 && zipCode <= 83199) || (zipCode >= 83400 && zipCode <= 83499))
                 document.getElementById("Orders_CustState").value = 'WY';
-                
-            }
+            else if ((zipCode >= 90000 && zipCode <= 90899) || (zipCode >= 91000 && zipCode <= 92899) || (zipCode >= 96199 && zipCode <= 99000) ||
+                (zipCode >= 94000 && zipCode <= 95999))
+                document.getElementById("Orders_CustState").value = 'CA';
+            else if ((zipCode >= 73300 && zipCode <= 73399) || (zipCode >= 75000 && zipCode <= 77099) || (zipCode >= 77200 && zipCode <= 79999))
+                document.getElementById("Orders_CustState").value = 'TX';
+
+        }
     </script>
 }
 

@@ -3,7 +3,7 @@
 @model KTSite.Models.PaymentSentAddressVM
 
 @{ Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Update Payment Type"; }
+    var title = "Update Payoneer Address"; }
 
 <form method="post" enctype="multipart/form-data">
     <div class="container">
@@ -14,23 +14,26 @@
             </div>
             <div class="col-8 pt-4">
                 <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="PaymentSentAddress.PaymentTypeAddress">Address Of Payment Type</label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="PaymentSentAddress.PaymentTypeAddress" class="form-control" />
-                        <span asp-validation-for="PaymentSentAddress.PaymentTypeAddress" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="PaymentSentAddress.PaymentTypeAddress">Address Of Payment Type</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="PaymentSentAddress.PaymentTypeAddress" class="form-control" />
+                <span asp-validation-for="PaymentSentAddress.PaymentTypeAddress" class="text-danger"></span>
+            </div>
+        </div>
+                @*<div class="form-group row">
                     <div class="col-4">
                         <label asp-for="PaymentSentAddress.PaymentType">Choose Payment Type</label>
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.PaymentSentAddress.PaymentType, Model.paymentType, "Choose Payment Type",
-                                           new { @class = "form-control" })
+                                                new { @class = "form-control" })
                         <span asp-validation-for="PaymentSentAddress.PaymentType" class="text-danger"></span>
                     </div>
+                </div>*@
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentSentAddress.PaymentType" class="form-control" />
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="PaymentSentAddress.UserNameId" class="form-control" value="@ViewBag.uNameId" />

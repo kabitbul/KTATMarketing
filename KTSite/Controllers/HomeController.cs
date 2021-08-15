@@ -90,7 +90,6 @@ namespace KTSite.Controllers
                     strRes.Add("0" + notif.Message);
                 }
             }
-
                 return Json(strRes);
         }
         public JsonResult GetUserDetails(DateTime fromDate, DateTime toDate)

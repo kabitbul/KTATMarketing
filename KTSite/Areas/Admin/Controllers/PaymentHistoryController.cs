@@ -27,15 +27,17 @@ namespace KTSite.Areas.Admin.Controllers
                 new Func<int, string>(getPaymentType);
             ViewBag.getUserName =
                 new Func<string, string>(getUserName);
-            var PaymentHistory =_unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a=>!a.IsAdmin),
+            var PaymentHistory =_unitOfWork.PaymentHistory.GetAll().Join(_unitOfWork.PaymentSentAddress.GetAll().Where(a=>!a.IsAdmin ),
                                                          paymentHistory => paymentHistory.SentFromAddressId,
                                                          paymentSentAddress => paymentSentAddress.Id,
                                                          (paymentHistory, paymentSentAddress) => new
                                                          {
                                                              paymentHistory
                                                          }).Select(a=>a.paymentHistory);
-                //getHistoryOfAllUsersPayment();
-            return View(PaymentHistory);
+            //getHistoryOfAllUsersPayment();
+            var PaymentHistoryU = _unitOfWork.PaymentHistory.GetAll().Where(b => b.SentFromAddressId == 0);
+            var  paymentHistoryRes = PaymentHistory.Union(PaymentHistoryU);
+            return View(paymentHistoryRes);
         }
         public string getUserName(string Id)
         {

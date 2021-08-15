@@ -1,10 +1,6 @@
-﻿using KTSite.Utility;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace KTSite.Models
 {
@@ -46,6 +42,8 @@ namespace KTSite.Models
         public double MinimumPrice { get; set; }
         [NotMapped]
         public double WarehouseProfit { get; set; }
+      //  [DefaultValue(false)]
+      //  public bool IsArchived { get; set; }
 
     }
 }

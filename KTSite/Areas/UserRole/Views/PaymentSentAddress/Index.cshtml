@@ -7,10 +7,10 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
-            <h2 class="text-primary">Payment Type List </h2>
+            <h2 class="text-primary">Your Payoneer Addresses </h2>
         </div>
         <div class="col-6 text-right">
-            <a class="btn btn-primary" asp-action="AddPaymentType" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Payment Type</a>
+            <a class="btn btn-primary" asp-action="AddPaymentType" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Payoneer Address</a>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
             <thead class="thead-dark">
                 <tr class="table-info">
                     <th>Address</th>
-                    <th>Choose Payment Type</th>
+                    @*<th>Choose Payment Type</th>*@
                     <th></th>
             </thead>
 
@@ -28,7 +28,7 @@
             {
                 <tr>
                     <td>@paymentSentAddress.PaymentTypeAddress</td>
-                    <td>@paymentSentAddress.PaymentType</td>
+                    @*<td>@paymentSentAddress.PaymentType</td>*@
                     <td>
                         <div class="text-center">
                             <a href="/UserRole/PaymentSentAddress/EditPaymentType/@paymentSentAddress.Id" class="btn btn-success text-white" style="cursor:pointer"

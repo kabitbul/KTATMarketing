@@ -19,7 +19,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public IActionResult Index()
         {
             string UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
-            var PaymentSentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.UserNameId == UNameId);
+            var PaymentSentAddress = _unitOfWork.PaymentSentAddress.GetAll().Where(a => a.UserNameId == UNameId && a.PaymentType != "Paypal");
             return View(PaymentSentAddress);
         }
         public IActionResult AddPaymentType()

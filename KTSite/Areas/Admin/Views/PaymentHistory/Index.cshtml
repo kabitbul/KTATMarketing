@@ -36,7 +36,7 @@
                     <th></th>
                     <th>Address</th>
                     <th>Customer</th>
-                    <th>Payment Type</th>
+                    @*<th>Payment Type</th>*@
                     <th>Amount</th>
                     <th>Payment Date</th>
                     <th>Status</th>
@@ -47,17 +47,23 @@
             {
         <tr>
             <td>@paymentHistory.Id</td>
-            <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>
+            @if (paymentHistory.SentFromAddressId == 0)
+            {
+            <td>Paypal</td>
+        }
+                        else
+                        {
+        <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>}
             <td>@ViewBag.getUserName(paymentHistory.UserNameId)</td>
-            <td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>
+            @*<td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>*@
             <td>@paymentHistory.Amount.ToString("0.00")$</td>
             <td>@paymentHistory.PayDate</td>
             @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusApproved)
             {
         <td style="font-weight:bold;color:forestgreen">@paymentHistory.Status</td>
  }
-                        else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
-                        {
+    else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
+    {
         <td style="font-weight:bold;color:red">@paymentHistory.Status</td> }
                         else
                         {
@@ -177,7 +183,7 @@
         }
                     $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
-                    var status = data[6];
+                    var status = data[5];
                     if (($('#Approved').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusApproved.ToString()') ||
                         ($('#Pending').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusPending.ToString()')||
                         ($('#Rejected').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusRejected.ToString()'))
