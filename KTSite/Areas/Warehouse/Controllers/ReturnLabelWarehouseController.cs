@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Globalization;
-using System.Text;
-using Newtonsoft.Json.Converters;
 using System.Text.RegularExpressions;
 
 namespace KTSite.Areas.Warehouse.Controllers
@@ -31,7 +24,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult Index()
         {
-            var returnLabelList = _unitOfWork.ReturnLabel.GetAll().OrderByDescending(q=>q.Id);
+            var returnLabelList = _unitOfWork.ReturnLabel.GetAll().Where(a=> a.MerchType != SD.Role_ExMerch).OrderByDescending(q=>q.Id);
             ViewBag.getCustName = new Func<string, string>(returnCustName);
             ViewBag.getQuantityString = new Func<int, string, string>(returnQuantityString);
             ViewBag.isBold = new Func<int, string, bool>(returnIsBold);

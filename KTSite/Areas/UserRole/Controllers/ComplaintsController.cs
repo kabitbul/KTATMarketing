@@ -158,6 +158,8 @@ namespace KTSite.Areas.UserRole.Controllers
                         Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
                         complaintsVM.complaints.ProductName = ord.ProductName;
                         complaintsVM.complaints.CustName = ord.CustName;
+                        complaintsVM.complaints.MerchId = ord.MerchId;
+                        complaintsVM.complaints.MerchType = ord.MerchType;
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
                 }
@@ -182,7 +184,7 @@ namespace KTSite.Areas.UserRole.Controllers
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.OrderStatus == SD.OrderStatusDone).
     Select(i => new SelectListItem
     {
         Text = i.CustName + "- Id: " + i.Id,

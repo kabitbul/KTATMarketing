@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace KTSite.Utility
 {
     public static class SD
     {
+        public const string Kfir_Merch = "2811c25b-0667-4593-a354-6d7200dd914f";//KfirLogicAdded
+        public const string Kfir_Buyer = "954af016-4664-4048-96ba-c7f02de9738e";// KfirLogicAdded
         public const string Role_Admin = "Admin";
         public const string Role_Warehouse = "Warehouse";
         public const string Role_Users = "Users";
         public const string Role_VAs = "VAs";
+        public const string Role_KTMerch = "KTMerch";//MerchDev
+        public const string Role_ExMerch = "ExternalMerch";//MerchDev
         public const string OrderStatusAccepted = "Accepted";
         public const string OrderStatusInProgress = "In Progress";
         public const string OrderStatusDone = "Done";
@@ -22,6 +24,9 @@ namespace KTSite.Utility
         public const string PaymentStatusPending = "Pending";
         public const string PaymentStatusApproved = "Approved";
         public const string PaymentStatusRejected = "Rejected";
+        public const string MerchProductStatusPending = "Pending Approval";
+        public const string MerchProductStatusApproved = "Approved";
+        public const string MerchProductStatusRejected = "Rejected";
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
         public const string ReturningItemDefective = "Defective";
@@ -35,8 +40,18 @@ namespace KTSite.Utility
         public const string NotRelevant = "Not Relevant";
         public const string Refund = "Refund Order";
         public const string SendAgain = "Send Again";
+        public const string warehouseTicket = "warehouse Ticket";
         public const double payForCounting = 0.02;
         public const double payForAmazonShipments = 0.1;
+        public const double FeesOfKTMerch = 0.1;
+        public const double FeesOfEXMerch = 0.08;
+        public const double weightFor1Rate = 0.5;
+        public const double weightFor2Rate = 0.6875;
+        public const double weightForMaxRate = 1;
+        public const double priceFor1Rate = 4.0;
+        public const double priceFor2Rate = 5.0;
+        public const double priceForMaxRate = 6.13;
+        public const double addToKTMerchRate = 0.2;
         //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =
             @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

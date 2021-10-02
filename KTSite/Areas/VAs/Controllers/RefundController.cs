@@ -91,6 +91,11 @@ namespace KTSite.Areas.VAs.Controllers
                 {
                     refundVM.refund.ReturnId = returnLabel.Id;
                 }
+                Order ord = _unitOfWork.Order.Get((long)Id);
+                if (ord.MerchType == SD.Role_KTMerch)
+                    ViewBag.ktMerch = true;
+                else
+                    ViewBag.ktMerch = false;
                 ViewBag.UName = uName;
                 ViewBag.ShowMsg = false;
                 ViewBag.failed = false;
@@ -105,6 +110,7 @@ namespace KTSite.Areas.VAs.Controllers
             bool errAmount = false;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
+            ViewBag.ktMerch = false;
             if (ModelState.IsValid)
             {
                 Order order = _unitOfWork.Order.Get(refundVM.refund.OrderId);
@@ -123,24 +129,51 @@ namespace KTSite.Areas.VAs.Controllers
                 }
                 if (!errAmount)
                 {
-                    bool ownByWarehouse = _unitOfWork.Product.Get(order.ProductId).OwnByWarehouse;
+                    Product pr = _unitOfWork.Product.Get(order.ProductId);
+                    refundVM.refund.MerchId = pr.MerchId;
+                    refundVM.refund.MerchType = pr.MerchType;
+                    bool ownByWarehouse = pr.OwnByWarehouse;
                     PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == order.UserNameId).FirstOrDefault();
                     // add refund amount to seller balance
                     double costPerOne = order.Cost / order.Quantity;
-                    paymentBalance.Balance = paymentBalance.Balance + costPerOne * refundVM.refund.RefundQuantity;
+                    if (!order.IsAdmin)
+                    {
+                        paymentBalance.Balance = paymentBalance.Balance + costPerOne * refundVM.refund.RefundQuantity;
+                        refundVM.refund.AmountRefunded = costPerOne * refundVM.refund.RefundQuantity;
+                    }
                     PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
                     //remove from warehouse if its his product
                     if (ownByWarehouse)
                     {
-                        double productCost = _unitOfWork.Product.Get(order.ProductId).Cost;
+                        double productCost = pr.Cost;
                         warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * productCost;
+                    }
+                    else if (pr.MerchType == SD.Role_KTMerch)
+                    {
+                        if (refundVM.refund.ChargeKTMerch)
+                        {
+                            //if ktMerch - charge pr.cost - pr.shippingcharge*quantity - Fees
+                            PaymentBalanceMerch pbMerch = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == pr.MerchId).FirstOrDefault();
+                            double reduceAmount =
+                                (costPerOne * refundVM.refund.RefundQuantity * (1 - SD.FeesOfKTMerch)) - ((pr.ShippingCharge+SD.addToKTMerchRate) * refundVM.refund.RefundQuantity);
+                            pbMerch.Balance = pbMerch.Balance - reduceAmount;
+                            refundVM.refund.AmountChargedFromMerch = reduceAmount;
+                        }
+                    }
+                    else if (pr.MerchType == SD.Role_ExMerch)
+                    {
+                        PaymentBalanceMerch pbMerch = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == pr.MerchId).FirstOrDefault();
+                        double reduceAmount =
+                            costPerOne * refundVM.refund.RefundQuantity * (1 - SD.FeesOfEXMerch);
+                        pbMerch.Balance = pbMerch.Balance - reduceAmount;
+                        refundVM.refund.AmountChargedFromMerch = reduceAmount;
                     }
                     //if charge warehouse for shipping
                     if (refundVM.refund.ChargeWarehouse)
                     {
                         int prodId = _unitOfWork.Order.Get(refundVM.refund.OrderId).ProductId;
-                        bool ownByWarehouse2 = _unitOfWork.Product.Get(prodId).OwnByWarehouse;
-                        double shipCharge = _unitOfWork.Product.Get(prodId).ShippingCharge;
+                        bool ownByWarehouse2 = pr.OwnByWarehouse;
+                        double shipCharge = pr.ShippingCharge;
                         if (ownByWarehouse2)
                         {
                             //warehousePaymentBalance.Balance = warehousePaymentBalance.Balance + refundVM.refund.RefundQuantity * SD.shipping_cost_warehouse_items;

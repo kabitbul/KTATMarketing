@@ -39,6 +39,14 @@ namespace KTSite.Areas.Admin.Controllers
             var  paymentHistoryRes = PaymentHistory.Union(PaymentHistoryU);
             return View(paymentHistoryRes);
         }
+        public IActionResult ShowMerchPayment()
+        {
+            ViewBag.getUserName =
+                new Func<string, string>(getUserName);
+            var PaymentHistoryMerch = _unitOfWork.PaymentHistoryMerch.GetAll();
+            
+            return View(PaymentHistoryMerch);
+        }
         public string getUserName(string Id)
         {
             return _unitOfWork.ApplicationUser.Get(Id).Name;

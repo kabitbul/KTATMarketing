@@ -63,6 +63,23 @@ namespace KTSite.Areas.Warehouse.Controllers
                     }
                     else
                     {
+                        Product pr = _unitOfWork.Product.Get(productVM.Product.Id);
+                        //if weight has changed
+                        if (productVM.Product.Weight != pr.Weight && productVM.Product.MerchType == SD.Role_KTMerch)
+                        {
+                            if (productVM.Product.Weight < SD.weightFor1Rate && productVM.Product.Weight > 0)
+                            {
+                                productVM.Product.ShippingCharge = SD.priceFor1Rate;
+                            }
+                            else if (productVM.Product.Weight < SD.weightFor2Rate && productVM.Product.Weight >= SD.weightFor1Rate)
+                            {
+                                productVM.Product.ShippingCharge = SD.priceFor2Rate;
+                            }
+                            else if (productVM.Product.Weight < SD.weightForMaxRate && productVM.Product.Weight >= SD.weightFor2Rate)
+                            {
+                                productVM.Product.ShippingCharge = SD.priceForMaxRate;
+                            }
+                        }
                         ViewBag.InvalidWeight = 0;
                         _unitOfWork.Product.update(productVM.Product);
                         _unitOfWork.Save();
@@ -78,7 +95,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitOfWork.Product.GetAll(includePoperties:"Category");
+            var allObj = _unitOfWork.Product.GetAll(includePoperties:"Category").Where(a=> a.MerchType != SD.Role_ExMerch);
             return Json(new { data = allObj });
         }
         [HttpDelete]

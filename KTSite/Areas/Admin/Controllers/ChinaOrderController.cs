@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 
@@ -40,7 +35,7 @@ namespace KTSite.Areas.Admin.Controllers
             chinaOrderVM = new ChinaOrderVM()
                 {
                 chinaOrder = new ChinaOrder(),
-                    ProductList = _unitOfWork.Product.GetAll().OrderBy(a=>a.ProductName).
+                    ProductList = _unitOfWork.Product.GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.ProductName,
@@ -59,7 +54,7 @@ namespace KTSite.Areas.Admin.Controllers
             ChinaOrderVM chinaOrderVM = new ChinaOrderVM()
                 {
                     chinaOrder = chinaOrder,
-                    ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                    ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchId == null).OrderBy(a => a.ProductName).
                      Select(i => new SelectListItem
                      {
                          Text = i.ProductName,
@@ -95,7 +90,7 @@ namespace KTSite.Areas.Admin.Controllers
             ChinaOrderVM chinaOrderVM2 = new ChinaOrderVM()
             {
                 chinaOrder = new ChinaOrder(),
-                ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchId == null).OrderBy(a => a.ProductName).
                 Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -111,10 +106,14 @@ namespace KTSite.Areas.Admin.Controllers
                 else if (chinaOrderVM.chinaOrder.Id == 0)
                 {
                     ViewBag.QuantityZero = false;
+                    Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.ProductId).FirstOrDefault();
+                    if(product.MerchId != null)
+                        chinaOrderVM.chinaOrder.KTMerchId = product.MerchId;
                     _unitOfWork.ChinaOrder.Add(chinaOrderVM.chinaOrder);
                     //Once added, we need to add to the onthe way column on product
-                    Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.ProductId).FirstOrDefault();
+                    
                     product.OnTheWayInventory = product.OnTheWayInventory + chinaOrderVM.chinaOrder.Quantity;
+                    chinaOrderVM.chinaOrder.KTMerchId = product.MerchId;
                     _unitOfWork.Save();
                     ViewBag.success = true;
                 }
@@ -133,7 +132,7 @@ namespace KTSite.Areas.Admin.Controllers
             ChinaOrderVM chinaOrderVM2 = new ChinaOrderVM()
             {
                 chinaOrder = _unitOfWork.ChinaOrder.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.Id).FirstOrDefault(),
-                ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchId == null).OrderBy(a => a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.ProductName,

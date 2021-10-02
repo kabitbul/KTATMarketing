@@ -38,22 +38,22 @@ namespace KTSite.Areas.Warehouse.Controllers
                 ViewBag.PayDate = null;
                 ViewBag.Amount = 0;
             }
-            ViewBag.ExistProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
-            int WaitingForProcess = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).Count();
+            ViewBag.ExistProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress && a.MerchType != SD.Role_ExMerch);
+            int WaitingForProcess = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted && a.MerchType != SD.Role_ExMerch).Count();
             ViewBag.WaitingForProcess = WaitingForProcess;
-            int WaitingForReturnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a => a.FileURL == null).Count();
-            int missingWeightCount = _unitOfWork.Product.GetAll().Where(a => a.Weight == 0 && (a.InventoryCount > 0 || 
+            int WaitingForReturnLabel = _unitOfWork.ReturnLabel.GetAll().Where(a => a.FileURL == null && a.MerchType != SD.Role_ExMerch).Count();
+            int missingWeightCount = _unitOfWork.Product.GetAll().Where(a => a.MerchType != SD.Role_ExMerch && a.Weight == 0 && (a.InventoryCount > 0 || 
             _unitOfWork.ArrivingFromChina.GetAll().Where(b => b.ProductId == a.Id).Count()>0 )).Count();
             ViewBag.missingWeightCount = missingWeightCount;
             ViewBag.WaitingForReturnLabel = WaitingForReturnLabel;
             DateTime iterateDate = DateTime.Now.AddDays(-30);
                 List<DataPoint> dataPointsKT = new List<DataPoint>();
                 List<DataPoint> dataPointsWarehouse = new List<DataPoint>();
-            var resultWarehouse = _unitOfWork.Order.GetAll().Where(a=>a.OrderStatus != SD.OrderStatusCancelled
+            var resultWarehouse = _unitOfWork.Order.GetAll().Where(a=>a.OrderStatus != SD.OrderStatusCancelled && a.MerchType != SD.Role_ExMerch
             && isWarehouse(a.ProductId)
             ).GroupBy(a => a.UsDate)
                        .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
-            var resultNotWarehouse = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled
+            var resultNotWarehouse = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled && a.MerchType != SD.Role_ExMerch
             && !isWarehouse(a.ProductId)
             ).GroupBy(a => a.UsDate)
                        .Select(g => new { date = g.Key, total = g.Sum(i => i.Quantity) }).ToList();
@@ -80,7 +80,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                 iterateDate = iterateDate.AddDays(1);
                 }
             //exist complaints unsolved in warehouse responsibility
-            ViewBag.NumOfComplaints =_unitOfWork.Complaints.GetAll().Where(a => a.WarehouseResponsibility && !a.Solved).Count();
+            ViewBag.NumOfComplaints =_unitOfWork.Complaints.GetAll().Where(a => a.WarehouseResponsibility && !a.Solved && a.MerchType != SD.Role_ExMerch ).Count();
             ViewBag.NeedCounting = _unitOfWork.ArrivingFromChina.GetAll().Where(a => !a.UpdatedByAdmin && a.Quantity == 0).Count();
                 ViewBag.DataPointsKT = JsonConvert.SerializeObject(dataPointsKT);
                 ViewBag.DataPointsWarehouse = JsonConvert.SerializeObject(dataPointsWarehouse);

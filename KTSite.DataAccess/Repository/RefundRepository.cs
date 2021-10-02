@@ -26,6 +26,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.Quantity = refund.Quantity;
                 objFromDb.UserNameId = refund.UserNameId;
                 objFromDb.StoreNameId = refund.StoreNameId;
+                objFromDb.AmountRefunded = refund.AmountRefunded;
             }
         }
     }

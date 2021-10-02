@@ -20,7 +20,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.IsAdmin);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.IsAdmin && a.MerchType == null);
             ViewBag.getStore =
                new Func<string, string>(getStore);
             ViewBag.IsAdmin = new Func<string, bool>(returnIsAdmin);
@@ -34,7 +34,15 @@ namespace KTSite.Areas.Admin.Controllers
         {
             ViewBag.getUserName =
                    new Func<string, string>(getUserName);
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a =>!a.IsAdmin);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a =>!a.IsAdmin && a.MerchType == null);
+            ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
+            return View(complaints);
+        }
+        public IActionResult ShowMerchComplaint()
+        {
+            ViewBag.getUserName =
+                   new Func<string, string>(getUserName);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a => a.MerchType != null);
             ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
             return View(complaints);
         }
@@ -81,6 +89,7 @@ namespace KTSite.Areas.Admin.Controllers
                 }),
                     TicketResolutionList = SD.TicketResolution
                 };
+                Order ord = _unitOfWork.Order.Get((long)Id);
             }
             else
             {
@@ -118,8 +127,17 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult UpdateComplaint(long Id)
         {
-            bool IsAdmin = _unitOfWork.Complaints.GetAll().Where(a => a.Id == Id).Select(a => a.IsAdmin).FirstOrDefault();
             Complaints comp = _unitOfWork.Complaints.GetAll().Where(a => a.Id == Id).FirstOrDefault();
+            bool IsAdmin = comp.IsAdmin;
+            if(comp.MerchType == null)
+            {
+                ViewBag.isMerch = false;
+            }
+            else
+            {
+                ViewBag.isMerch = true;
+            }
+            
             string uNameId = comp.UserNameId;
             ComplaintsVM complaintsVM;
             complaintsVM = new ComplaintsVM()
@@ -177,6 +195,8 @@ namespace KTSite.Areas.Admin.Controllers
                         Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
                         complaintsVM.complaints.ProductName = ord.ProductName;
                         complaintsVM.complaints.CustName = ord.CustName;
+                        complaintsVM.complaints.MerchType = ord.MerchType;
+                        complaintsVM.complaints.MerchId = ord.MerchId;
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
                 }
@@ -193,6 +213,8 @@ namespace KTSite.Areas.Admin.Controllers
                         Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
                         complaintsVM.complaints.ProductName = ord.ProductName;
                         complaintsVM.complaints.CustName = ord.CustName;
+                        complaintsVM.complaints.MerchType = ord.MerchType;
+                        complaintsVM.complaints.MerchId = ord.MerchId;
 
                     }
                     _unitOfWork.Complaints.update(complaintsVM.complaints);
@@ -208,7 +230,7 @@ namespace KTSite.Areas.Admin.Controllers
             ComplaintsVM complaintsVM2 = new ComplaintsVM()
             {
                 complaints = new Complaints(),
-                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId).Where(a => a.OrderStatus == SD.OrderStatusDone
+                OrdersList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId && a.OrderStatus == SD.OrderStatusDone
                 && a.Id == complaintsVM.complaints.OrderId).
     Select(i => new SelectListItem
     {
@@ -233,6 +255,14 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
+                if (complaintsVM.complaints.MerchType == null)
+                {
+                    ViewBag.isMerch = false;
+                }
+                else
+                {
+                    ViewBag.isMerch = true;
+                }
                 complaintsVM.complaints.HandledBy =
                     (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name)).FirstOrDefault();
             if(complaintsVM.GeneralNotOrderRelated)
@@ -260,7 +290,7 @@ namespace KTSite.Areas.Admin.Controllers
                 complaintsVM2 = new ComplaintsVM()
                 {
                     complaints = _unitOfWork.Complaints.GetAll().Where(a => a.Id == complaintsVM.complaints.Id).FirstOrDefault(),
-                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.IsAdmin).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => a.IsAdmin && a.OrderStatus == SD.OrderStatusDone ).
                     Select(i => new SelectListItem
                     {
                         Text = i.CustName + "- Id: " + i.Id,
@@ -280,7 +310,7 @@ namespace KTSite.Areas.Admin.Controllers
                 complaintsVM2 = new ComplaintsVM()
                 {
                     complaints = _unitOfWork.Complaints.GetAll().Where(a => a.Id == complaintsVM.complaints.Id).FirstOrDefault(),
-                    OrdersList = _unitOfWork.Order.GetAll().Where(a => !a.IsAdmin).Where(a => a.OrderStatus == SD.OrderStatusDone).
+                    OrdersList = _unitOfWork.Order.GetAll().Where(a => !a.IsAdmin && a.OrderStatus == SD.OrderStatusDone).
                     Select(i => new SelectListItem
                     {
                         Text = i.CustName + "- Id: " + i.Id,

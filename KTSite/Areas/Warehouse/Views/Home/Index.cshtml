@@ -12,7 +12,7 @@
     {
 <div class="text-left display-3 p-4 border rounded col-5" style="border-bottom-width:5px">
     <h1 style="font-size: 20px">
-        <a href="PaymentHistory">Last Payment was placed in @ViewBag.PayDate.ToString("dd/MM/yyyy") For @ViewBag.Amount$</a>
+        <a href="/Warehouse/PaymentHistory">Last Payment was placed in @ViewBag.PayDate.ToString("dd/MM/yyyy") For @ViewBag.Amount$</a>
     </h1>
 </div>}
     @if (ViewBag.WaitingForProcess > 0)
@@ -20,7 +20,7 @@
 <div class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="OrderWarehouse">You have @ViewBag.WaitingForProcess Orders Without Tracking number.</a>
+        <a href="/Warehouse/OrderWarehouse">You have @ViewBag.WaitingForProcess Orders Without Tracking number.</a>
     </h1>
 </div>}
     @if (ViewBag.ExistProgress)
@@ -28,7 +28,7 @@
 <div class="text-left display-3 p-4 border rounded col-5">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="OrderWarehouse">Pay Attention, you have Orders In Status: "In Progress"</a>
+        <a href="/Warehouse/OrderWarehouse">Pay Attention, you have Orders In Status: "In Progress"</a>
     </h1>
 </div>}
     @if (ViewBag.missingWeightCount == 1)
@@ -36,7 +36,7 @@
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightcoral">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Product">You have a Product Without Weight, please update.</a>
+        <a href="/Warehouse/Product">You have a Product Without Weight, please update.</a>
     </h1>
 </div> }
 else
@@ -45,7 +45,7 @@ if (ViewBag.missingWeightCount > 1)
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightcoral">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="Product">You have @ViewBag.missingWeightCount Products Without Weight, please update.</a>
+        <a href="/Warehouse/Product">You have @ViewBag.missingWeightCount Products Without Weight, please update.</a>
     </h1>
 </div>}
     @if (ViewBag.NeedCounting == 1)
@@ -53,7 +53,7 @@ if (ViewBag.missingWeightCount > 1)
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightskyblue">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="ArrivingFromChina">There is a Product you received that needs counting</a>
+        <a href="/Warehouse/ArrivingFromChina">There is a Product you received that needs counting</a>
     </h1>
 </div> }
 else
@@ -62,7 +62,7 @@ if (ViewBag.NeedCounting > 1)
 <div class="text-left display-3 p-4 border rounded col-5" style="background-color:lightskyblue">
     <h1 style="font-size: 20px">
         <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
-        <a href="ArrivingFromChina">There are  @ViewBag.NeedCounting Products you received that needs counting.</a>
+        <a href="/Warehouse/ArrivingFromChina">There are  @ViewBag.NeedCounting Products you received that needs counting.</a>
     </h1>
 </div>}
     @if (ViewBag.WaitingForReturnLabel == 1)

@@ -55,7 +55,7 @@ namespace KTSite.Areas.Admin.Controllers
             List<ProductInventory> productList = new List<ProductInventory>();
            
             var allWeekOrders = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus != SD.OrderStatusCancelled &&
-            a.UsDate >= DateTime.Now.AddDays(-7).Date && a.UsDate <= DateTime.Now.AddDays(-1).Date).OrderBy(a=>a.UsDate);
+            a.UsDate >= DateTime.Now.AddDays(-7).Date && a.UsDate <= DateTime.Now.AddDays(-1).Date && a.MerchType != SD.Role_ExMerch).OrderBy(a=>a.UsDate);
             initialize(productList);
             int totalRows = productList.Count;
             foreach (Order order in allWeekOrders)
@@ -80,15 +80,21 @@ namespace KTSite.Areas.Admin.Controllers
                 if (prInv.DailyAvg3 > 0)
                 {
                     prInv.DaysToOOS = (double)(prInv.Inventory + prInv.OnTheWay) / prInv.DailyAvg3;
+                    prInv.DaysToWarehouseOOS = (double)(prInv.Inventory) / prInv.DailyAvg3;
                 }
                 else
                 {
                     prInv.DaysToOOS = (double)10000;
+                    prInv.DaysToWarehouseOOS = (double)10000;
                 }
                 if (prInv.DaysToOOS != 0)
                     prInv.DaysToOOSstr = prInv.DaysToOOS.ToString("0.00");
                 else
                     prInv.DaysToOOSstr = "0";
+                if (prInv.DaysToWarehouseOOS != 0)
+                    prInv.DaysToWarehouseOOSstr = prInv.DaysToWarehouseOOS.ToString("0.00");
+                else
+                    prInv.DaysToWarehouseOOSstr = "0";
 
                 if (prInv.DailyAvg3 != 0)
                     prInv.DailyAvg3str = prInv.DailyAvg3.ToString("0.00");
@@ -99,7 +105,7 @@ namespace KTSite.Areas.Admin.Controllers
                 else
                     prInv.DailyAvg7str = "0";
             }
-
+             
             if (!string.IsNullOrEmpty(searchValue))
             {
                 productList = productList.Where(x => x.ProductName.ToLower().Contains(searchValue.ToLower()) ||
@@ -110,7 +116,9 @@ namespace KTSite.Areas.Admin.Controllers
                                             x.Restock.ToLower().Contains(searchValue.ToLower()) ||
                                             x.DailyAvg3.ToString().Contains(searchValue.ToLower()) ||
                                             x.DailyAvg7.ToString().Contains(searchValue.ToLower()) ||
-                                            x.DaysToOOS.ToString().Contains(searchValue.ToLower())
+                                            x.DaysToOOS.ToString().Contains(searchValue.ToLower()) ||
+                                            x.DaysToWarehouseOOS.ToString().Contains(searchValue.ToLower()) ||
+                                            x.KTMerch.ToString().Contains(searchValue.ToLower())
                 ).ToList<ProductInventory>();
             }
             int totalRowsAfterFiltering = productList.Count;
@@ -152,6 +160,14 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                     productList = productList.OrderByDescending(x => x.DaysToOOS).ToList<ProductInventory>();
                 }
+                else if (sortColumnName.ToLower() == "daystowarehouseoosstr")
+                {
+                    productList = productList.OrderByDescending(x => x.DaysToWarehouseOOS).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ktmerch")
+                {
+                    productList = productList.OrderByDescending(x => x.KTMerch).ToList<ProductInventory>();
+                }
             }
             else
             {
@@ -191,6 +207,14 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                     productList = productList.OrderBy(x => x.DaysToOOS).ToList<ProductInventory>();
                 }
+                else if (sortColumnName.ToLower() == "daystowarehouseoosstr")
+                {
+                    productList = productList.OrderBy(x => x.DaysToWarehouseOOS).ToList<ProductInventory>();
+                }
+                else if (sortColumnName.ToLower() == "ktmerch")
+                {
+                    productList = productList.OrderBy(x => x.KTMerch).ToList<ProductInventory>();
+                }
             }
             productList = productList.Skip(start).Take(length).ToList<ProductInventory>();
             return Json(new
@@ -203,7 +227,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public void initialize(List<ProductInventory> productInvList)
         {
-            List<Product> allProducts = _unitOfWork.Product.GetAll().ToList();
+            List<Product> allProducts = _unitOfWork.Product.GetAll().Where(a=> a.MerchType != SD.Role_ExMerch).ToList();
             
             foreach (Product product in allProducts)
             {
@@ -235,6 +259,16 @@ namespace KTSite.Areas.Admin.Controllers
                 prodInv.DailyAvg3 = 0;
                 prodInv.DailyAvg7 = 0;
                 prodInv.DaysToOOS = 0;
+                prodInv.DaysToWarehouseOOS = 0;
+                if (product.MerchType == SD.Role_KTMerch)
+                {
+                    prodInv.KTMerch = "KT Merch";
+                }
+                else
+                {
+                    prodInv.KTMerch = "";
+                }
+                
                 productInvList.Add(prodInv);
             }
         }

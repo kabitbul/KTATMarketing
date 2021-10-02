@@ -6,7 +6,6 @@ using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
 using System.Globalization;
@@ -42,7 +41,8 @@ namespace KTSite.Areas.UserRole.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers).
+                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers && ((uNameId == SD.Kfir_Buyer)||
+                                         (uNameId != SD.Kfir_Buyer && a.MerchId != SD.Kfir_Merch))).
                 OrderBy(a=>a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -76,7 +76,8 @@ namespace KTSite.Areas.UserRole.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = _unitOfWork.Order.GetAll().Where(a=> a.Id == id).FirstOrDefault(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers).
+                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers && ((uNameId == SD.Kfir_Buyer) ||
+                                         (uNameId != SD.Kfir_Buyer && a.MerchId != SD.Kfir_Merch))).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -107,7 +108,8 @@ namespace KTSite.Areas.UserRole.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers).
+                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers && ((uNameId == SD.Kfir_Buyer) ||
+                                         (uNameId != SD.Kfir_Buyer && a.MerchId != SD.Kfir_Merch))).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -316,7 +318,8 @@ namespace KTSite.Areas.UserRole.Controllers
             OrderVM orderVM2 = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers).
+                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers && ((uNameId == SD.Kfir_Buyer) ||
+                                         (uNameId != SD.Kfir_Buyer && a.MerchId != SD.Kfir_Merch))).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -339,7 +342,8 @@ namespace KTSite.Areas.UserRole.Controllers
                     return View(orderVM2);
                 }
                 ViewBag.InsufficientFunds = false;
-                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
+                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now && 
+                    ((uNameId == SD.Kfir_Buyer) || (orderVM.Orders.MerchId != SD.Kfir_Merch)))
                 {
                     Order lastOrd = _unitOfWork.Order.GetAll().OrderByDescending(a => a.Id).Take(1).FirstOrDefault();
                     if (lastOrd.CustName != orderVM.Orders.CustName ||
@@ -348,11 +352,17 @@ namespace KTSite.Areas.UserRole.Controllers
                         lastOrd.CustZipCode != orderVM.Orders.CustZipCode ||
                         lastOrd.Quantity != orderVM.Orders.Quantity)
                     {
-                        orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                        Product pr = _unitOfWork.Product.Get(orderVM.Orders.ProductId);
+                        orderVM.Orders.ProductName = pr.ProductName;//returnProductName(orderVM.Orders.ProductId);
                         orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                         orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                         orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
                         orderVM.Orders.CustZipCode = orderVM.Orders.CustZipCode.Trim();
+                        if(pr.MerchId != null)
+                        {
+                            orderVM.Orders.MerchId = pr.MerchId;
+                            orderVM.Orders.MerchType = pr.MerchType;
+                        }
                         _unitOfWork.Order.Add(orderVM.Orders);
                         updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                         updateSellerBalance(orderVM.Orders.Cost);
@@ -380,7 +390,8 @@ namespace KTSite.Areas.UserRole.Controllers
             OrderVM orderVM2 = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers).
+                ProductList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && !a.OOSForSellers && ((uNameId == SD.Kfir_Buyer) ||
+                                         (uNameId != SD.Kfir_Buyer && a.MerchId != SD.Kfir_Merch))).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -397,7 +408,8 @@ namespace KTSite.Areas.UserRole.Controllers
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now)
+                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now &&
+                    ((uNameId == SD.Kfir_Buyer) || (orderVM.Orders.MerchId != SD.Kfir_Merch)))
                 {
                     Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
                     int oldQuantity = ord.Quantity;
@@ -538,6 +550,18 @@ namespace KTSite.Areas.UserRole.Controllers
                         orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
                         if (orderVM.Orders.ProductId > 0)
                         {
+                            Product pr = _unitOfWork.Product.Get(orderVM.Orders.ProductId);
+                            if (pr.MerchType == SD.Role_KTMerch)
+                            {
+                                orderVM.Orders.MerchType = SD.Role_KTMerch;
+                                orderVM.Orders.MerchId = pr.MerchId;
+                            }
+                            else if (pr.MerchType == SD.Role_ExMerch)
+                            {
+                                orderVM.Orders.MerchType = SD.Role_ExMerch;
+                                orderVM.Orders.MerchId = pr.MerchId;
+                            }
+
                             orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                         }
                         string validDate;
@@ -594,7 +618,8 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.UsDate <= DateTime.Now && Enumerable.Range(1, 100).Contains(orderVM.Orders.Quantity) &&
                             orderVM.Orders.CustName.Length >0 && orderVM.Orders.CustStreet1.Length > 0 &&
                             Enumerable.Range(5,10).Contains(orderVM.Orders.CustZipCode.Length) &&
-                            orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2)
+                            orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2 &&
+                            ((uNameId == SD.Kfir_Buyer) || (orderVM.Orders.MerchId != SD.Kfir_Merch)))
                         {
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                             orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
@@ -832,6 +857,8 @@ namespace KTSite.Areas.UserRole.Controllers
             orderVM.Orders.CustPhone= "";
             orderVM.Orders.IsAdmin = false;
             orderVM.Orders.OrderStatus = SD.OrderStatusAccepted;
+            orderVM.Orders.MerchType = "";
+            orderVM.Orders.MerchId = "";
         }
         [HttpPost]
         public ActionResult DownloadCSV(DateTime fromDate, DateTime toDate)
@@ -924,16 +951,41 @@ namespace KTSite.Areas.UserRole.Controllers
         public void updateWarehouseBalance(int quantity, int productId)
         {
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
-            if (product.OwnByWarehouse)
+            PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+            if (product.MerchType == SD.Role_KTMerch)
             {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items + product.Cost));
-                paymentBalance.Balance = paymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
+                //pay warehouse
+                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+                //pay merch --product cost minus shipping minus feeprecent SD.FeesOfKTMerch
+                PaymentBalanceMerch KTMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
+                double totalProfit = 0.0;
+                double addToMinimum = 0;
+                
+                totalProfit = (product.SellersCost * quantity * (1 - SD.FeesOfKTMerch)) - ((product.ShippingCharge+(SD.addToKTMerchRate)) *quantity);
+                if ((product.SellersCost * SD.FeesOfKTMerch) < 0.8)
+                {
+                    addToMinimum = 0.8 - (product.SellersCost * SD.FeesOfKTMerch);
+                    totalProfit = totalProfit - (addToMinimum * quantity);
+                }
+                KTMerchPaymentBalance.Balance = KTMerchPaymentBalance.Balance + totalProfit;
+
+            }
+            else if (product.MerchType == SD.Role_ExMerch)
+            {
+                //payMerch - add 
+                PaymentBalanceMerch EXMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
+                EXMerchPaymentBalance.Balance = EXMerchPaymentBalance.Balance + (product.SellersCost * quantity * (1 - SD.FeesOfEXMerch));
+            }
+            else if (product.OwnByWarehouse)
+            {
+                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
+                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
             }
             else
             {
                 //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                paymentBalance.Balance = paymentBalance.Balance - (quantity * (product.ShippingCharge));
+                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
             }
         }
         [HttpPost]

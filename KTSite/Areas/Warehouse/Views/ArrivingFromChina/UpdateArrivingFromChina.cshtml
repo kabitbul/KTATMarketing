@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.arrivingFromChina.ProductId, Model.ProductList, "Select Product",
-                                 new { @class = "form-control", @disabled = "disabled" })
+                                      new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="arrivingFromChina.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -56,6 +56,9 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="arrivingFromChina.UpdatedByAdmin" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="arrivingFromChina.MerchId" class="form-control" />
                 </div>
             </div>
                 <div class="col-8 pt-4">

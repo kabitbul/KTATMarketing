@@ -1,0 +1,107 @@
+﻿
+
+@model KTSite.Models.PaymentHistoryMerchVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+                var title = "Pay Merch"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="merchName">Merch Name</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="merchName" class="form-control" disabled/>
+                        <span asp-validation-for="merchName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistoryMerch.SentToAddress">Send to</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.PaymentHistoryMerch.SentToAddress, Model.PaymentAddress,
+                                                               new { @class = "form-control" })
+                        <span asp-validation-for="PaymentHistoryMerch.SentToAddress" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistoryMerch.PaymentMethod">Payment Method</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.PaymentHistoryMerch.PaymentMethod, Model.PaymentMethod,
+                                                               new { @class = "form-control" })
+                        <span asp-validation-for="PaymentHistoryMerch.PaymentMethod" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistoryMerch.SentFromAddress">Admin payment address</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PaymentHistoryMerch.SentFromAddress" class="form-control" />
+                        <span asp-validation-for="PaymentHistoryMerch.SentFromAddress" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentHistoryMerch.Amount">Amound Paid</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PaymentHistoryMerch.Amount" class="form-control" />
+                        <span asp-validation-for="PaymentHistoryMerch.Amount" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistoryMerch.UserNameId" class="form-control" value="@Model.userNameId" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistoryMerch.PayDate" class="form-control" value="@DateTime.Now" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentHistoryMerch.MerchType" class="form-control" value="@Model.merchType" />
+                </div>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Add</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    
+    @if (ViewBag.ShowMsg)
+    {
+        @if (ViewBag.success)
+        {
+        <script>
+                swal("Success!", "Payment Added!", "success")
+                    .then((value) => { window.location.href = '/Admin/PaymentHistoryMerch'; })
+    </script>
+            }
+        }
+}

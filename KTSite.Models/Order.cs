@@ -62,6 +62,10 @@ namespace KTSite.Models
         public string StoreName { get; set; }
         [DefaultValue(false)]
         public bool TrackingUpdated { get; set; }
+        [MaxLength(100)]
+        public string MerchId { get; set; }
+        [MaxLength(20)]
+        public string MerchType { get; set; }//KT/External
         [NotMapped]
         [DefaultValue(false)]
         public bool isChecked { get; set; }

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace KTSite.Models
 {
@@ -27,9 +24,12 @@ namespace KTSite.Models
 
         [AllowNull]
         public int QuantityReceived { get; set; }
+        public int BoxCount { get; set; }
         [AllowNull]
         public bool IgnoreMissingQuantity { get; set; }
         [DefaultValue(false)]
         public bool ReceivedAll { get; set; }
+        [MaxLength(100)]
+        public string KTMerchId { get; set; }
     }
 }

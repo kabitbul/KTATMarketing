@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace KTSite.DataAccess.Initializer
 {
@@ -45,11 +44,22 @@ namespace KTSite.DataAccess.Initializer
             {
 
             }
+
+            if (!_db.Roles.Any(r => r.Name == SD.Role_KTMerch))
+            {
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_KTMerch)).GetAwaiter().GetResult();
+            }
+            if (!_db.Roles.Any(r => r.Name == SD.Role_ExMerch))
+            {
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_ExMerch)).GetAwaiter().GetResult();
+            }
             if (_db.Roles.Any(r => r.Name == SD.Role_Admin)) return;
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Users)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.Role_VAs)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Warehouse)).GetAwaiter().GetResult();
+            
+            
 
             _userManager.CreateAsync(new ApplicationUser
             {

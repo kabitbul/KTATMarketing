@@ -20,7 +20,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult Index()
         {
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.WarehouseResponsibility);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.WarehouseResponsibility && a.MerchType != SD.Role_ExMerch);
             ViewBag.getStore = new Func<string, string>(getStore);
             return View(complaints);
         }
@@ -113,6 +113,24 @@ namespace KTSite.Areas.Warehouse.Controllers
             else
             {
                 complaintsVM.GeneralNotOrderRelated = false;
+            }
+            //if resolution is send again and it is changed to solved -
+            //remove inventory count AND add record to returningItem Table
+            if(complaintsVM.complaints.TicketResolution == SD.SendAgain && complaintsVM.complaints.Solved)
+            {
+                Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+                int prodId = ord.ProductId;
+                Product pr = _unitOfWork.Product.Get(prodId);
+                pr.InventoryCount = pr.InventoryCount - ord.Quantity;
+
+                ReturningItem rt = new ReturningItem();
+                rt.ProductId = prodId;
+                rt.ItemStatus = SD.ReturningItemRemove;
+                rt.Quantity = ord.Quantity;
+                rt.DateArrived = DateTime.Now;
+                rt.CreatedBy = SD.warehouseTicket;
+                _unitOfWork.ReturningItem.Add(rt);
+                _unitOfWork.Save();
             }
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;
             return View(complaintsVM2);

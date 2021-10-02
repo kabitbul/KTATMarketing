@@ -175,10 +175,13 @@ if (ViewBag.ComplaintsPending > 1)
                         "data": {
                             "orderStatus": "orderStatus",
                             "id": "id",
-                            "allowComplaint": "allowComplaint"
+                            "allowComplaint": "allowComplaint",
+                            "isAdmin": "isAdmin",
+                            "allowReturn": "allowReturn",
+                            "merchType": "merchType"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Accepted') {
+                            if (data.orderStatus == 'Accepted' && data.isAdmin) {
                                 return `
                                                     <div class="text-center">
                                                         <a href="/VAs/OrderVA/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
@@ -186,7 +189,22 @@ if (ViewBag.ComplaintsPending > 1)
                                                         </a>
                                                     </div>
                                                      `}
-                            else if (data.orderStatus == 'Done' && data.allowComplaint) {
+                            else if (data.orderStatus == 'Done' && data.allowComplaint && data.allowReturn && data.merchType == 'ExternalMerch') {
+                                return `
+                                                <div class="text-center">
+                                                <a href="/VAs/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer"
+                                                 data-toggle="tooltip" data-placement="top" title="Create a ticket for this order">
+                                                <i class="fas fa-ticket-alt"></i>
+                                                </a>
+                                                </div>
+                                                <div class="text-center">
+                                                <a href="/VAs/ReturnLabel/AddReturnLabel/${data.id}" class="btn btn-danger text-white" style="cursor:pointer"
+                                                data-toggle="tooltip" data-placement="top" title="Create a return label for this order">
+                                                <i class="fas fa-shipping-fast"></i>
+                                                </a>
+                                                </div>
+                                            `}
+                            else if (data.orderStatus == 'Done' && data.allowComplaint && data.isAdmin) {
                                 return `
                                                                       <div class="text-center">
                                                                         <a href="/VAs/Complaints/AddComplaint/${data.id}" class="btn btn-info text-white" style="cursor:pointer">

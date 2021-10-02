@@ -28,6 +28,8 @@
                     <th>Refund Amount</th>
                     <th>Refunded By</th>
                     <th>Refund Date</th>
+                    <th>Merch Type</th>
+                    <th>Charged From Merch</th>
 </thead>
 
             @foreach (Refund refund in Model)
@@ -45,9 +47,11 @@
         <td></td>
 }
             <td>@refund.RefundQuantity</td>
-            <td>@ViewBag.getRefundAmount(refund.Cost.ToString(), refund.Quantity.ToString(),refund.RefundQuantity.ToString()).ToString()</td>
+            <td>@refund.AmountRefunded.ToString("0.00")$</td>
             <td>@refund.RefundedBy</td>
             <td>@refund.RefundDate</td>
+            <td>@refund.MerchType</td>
+            <td>@refund.AmountChargedFromMerch.ToString("0.00")$</td>
         </tr>
             }
 

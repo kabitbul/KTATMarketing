@@ -35,7 +35,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             arrivingFromChinaVM = new ArrivingFromChinaVM()
                 {
                 arrivingFromChina = new ArrivingFromChina(),
-                    ProductList = _unitOfWork.Product.GetAll().OrderBy(a=>a.ProductName).
+                    ProductList = _unitOfWork.Product.GetAll().Where(a=>a.MerchType != SD.Role_ExMerch).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.ProductName,
@@ -52,7 +52,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             ArrivingFromChinaVM arrivingFromChinaVM = new ArrivingFromChinaVM()
                 {
                    arrivingFromChina = arrivingFromChina,
-                    ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                    ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchType != SD.Role_ExMerch).OrderBy(a => a.ProductName).
                      Select(i => new SelectListItem
                      {
                          Text = i.ProductName,
@@ -72,7 +72,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             ArrivingFromChinaVM arrivingFromChinaVM2 = new ArrivingFromChinaVM()
             {
             arrivingFromChina = new ArrivingFromChina(),
-                ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchType != SD.Role_ExMerch).OrderBy(a => a.ProductName).
                 Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -95,6 +95,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                     paymentHistory.UserNameId = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).Select(a => a.UserNameId).FirstOrDefault();
                     _unitOfWork.PaymentHistory.Add(paymentHistory);
                 }
+                var prod = _unitOfWork.Product.Get(arrivingFromChinaVM.arrivingFromChina.ProductId);
+                arrivingFromChinaVM.arrivingFromChina.MerchId = prod.MerchId;
                _unitOfWork.ArrivingFromChina.Add(arrivingFromChinaVM.arrivingFromChina);
                     _unitOfWork.Save();
                 ViewBag.success = true;
@@ -115,7 +117,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             ArrivingFromChinaVM arrivingFromChinaVM2 = new ArrivingFromChinaVM()
             {
                 arrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().Where(a => a.Id == arrivingFromChinaVM.arrivingFromChina.Id).FirstOrDefault(),
-                ProductList = _unitOfWork.Product.GetAll().OrderBy(a => a.ProductName).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchType != SD.Role_ExMerch).OrderBy(a => a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.ProductName,
@@ -154,7 +156,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitOfWork.Product.GetAll(includePoperties:"Category");
+            var allObj = _unitOfWork.Product.GetAll(includePoperties:"Category").Where(a => a.MerchType != SD.Role_ExMerch);
             return Json(new { data = allObj });
         }
         [HttpDelete]

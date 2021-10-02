@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using KTSite.Utility;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using KTSite.DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
-using KTSite.DataAccess.Migrations;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -36,7 +29,18 @@ namespace KTSite.Areas.Admin.Controllers
             return View(userNameIdList);
 
         }
-         public IActionResult Insert()
+        public IActionResult showMerch()
+        {
+            var userNameIdList = _unitOfWork.PaymentBalanceMerch.GetAll();
+            ViewBag.getUserName =
+              new Func<string, string>(getUserName);
+            ViewBag.getName =
+            new Func<string, string>(getName);
+            ViewBag.getLastPaidDate = new Func<string, DateTime>(getLastPaidDate);
+            return View(userNameIdList);
+
+        }
+        public IActionResult Insert()
          {
             ViewBag.showMsg = false;
             ViewBag.success = true;
@@ -84,6 +88,14 @@ namespace KTSite.Areas.Admin.Controllers
         public string getUserName(string userNameId)
         {
             return _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == userNameId).Select(a => a.UserName).FirstOrDefault();
+        }
+        public DateTime getLastPaidDate(string userNameId)
+        {
+             var ph = _unitOfWork.PaymentHistoryMerch.GetAll().Where(a => a.UserNameId == userNameId).OrderByDescending(a => a.PayDate).FirstOrDefault();
+            if (ph != null)
+                return ph.PayDate;
+            else
+                return DateTime.MinValue;
         }
         public string getName(string userNameId)
         {

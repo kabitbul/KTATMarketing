@@ -1,0 +1,302 @@
+﻿
+@model KTSite.Models.ProductVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Create Product"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.Product.Id != 0)
+        {
+            //edit
+            title = "Edit Product";
+<input type="hidden" asp-for="Product.Id" />}
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            @if (Model.Product.Id != 0 && Model.Product.AdminApproval == KTSite.Utility.SD.MerchProductStatusApproved)
+            {
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductName">Product Name</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductName" class="form-control" disabled />
+                    <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Product.ProductName" class="form-control"  />
+                </div>
+            </div> }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.ProductName">Product Name</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.ProductName" class="form-control" />
+                <span asp-validation-for="Product.ProductName" class="text-danger"></span>
+            </div>
+        </div>}
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductDesc">Product Details</label>
+                </div>
+                <div class="col-8">
+                    <textarea asp-for="Product.ProductDesc" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductASIN">Product ASIN</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductASIN" class="form-control" />
+                    <span asp-validation-for="Product.ProductASIN" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ProductURL">Product Url</label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.ProductURL" class="form-control" />
+                    <span asp-validation-for="Product.ProductURL" class="text-danger"></span>
+                </div>
+            </div>
+            @if (Model.Product.Id != 0 && Model.Product.AdminApproval == KTSite.Utility.SD.MerchProductStatusApproved)
+            {
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.Weight">Weight &nbsp; (In Pounds Only)</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.Weight" class="form-control" id="weight" disabled />
+                <span asp-validation-for="Product.Weight" class="text-danger"></span>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.Weight" class="form-control" />
+            </div>
+        </div> 
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.SellersCost">Price</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.SellersCost" class="form-control" id="price" disabled />
+                <span asp-validation-for="Product.SellersCost" class="text-danger"></span>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.SellersCost" class="form-control"/>
+            </div>
+        </div>
+
+        }
+                    else
+                    {
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.Weight">Weight &nbsp; (In Pounds Only)</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.Weight" class="form-control" id="weight" />
+                <span asp-validation-for="Product.Weight" class="text-danger"></span>
+            </div>
+        </div>            
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.SellersCost">Price</label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.SellersCost" class="form-control" id="price" />
+                <span asp-validation-for="Product.SellersCost" class="text-danger"></span>
+            </div>
+        </div>
+        }
+
+            
+            <div class="form-group row">
+                <div class="col-7 text-right">
+                    <asp:Button class="btn btn-secondary" id="b1" Font-Size="X-Small" OnClick="NetProfit()" style="background-color: forestgreen;
+                     width: 130px;height: 38px;font-size: 15px;color: white;text-align: center">
+                        <i class="fas fa-calculator"></i> &nbsp;   Calc Profit
+                    </asp:Button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-12 text-left">
+                    <label id="strRes" style="font-size:20px;color:green"></label>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.Cost" class="form-control" value="0" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.ShippingCharge" class="form-control"/>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.BestOffer" class="form-control" value="0" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.MinimumPrice" class="form-control" value="0" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.InventoryCount" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.OnTheWayInventory" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.OwnByWarehouse" class="form-control" value=false />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.WarehouseChinaCost" class="form-control" value=0.0 />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.MerchId" class="form-control" value=@ViewBag.userNameId />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.MerchType" class="form-control" value=@KTSite.Utility.SD.Role_KTMerch />
+            </div>
+            @if (Model.Product.Id == 0)
+            {
+               <div class="col-8">
+                  <input type="hidden" asp-for="Product.AdminApproval" class="form-control" value=@KTSite.Utility.SD.MerchProductStatusPending />
+                </div>
+                <div class="col-8">
+                       <input type="hidden" asp-for="Product.OOSForSellers" class="form-control" value="false" />
+                </div>
+                                      <div class="col-8">
+                                            <input type="hidden" asp-for="Product.AvailableForSellers" class="form-control" value=false />
+                                        </div> }
+                                    else
+                                    {
+                        <div class="col-8">
+                            <input type="hidden" asp-for="Product.AdminApproval" class="form-control" />
+                        </div>
+                                        <div class="col-8">
+                                            <input type="hidden" asp-for="Product.OOSForSellers" class="form-control" />
+                                        </div>
+                                                        <div class="col-8">
+                                                            <input type="hidden" asp-for="Product.AvailableForSellers" class="form-control" />
+                                                        </div>}
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.MerchId" class="form-control" value=@ViewBag.userNameId />
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ReStock">Restock Product</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="Product.ReStock" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Category
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.CategoryId, Model.CategoryList, "Select a Category",
+                                                                                                                 new { @class = "form-control" })
+                    <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Product.MadeIn" class="form-control" />
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Image
+                </div>
+                <div class="col-8">
+                    <input type="file" name="files" id="uploadBox" multiple class="form-control" />
+                    <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Product.Id != 0)
+                    {
+        <partial name="_EditAndBackToListButton" model="Model.Product.Id" /> }
+    else
+    {
+        <partial name="_CreateAndBackToListButton" />}
+                </div>
+            </div>
+        </div>
+        @if (Model.Product.Id != 0)
+        {
+<div class="col-3 offset-1 pt-4">
+    <img src="@Model.Product.ImageUrl" style="border-radius:5px; border:1px solid #bbb9b9" />
+</div>}
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    @if (ViewBag.ShowMsg)
+    {
+@if (ViewBag.existProd)
+{
+<script>
+    swal("Error!", "Product Name Already Exist In Your Inventory!", "error")
+        .then((value) => { })
+</script>
+}
+else if (ViewBag.invalidWeight)
+{
+<script>
+    swal("Error!", "Please Enter a valid Weight. bigger then 0 and less then 1(Pounds only)!", "error")
+        .then((value) => { })
+</script>
+ }
+else if (ViewBag.invalidPrice)
+{
+<script>
+    swal("Error!", "Please Enter a valid Price!", "error")
+        .then((value) => { })
+</script>
+ }
+else if (ViewBag.failed)
+{
+<script>
+    swal("Error!", "Unknown Error!", "error")
+        .then((value) => { })
+</script>
+ }
+else if (ViewBag.success)
+{
+<script>
+    swal("Success!", "Product Added!", "success")
+        .then((value) => { window.location.href = '/KTMerch/Product'; })
+</script>
+}} @*calculate profit*@
+    <script type="text/javascript">
+
+        function NetProfit() {
+            
+            document.getElementById('strRes').innerHTML = "";
+            var pdata = new FormData();
+            var weight = document.getElementById('weight').value;
+            var price = document.getElementById('price').value;
+            $.ajax({
+                type: "POST",
+                dataType: 'JSON',
+                url: "/KTMerch/Product/NetProfitCalc",
+                data: { weight: weight, price: price },
+                success: function (data) {
+                    var str = JSON.stringify(data).split(',');
+                    for (i = 0; i < str.length; i++) {
+                        document.getElementById('strRes').innerHTML = document.getElementById('strRes').innerHTML + str[i].replace('"', '').replace('"', '').replace(']', '').replace('[', '') + '</br>';
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+        }
+    </script>
+}

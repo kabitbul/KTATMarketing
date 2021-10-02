@@ -1,6 +1,7 @@
 ﻿using KTSite.DataAccess.Data;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
+using KTSite.Utility;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,12 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.BestOffer = product.BestOffer;
                 objFromDb.MinimumPrice = product.MinimumPrice;
                 objFromDb.WarehouseChinaCost = product.WarehouseChinaCost;
+                objFromDb.AdminApproval = product.AdminApproval;
+                objFromDb.RejectReason = product.RejectReason;
+                if(product.MerchType == SD.Role_ExMerch)
+                {
+                    objFromDb.InventoryCount = product.InventoryCount;
+                }
 
             }
         }

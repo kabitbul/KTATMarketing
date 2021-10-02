@@ -15,6 +15,10 @@
     <Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.Designer.cs" />
     <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.cs" />
     <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.Designer.cs" />
+    <Compile Remove="Migrations\20210912070622_updategeneral.cs" />
+    <Compile Remove="Migrations\20210912070622_updategeneral.Designer.cs" />
+    <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.cs" />
+    <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

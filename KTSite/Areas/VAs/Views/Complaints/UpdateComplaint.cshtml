@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
-                                                                              new { @class = "form-control", @disabled = "disabled" })
+                                                                                        new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
-                                                                         new { @class = "form-control", @disabled = "disabled" })
+                                                                                   new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.complaints.TicketResolution, Model.TicketResolutionList,
-                                                           new { @class = "form-control" })
+                                                                     new { @class = "form-control" })
                     <span asp-validation-for="complaints.TicketResolution" class="text-danger"></span>
                 </div>
             </div>}
@@ -115,6 +115,12 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="complaints.CreatedDate" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchType" class="form-control" />
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="complaints.ModifiedDate" class="form-control" value="@DateTime.Now" />
@@ -158,20 +164,29 @@
     {
 @if (ViewBag.ProvideSolution)
 {
+    <script>
+        swal("Error!", "Please Provide Solution Since You Marked as Solved And didn't Provide Tracking Number!", "error")
+            .then((value) => { })
+    </script> }
+else if (ViewBag.isMerch)
+{
 <script>
-    swal("Error!", "Please Provide Solution Since You Marked as Solved And didn't Provide Tracking Number!", "error")
-        .then((value) => { })
-</script> }
-                    else if (ViewBag.IsAdmin && ViewBag.success)
-                    {
+    swal("Success!", "Complaint Added!", "success")
+        .then((value) => { window.location.href = '/VAs/Complaints/ShowMerchComplaint'; })
+</script>
+}
+else if(ViewBag.IsAdmin)
+{
 <script>
-    swal("Success!", "Complaint Updated!", "success")
+    swal("Success!", "Complaint Added!", "success")
         .then((value) => { window.location.href = '/VAs/Complaints'; })
-</script> }
-                    else if (ViewBag.success)
-                    {
+</script>
+}
+else if (ViewBag.success)
+{
 <script>
-    swal("Success!", "Ticket Updated!", "success")
+    swal("Success!", "Complaint Added!", "success")
         .then((value) => { window.location.href = '/VAs/Complaints/ShowUserComplaint'; })
-</script>}}
+</script>
+}}
 }

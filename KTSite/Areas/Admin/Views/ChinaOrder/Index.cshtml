@@ -27,54 +27,59 @@
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Quantity Received</th>
+                    <th>Box Count</th>
                     <th>Date Ordered</th>
                     <th>Date Received</th>
                     <th>Ignore Missing Quantity</th>
                     <th>Received All</th>
+                    <th>KT Merch Product</th>
                     <th></th>
-            </thead>
+</thead>
 
             @foreach (ChinaOrder chinaOrder in Model)
             {
-                <tr>
-                    <td>@chinaOrder.Id</td>
-                    <td>@ViewBag.getProductName(chinaOrder.ProductId)</td>
-                    <td>@chinaOrder.Quantity</td>
-                    <td>@chinaOrder.QuantityReceived</td>
-                    <td>@chinaOrder.DateOrdered.ToString("dd/MM/yyyy")</td>
-                    <td>@string.Format("{0:dd/MM/yyyy}", chinaOrder.DateReceived)</td>
-                    @if (chinaOrder.IgnoreMissingQuantity)
-                    {
-                        <td>Yes</td>
-                    }
-                    else
-                    {
-                        <td>No</td>
-                    }
-                    @if (chinaOrder.ReceivedAll)
-                    {
-                        <td>Yes</td>
-                    }
-                    else
-                    {
-                        <td>No</td>
-                    }
-                    @if (!chinaOrder.ReceivedAll)
-                    {
-                        <td>
-                            <div class="text-center">
-                                <a href="/Admin/ChinaOrder/UpdateChinaOrder/@chinaOrder.Id" class="btn btn-success text-white" style="cursor:pointer"
-                                   data-toggle="tooltip" data-placement="top" title="Edit China Order">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </div>
-                        </td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                </tr>
+        <tr>
+            <td>@chinaOrder.Id</td>
+            <td>@ViewBag.getProductName(chinaOrder.ProductId)</td>
+            <td>@chinaOrder.Quantity</td>
+            <td>@chinaOrder.QuantityReceived</td>
+            <td>@chinaOrder.BoxCount</td>
+            <td>@chinaOrder.DateOrdered.ToString("dd/MM/yyyy")</td>
+            <td>@string.Format("{0:dd/MM/yyyy}", chinaOrder.DateReceived)</td>
+            @if (chinaOrder.IgnoreMissingQuantity)
+            {
+        <td>Yes</td> }
+                        else
+                        {
+        <td>No</td>}
+            @if (chinaOrder.ReceivedAll)
+            {
+        <td>Yes</td> }
+                        else
+                        {
+        <td>No</td>}
+            @if (chinaOrder.KTMerchId == null)
+            {
+             <td >No</td> 
+            }
+            else
+            {
+              <td style="font-size:20px; font-weight:bold;color:crimson">Yes</td>
+              }
+            @if (!chinaOrder.ReceivedAll)
+            {
+        <td>
+            <div class="text-center">
+                <a href="/Admin/ChinaOrder/UpdateChinaOrder/@chinaOrder.Id" class="btn btn-success text-white" style="cursor:pointer"
+                   data-toggle="tooltip" data-placement="top" title="Edit China Order">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>
+        </td> }
+                        else
+                        {
+        <td></td>}
+        </tr>
             }
 
         </table>

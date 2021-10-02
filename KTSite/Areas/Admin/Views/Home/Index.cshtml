@@ -12,21 +12,21 @@
         </h1>
     </div>
     @*@if (ViewBag.OrdersFromChina == 1)
-    {
-<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
-    <h1 style="font-size: 20px">
-        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        <a href="Admin/ChinaOrder">There Is one Product Ordered more then 45 days ago.</a>
-    </h1>
-</div>}
-else if (ViewBag.OrdersFromChina > 1)
-{
-<div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
-    <h1 style="font-size: 20px">
-        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
-        <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
-    </h1>
-</div>}*@
+            {
+        <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
+            <h1 style="font-size: 20px">
+                <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                <a href="Admin/ChinaOrder">There Is one Product Ordered more then 45 days ago.</a>
+            </h1>
+        </div>}
+        else if (ViewBag.OrdersFromChina > 1)
+        {
+        <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
+            <h1 style="font-size: 20px">
+                <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
+            </h1>
+        </div>}*@
     @if (ViewBag.WarehouseBalanceLow <= 1000)
     {
 <div class="text-left display-3 p-4 border rounded col-5">
@@ -120,6 +120,15 @@ if (ViewBag.ReturnLabelRefund > 1)
         <a href="/Admin/ReturnLabel">@ViewBag.ReturnLabelRefund return Labels has been delivered! Please Refund.</a>
     </h1>
 </div>}
+    @if(ViewBag.PendingApprovalProducts > 0)
+{
+<div style="background-color:darkgoldenrod" class="text-left display-3 p-4 border rounded col-5">
+    <h1 style="font-size: 20px">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+        <a href="/Admin/Product/MerchProducts">There are products from Merch waiting your approval.</a>
+    </h1>
+</div>
+}
     <div>
         <div id="chartContainer" style="height: 370px; width: 70%;"></div>
         <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>

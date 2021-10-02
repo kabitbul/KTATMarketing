@@ -17,13 +17,24 @@ namespace KTSite.Controllers
         }
         public IActionResult GetBalanceUser()
         {
-            string UNameId = (_unitOfWork.ApplicationUser.GetAll().
-                Where(q => q.UserName == User.Identity.Name).
-                Select(q => q.Id)).FirstOrDefault();
-            double Balance =
+            var appUser = (_unitOfWork.ApplicationUser.GetAll().
+                Where(q => q.UserName == User.Identity.Name).FirstOrDefault());
+            string UNameId = appUser.Id;
+            if(appUser.Role == SD.Role_Users)
+            {
+                double Balance =
             _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == UNameId).
             Select(a => a.Balance).FirstOrDefault();
-            return Content(Balance.ToString("0.00")+"$");
+                return Content(Balance.ToString("0.00") + "$");
+            }
+            else//merch
+            {
+                double Balance =
+            _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == UNameId).
+            Select(a => a.Balance).FirstOrDefault();
+                return Content(Balance.ToString("0.00") + "$");
+            }
+            
         }
         public IActionResult GetBalanceWarehouse()
         {

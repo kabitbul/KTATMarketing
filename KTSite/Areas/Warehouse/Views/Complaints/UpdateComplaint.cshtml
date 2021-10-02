@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
-                                                                              new { @class = "form-control", @disabled = "disabled" })
+                                                                                        new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
-                                                                                                                                new { @class = "form-control", @disabled = "disabled" })
+                                                                                                                                          new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
                     </div>
                 </div>
@@ -108,7 +108,13 @@
                     <input type="hidden" asp-for="complaints.ModifiedDate" class="form-control" value="@DateTime.Now" />
                 </div>
                 <div class="col-8">
-                    <input type="hidden" asp-for="complaints.TicketResolution" class="form-control"/>
+                    <input type="hidden" asp-for="complaints.TicketResolution" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchType" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchId" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">

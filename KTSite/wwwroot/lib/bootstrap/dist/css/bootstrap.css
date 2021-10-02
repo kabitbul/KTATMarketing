@@ -2214,7 +2214,9 @@ pre {
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+.form-control2 {
 
+}
 @media (prefers-reduced-motion: reduce) {
     .form-control {
         transition: none;
@@ -2777,7 +2779,9 @@ fieldset:disabled a.btn {
     background-color: #2c3e50;
     border-color: #2c3e50;
 }
+.btn-primaryasp {
 
+}
     .btn-primary:hover {
         color: #fff;
         background-color: #1e2b37;

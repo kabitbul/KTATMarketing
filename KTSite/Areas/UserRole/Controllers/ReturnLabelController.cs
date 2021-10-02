@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Globalization;
-using System.Text;
-using Newtonsoft.Json.Converters;
 
 namespace KTSite.Areas.UserRole.Controllers
 {
@@ -131,7 +124,10 @@ namespace KTSite.Areas.UserRole.Controllers
             returnLabelVM2.returnLabel.UserNameId = userNameId;
             if (ModelState.IsValid)
             {
-                int quantity =_unitOfWork.Order.GetAll().Where(a => a.Id == returnLabelVM.returnLabel.OrderId).Select(a => a.Quantity).FirstOrDefault();
+                Order ord = _unitOfWork.Order.Get(returnLabelVM.returnLabel.OrderId);
+                int quantity = ord.Quantity;
+                returnLabelVM.returnLabel.MerchType = ord.MerchType;
+                returnLabelVM.returnLabel.MerchId = ord.MerchId;
                 if (returnLabelVM.returnLabel.ReturnQuantity > quantity)
                 {
                     ViewBag.InvalidQuantity = true;
@@ -147,9 +143,13 @@ namespace KTSite.Areas.UserRole.Controllers
                         ViewBag.InvalidQuantity = false;
                         return View(returnLabelVM2);
                     }
-                    PaymentBalance paymentBalanceWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
-                        FirstOrDefault();
-                    paymentBalanceWarehouse.Balance = paymentBalanceWarehouse.Balance - SD.shipping_cost;
+                    //warehouse- only when not external merch!
+                    if (returnLabelVM.returnLabel.MerchType != SD.Role_ExMerch)
+                    {
+                        PaymentBalance paymentBalanceWarehouse = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
+                           FirstOrDefault();
+                        paymentBalanceWarehouse.Balance = paymentBalanceWarehouse.Balance - SD.shipping_cost;
+                    }
                     paymentBalance.Balance = paymentBalance.Balance - SD.shipping_cost_for_return;
                     ViewBag.InvalidQuantity = false;
                     _unitOfWork.ReturnLabel.Add(returnLabelVM.returnLabel);

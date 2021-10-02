@@ -25,9 +25,11 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.Quantity = chinaOrder.Quantity;
                 objFromDb.DateOrdered = chinaOrder.DateOrdered;
                 objFromDb.DateReceived = chinaOrder.DateReceived;
-                objFromDb.QuantityReceived = chinaOrder.QuantityReceived; 
+                objFromDb.QuantityReceived = chinaOrder.QuantityReceived;
+                objFromDb.BoxCount = chinaOrder.BoxCount;
                 objFromDb.IgnoreMissingQuantity = chinaOrder.IgnoreMissingQuantity;
-                objFromDb.ReceivedAll = chinaOrder.ReceivedAll; 
+                objFromDb.ReceivedAll = chinaOrder.ReceivedAll;
+                objFromDb.KTMerchId = chinaOrder.KTMerchId;
             }
         }
     }

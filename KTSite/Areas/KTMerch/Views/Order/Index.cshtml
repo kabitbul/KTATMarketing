@@ -1,0 +1,177 @@
+﻿@model dynamic
+@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<br />
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-primary">Orders List </h2>
+    </div>
+    <div class="col-6 text-right">
+        <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 text-right">
+        <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Admin Orders Manually</a>
+    </div>
+</div>
+
+<br />
+
+<div class="col-12 text-right">
+    <button class="btn btn-primary" onclick="TrackUpdate()" style="background-color:darkorange"><i class="fas fa-thumbs-up"></i>&nbsp; Updated In Store</button>
+</div>
+
+@*<div id="AllOrders">
+        <input type="checkbox" id="pos" value=true />  Show All Orders
+    </div>*@
+<div class="p-4 ">
+    @*<div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" name ="AcceptedName" id="Accepted" value="AcceptedValue" checked />
+            <label class="custom-control-label" for="Accepted">Accepted </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="InProgress" checked />
+            <label class="custom-control-label" for="InProgress">In Progress </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="Done" checked>
+            <label class="custom-control-label" for="Done">Done </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="Cancelled" checked />
+            <label class="custom-control-label" for="Cancelled">Cancelled </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="FullRefund" checked />
+            <label class="custom-control-label" for="FullRefund">Full Refund </label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline">
+            <input type="checkbox" class="custom-control-input" id="PartialRefund" checked />
+            <label class="custom-control-label" for="PartialRefund">Partial Refund </label>
+        </div>*@
+    <table id="tblData" class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr class="table-info">
+                <th>Order Id</th>
+                <th>Order Status</th>
+                <th>Product</th>
+                <th>US Date</th>
+                <th>Quantity</th>
+                <th>Cost</th>
+                <th>Full Address</th>
+                <th style="width:1000px">Tracking Number</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>Order Id</td>
+            <td>Order Status</td>
+            <td>Product</td>
+            <td>US Date</td>
+            <td>Quantity</td>
+            <td>Cost</td>
+            <td>Full Address</td>
+            <td style="width:200px">Tracking Number</td>
+        </tr>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({
+                "ajax": {
+                    "url": "Order/GetList",
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "id", "name": "Id" },
+                    {
+                        "data": "orderStatus", "name": "OrderStatus",
+                        "render": function (data) {
+                            if (data == "Cancelled") {
+                                return `<div class="text-center" style="font-weight:bold;color:Red"><label >${data}</label></div>`
+                            }
+                            else {
+                                return `<div class="text-center"><label >${data}</label></div>`
+                            }
+                        }
+                    },
+                    { "data": "productName", "name": "ProductName" },
+                    { "data": "stringDate", "name": "StringDate" },
+                    {
+                        "data": "quantity", "name": "Quantity", "render": function (data) {
+                            if (data > 1)
+                                return `<div class="text-center" style="font-weight:bold;background-color:darkseagreen"><label >${data}</label></div>`
+                            else
+                                return `<div class="text-center"><label>${data}</label></div>`
+                        }
+                    },
+                    {
+                        "data": "cost", "name": "Cost", "render": function (data) {
+                            return `<label>${data}$</label>`
+                        }
+                    },
+                    {
+                        "data": "fullAddress", "name": "FullAddress", "render": function (data) {
+                            return `<textarea readonly>${data}</textarea>`
+                        },
+                        "width": "20%"
+                    },
+                    {
+                        "data": {
+                            "trackingUpdated": "trackingUpdated",
+                            "trackingNumber": "trackingNumber"
+                        },
+                        "render": function (data) {
+                            if (data.trackingUpdated && data.trackingNumber != null) {
+                                return `<div class="text-center" style="background-color:darkseagreen"><label >${data.trackingNumber}</label></div>`
+                            }
+                            else if (data.trackingNumber != null) {
+                                return `<div class="text-center"><label>${data.trackingNumber}</label></div>`
+                            }
+                            else {
+                                return `<div></div>`
+                            }
+                        }
+                    }
+                ],
+                "serverSide": "true",
+                "order": [0, "desc"],
+                "processing": "true",
+                "pageLength": 100
+            });
+        });
+    </script>
+    <script>
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var status = data[1];
+                    if (($('#Accepted').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusAccepted.ToString()') ||
+                        ($('#InProgress').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusInProgress.ToString()')||
+                        ($('#Done').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusDone.ToString()') ||
+                        ($('#Cancelled').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusCancelled.ToString()') ||
+                        ($('#FullRefund').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusFullRefund.ToString()') ||
+                        ($('#PartialRefund').prop("checked") == true && status == '@KTSite.Utility.SD.OrderStatusPartialRefund.ToString()'))
+                    {
+                        return true;
+                    }
+                    else { return false; }
+                }
+            );
+            $('input:checkbox').on('change', function () {
+                var table = $('#tblData').DataTable();
+                table.draw();
+            });
+    </script>
+    @if (ViewBag.errSaveInProgress)
+    {
+<script>
+    swal("Pay Attention: could not save status \"In Progress\" to All orders!", "error")
+        .then((value) => { })
+</script>
+}
+}
+
+

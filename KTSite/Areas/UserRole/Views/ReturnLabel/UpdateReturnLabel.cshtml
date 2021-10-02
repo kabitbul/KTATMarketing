@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.returnLabel.OrderId, Model.OrderList,
-                                 new { @class = "form-control", @disabled = "disabled" })
+                                           new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="returnLabel.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -75,6 +75,12 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="returnLabel.FileURL" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.MerchType" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="returnLabel.MerchId" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">

@@ -26,41 +26,45 @@
                     <th>Date Arrived</th>
                     <th>Comments</th>
                     <th>Approved By Admin</th>
+                    <th>KT Merch</th>
                     <th></th>
-            </thead>
+</thead>
 
             @foreach (ArrivingFromChina arrivingFromChina in Model)
             {
-                <tr>
-                    <td>@arrivingFromChina.Id</td>
-                    <td>@ViewBag.getProductName(arrivingFromChina.ProductId)</td>
-                    <td>@arrivingFromChina.NumOfBoxes</td>
-                    <td>@arrivingFromChina.Quantity</td>
-                    <td>@arrivingFromChina.DateArriving.ToString("dd/MM/yyyy")</td>
-                    <td>@arrivingFromChina.Comments</td>
-                    @if (arrivingFromChina.UpdatedByAdmin)
-                    {
-                        <td>Yes</td>
-
-                    }
-                    else
-                    {
-                        <td>No</td>
-                    }
-                    @if (!arrivingFromChina.UpdatedByAdmin)
-                    {
-                        <td>
-                            <div class="text-center">
-                                <input type="hidden" asp-for="@arrivingFromChina.Id" />
-                                <input type="checkbox" asp-for="@arrivingFromChina.UpdatedByAdmin" />
-                            </div>
-                        </td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                </tr>
+        <tr>
+            <td>@arrivingFromChina.Id</td>
+            <td>@ViewBag.getProductName(arrivingFromChina.ProductId)</td>
+            <td>@arrivingFromChina.NumOfBoxes</td>
+            <td>@arrivingFromChina.Quantity</td>
+            <td>@arrivingFromChina.DateArriving.ToString("dd/MM/yyyy")</td>
+            <td>@arrivingFromChina.Comments</td>
+            @if (arrivingFromChina.UpdatedByAdmin)
+            {
+        <td>Yes</td> }
+                        else
+                        {
+        <td>No</td>}
+            @if (arrivingFromChina.MerchId != null)
+            {
+             <td>Yes</td> 
+            }
+            else
+            {
+             <td>No</td>
+            }
+            @if (!arrivingFromChina.UpdatedByAdmin)
+            {
+        <td>
+            <div class="text-center">
+                <input type="hidden" asp-for="@arrivingFromChina.Id" />
+                <input type="checkbox" asp-for="@arrivingFromChina.UpdatedByAdmin" />
+            </div>
+        </td> }
+                        else
+                        {
+        <td></td>}
+        </tr>
             }
 
         </table>

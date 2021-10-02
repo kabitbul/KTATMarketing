@@ -1,0 +1,179 @@
+﻿@{ ViewData["Title"] = "Home Page"; }
+
+
+<div class="row">
+    <h1 class="text-left col-6" style="font-size:30px">Hello @ViewBag.Name!</h1>
+</div>
+<div class="col-12" style="font:message-box">
+    <div class="text-left display-3 p-4 border rounded col-5">
+        <h1 style="font-size: 20px">
+            <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+            Total Count Of Inventory: <span style="color:seagreen;font-weight:bold">@ViewBag.totalCountInventory</span>
+        </h1>
+    </div>
+    @if (ViewBag.AmountPaid > 0 && ViewBag.LastPaid != null)
+    {
+<div class="text-left display-3 p-4 border rounded col-5" style="border-bottom-width:5px">
+    <h1 style="font-size: 20px">
+        <a href="/KTMerch/PaymentHistoryMerch">Last Payment was placed in @ViewBag.LastPaid.ToString("dd/MM/yyyy") For @ViewBag.AmountPaid$</a>
+    </h1>
+</div>} @*@if (ViewBag.OrdersFromChina == 1)
+        {
+    <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
+        <h1 style="font-size: 20px">
+            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+            <a href="Admin/ChinaOrder">There Is one Product Ordered more then 45 days ago.</a>
+        </h1>
+    </div>}
+    else if (ViewBag.OrdersFromChina > 1)
+    {
+    <div style="background-color:coral" class="text-left display-3 p-4 border rounded col-5">
+        <h1 style="font-size: 20px">
+            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+            <a href="Admin/ChinaOrder">There are @ViewBag.OrdersFromChina Products Ordered more then 45 days ago.</a>
+        </h1>
+    </div>}*@ @*@if (ViewBag.WarehouseBalanceLow <= 1000)
+                    {
+                <div class="text-left display-3 p-4 border rounded col-5">
+                    <h1 style="font-size: 20px">
+                        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                        <a href="Admin/PaymentHistory/PayWarehouse">Warehouse Balance is Low!(@ViewBag.WarehouseBalanceLow.ToString("0.00")$)</a>
+                    </h1>
+                </div>}
+                    @if (ViewBag.CountPendingPayments == 1)
+                    {
+                <div style="background-color:khaki" class="text-left display-3 p-4 border rounded col-5">
+                    <h1 style="font-size: 20px">
+                        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                        <a href="Admin/PaymentHistory">There is a Pending Payments waiting for your approval!</a>
+                    </h1>
+                </div>}
+                else
+                if (ViewBag.CountPendingPayments > 1)
+                {
+                <div style="background-color:khaki" class="text-left display-3 p-4 border rounded col-5">
+                    <h1 style="font-size: 20px">
+                        <img src="~/Images/Coin.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                        <a href="/Admin/PaymentHistory">There are @ViewBag.CountPendingPayments Pending Payments waiting for your approval!</a>
+                    </h1>
+                </div>}*@ @*@if (ViewBag.CountArrivingFromChina == 1)
+                        {
+                    <div style="background-color:lightcoral" class="text-left display-3 p-4 border rounded col-5">
+                        <h1 style="font-size: 20px">
+                            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                            <a href="/Admin/ArrivingFromChinaAdmin">A New Shipment Arrived And Is Waiting Your Update!</a>
+                        </h1>
+                    </div>}
+                    else
+                    if (ViewBag.CountArrivingFromChina > 1)
+                    {
+                    <div style="background-color:lightcoral" class="text-left display-3 p-4 border rounded col-5">
+                        <h1 style="font-size: 20px">
+                            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                            <a href="/Admin/ArrivingFromChinaAdmin">There are @ViewBag.CountArrivingFromChina Shipments Arrived And Waiting Your Update!</a>
+                        </h1>
+                    </div>}
+                        @if (ViewBag.TaskFromVA == 1)
+                        {
+                    <div style="background-color:lightgreen" class="text-left display-3 p-4 border rounded col-5">
+                        <h1 style="font-size: 20px">
+                            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                            <a href="/Admin/AdminVATask">You have a Pending Task! Please Refund the customer!</a>
+                        </h1>
+                    </div>}
+                    else
+                    if (ViewBag.TaskFromVA > 1)
+                    {
+                    <div style="background-color:lightgreen" class="text-left display-3 p-4 border rounded col-5">
+                        <h1 style="font-size: 20px">
+                            <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                            <a href="/Admin/AdminVATask">You have @ViewBag.TaskFromVA Pending Tasks! Please Refund the customers!</a>
+                        </h1>
+                    </div>}*@ @*@if (ViewBag.ComplaintsPending == 1)
+                                    {
+                                <div style="background-color:burlywood" class="text-left display-3 p-4 border rounded col-5">
+                                    <h1 style="font-size: 20px">
+                                        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                                        <a href="/Admin/Complaints">You have a Pending Ticket! Please Respond.</a>
+                                    </h1>
+                                </div>}
+                                else
+                                if (ViewBag.ComplaintsPending > 1)
+                                {
+                                <div style="background-color:burlywood" class="text-left display-3 p-4 border rounded col-5">
+                                    <h1 style="font-size: 20px">
+                                        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                                        <a href="/Admin/Complaints">You have @ViewBag.ComplaintsPending Pending Tickets! Please Respond.</a>
+                                    </h1>
+                                </div>}
+                                    @if (ViewBag.ReturnLabelRefund == 1)
+                                    {
+                                <div style="background-color:aquamarine" class="text-left display-3 p-4 border rounded col-5">
+                                    <h1 style="font-size: 20px">
+                                        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                                        <a href="/Admin/ReturnLabel">A return Label has been delivered! Please Refund.</a>
+                                    </h1>
+                                </div>}
+                                else
+                                if (ViewBag.ReturnLabelRefund > 1)
+                                {
+                                <div style="background-color:aquamarine" class="text-left display-3 p-4 border rounded col-5">
+                                    <h1 style="font-size: 20px">
+                                        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:30px; width: 30px" />
+                                        <a href="/Admin/ReturnLabel">@ViewBag.ReturnLabelRefund return Labels has been delivered! Please Refund.</a>
+                                    </h1>
+                                </div>}*@
+
+    <div>
+        <div id="chartContainer" style="height: 370px; width: 70%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+    &nbsp;
+</div>
+@*@if (!ViewBag.NotificationEmpty)
+{
+<div class="text-left display-4 p-2 border rounded col-4">
+    <h1 class="display-4" style="color:red;font-size:25px; font:bold 25px verdana">
+        <img src="~/Images/BellNotification.jpg" alt="Site Logo" style="height:23px; width: 30px" />
+        Important Admin Notifications:
+    </h1>
+    <ul>
+        @foreach (Notification notification in @ViewBag.NotificationList)
+        {
+            if (notification.DateMsg.Date >= DateTime.Now.Date.AddDays(-1))
+            {
+<li class="display-4" style="font-size:20px;font-weight:bold;color:blue">@notification.Message</li> }
+                    else
+                    {
+<li class="display-4" style="font-size:20px">@notification.Message</li>
+}
+
+}
+    </ul>
+</div>}*@
+@section Scripts{
+    <script>
+window.onload = function () {
+    CanvasJS.addColorSet("greenShades",
+        [//colorSet Array
+            "#3CB371"
+        ]);
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+    colorSet: "greenShades",
+	title: {
+		text: "Number Of Sold Items Per Day In The Last Month"
+	},
+	axisY: {
+		title: "No. of Items"
+	},
+	data: [{
+		type: "column",
+		dataPoints: @Html.Raw(ViewBag.DataPoints)
+	}]
+});
+chart.render();
+
+}
+    </script>
+}

@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.OrderStatus, Model.StatusList,
-                                      new { @class = "form-control" })
+                                                                                        new { @class = "form-control" })
                         <span asp-validation-for="Orders.OrderStatus" class="text-danger"></span>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                      new { @class = "form-control", @disabled = "disabled" })
+                                                                                        new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                                      new { @class = "form-control", @disabled = "disabled" })
+                                                                                        new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                      new { @class = "form-control" })
+                                                                                        new { @class = "form-control" })
                         <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
@@ -141,6 +141,36 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.UsDate" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.Carrier" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.TrackingNumber" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.CreatedDate" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.UsDate" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.ProductName" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.StoreName" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.UserNameToShow" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.TrackingUpdated" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.MerchId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.MerchType" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">

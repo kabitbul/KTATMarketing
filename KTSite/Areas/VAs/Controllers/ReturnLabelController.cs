@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Globalization;
-using System.Text;
-using Newtonsoft.Json.Converters;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KTSite.Areas.VAs.Controllers
 {
@@ -52,6 +46,37 @@ namespace KTSite.Areas.VAs.Controllers
         public int returnOrderQuantity(string OrderId)
         {
             return _unitOfWork.Order.GetAll().Where(a => a.Id == Convert.ToInt64(OrderId)).Select(a => a.Quantity).FirstOrDefault();
+        }
+        public string returnUserNameId()
+        {
+            return (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+        }
+        public IActionResult AddReturnLabel(long? Id)//Id is Order Id
+        {
+            string userNameId = returnUserNameId();
+            ViewBag.UserNameId = userNameId;
+            ReturnLabelVM returnLabelVM = new ReturnLabelVM()
+            {
+                returnLabel = new ReturnLabel(),
+                OrderList = _unitOfWork.Order.GetAll().Where(a => a.UserNameId == userNameId &&
+                                              a.OrderStatus == SD.OrderStatusDone &&
+                                       !_unitOfWork.Complaints.GetAll().Any(p => p.OrderId == a.Id)).
+                      Select(i => new SelectListItem
+                      {
+                          Text = i.Id + "-" + i.CustName + "-Quantity: " + i.Quantity,
+                          Value = i.Id.ToString()
+                      })
+            };
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
+            ViewBag.failed = false;
+            if (Id != null)
+            {
+                returnLabelVM.returnLabel.OrderId = (long)Id;
+            }
+            returnLabelVM.returnLabel.UserNameId = userNameId;
+            ViewBag.InsufficientFunds = false;
+            return View(returnLabelVM);
         }
         public IActionResult UpdateReturnLabel(long Id)
         {
@@ -111,7 +136,58 @@ namespace KTSite.Areas.VAs.Controllers
 
             return View(returnLabel2);
         }
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddReturnLabel(ReturnLabelVM returnLabelVM)
+        {
+            string userNameId = returnUserNameId();
+            ViewBag.InvalidQuantity = false;
+            ViewBag.ShowMsg = true;
+            ViewBag.success = false;
+            ViewBag.returnExMerchOnly = false;
+            ReturnLabelVM returnLabelVM2 = new ReturnLabelVM()
+            {
+
+                returnLabel = new ReturnLabel(),
+                OrderList = _unitOfWork.Order.GetAll().Where(i => i.UserNameId == userNameId).Select(i => new SelectListItem
+                {
+                    Text = i.Id + "-" + i.CustName + "-Quantity: " + i.Quantity,
+                    Value = i.Id.ToString()
+                })
+            };
+            returnLabelVM2.returnLabel.UserNameId = userNameId;
+            if (ModelState.IsValid)
+            {
+                Order ord = _unitOfWork.Order.Get(returnLabelVM.returnLabel.OrderId);
+                returnLabelVM.returnLabel.MerchId = ord.MerchId;
+                returnLabelVM.returnLabel.MerchType = ord.MerchType;
+                int quantity = _unitOfWork.Order.GetAll().Where(a => a.Id == returnLabelVM.returnLabel.OrderId).Select(a => a.Quantity).FirstOrDefault();
+                if (returnLabelVM.returnLabel.ReturnQuantity > quantity)
+                {
+                    ViewBag.InvalidQuantity = true;
+                }
+                else
+                {
+                    if (returnLabelVM.returnLabel.MerchType != SD.Role_ExMerch)
+                    {
+                        ViewBag.ShowMsg = true;
+                        ViewBag.InvalidQuantity = false;
+                        ViewBag.returnExMerchOnly = true;
+                        return View(returnLabelVM2);
+                    }
+                    //paymentBalanceWarehouse.Balance = paymentBalanceWarehouse.Balance - SD.shipping_cost;
+                    //***Amount added to merch only once he add the label.**********
+                    // paymentBalanceMerch.Balance = paymentBalanceMerch.Balance + SD.shipping_cost_for_return;
+                    ViewBag.InvalidQuantity = false;
+                    _unitOfWork.ReturnLabel.Add(returnLabelVM.returnLabel);
+                    ViewBag.ReturnCost = SD.shipping_cost_for_return;
+                    _unitOfWork.Save();
+                    ViewBag.success = true;
+                }
+            }
+            return View(returnLabelVM2);
+        }
+
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()

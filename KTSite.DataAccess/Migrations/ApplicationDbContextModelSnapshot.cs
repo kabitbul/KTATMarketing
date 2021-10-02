@@ -59,6 +59,10 @@ namespace KTSite.DataAccess.Migrations
                     b.Property<DateTime>("DateArriving")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
                     b.Property<int>("NumOfBoxes")
                         .HasColumnType("int");
 
@@ -100,6 +104,9 @@ namespace KTSite.DataAccess.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BoxCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateOrdered")
                         .HasColumnType("datetime2");
 
@@ -108,6 +115,10 @@ namespace KTSite.DataAccess.Migrations
 
                     b.Property<bool>("IgnoreMissingQuantity")
                         .HasColumnType("bit");
+
+                    b.Property<string>("KTMerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -149,6 +160,14 @@ namespace KTSite.DataAccess.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
@@ -185,6 +204,78 @@ namespace KTSite.DataAccess.Migrations
                     b.HasIndex("UserNameId");
 
                     b.ToTable("Complaints");
+                });
+
+            modelBuilder.Entity("KTSite.Models.ComplaintsArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HandledBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NewTrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SolutionDesc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Solved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TicketResolution")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("WarehouseResponsibility")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserNameId");
+
+                    b.ToTable("ComplaintsArchive");
                 });
 
             modelBuilder.Entity("KTSite.Models.LogsData", b =>
@@ -282,6 +373,14 @@ namespace KTSite.DataAccess.Migrations
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(15)")
@@ -322,6 +421,104 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("KTSite.Models.OrderArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustCity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustStreet1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustStreet2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StoreName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreNameId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TrackingUpdated")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("UsDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
+                    b.Property<string>("UserNameToShow")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrdersArchive");
                 });
 
             modelBuilder.Entity("KTSite.Models.PaymentBalance", b =>
@@ -379,6 +576,31 @@ namespace KTSite.DataAccess.Migrations
                     b.ToTable("PaymentBalanceBackups");
                 });
 
+            modelBuilder.Entity("KTSite.Models.PaymentBalanceMerch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserNameId");
+
+                    b.ToTable("PaymentBalancesMerch");
+                });
+
             modelBuilder.Entity("KTSite.Models.PaymentHistory", b =>
                 {
                     b.Property<long>("Id")
@@ -407,6 +629,115 @@ namespace KTSite.DataAccess.Migrations
                     b.HasIndex("UserNameId");
 
                     b.ToTable("PaymentHistories");
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentHistoryArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("PayDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SentFromAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentHistoriesArchive");
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentHistoryMerch", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<DateTime>("PayDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("SentFromAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("SentToAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserNameId");
+
+                    b.ToTable("PaymentHistoriesMerch");
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentMethodMerch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("PaymentTypeAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<bool>("PrefferdMethod")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserNameId");
+
+                    b.ToTable("PaymentMethodMerchs");
                 });
 
             modelBuilder.Entity("KTSite.Models.PaymentSentAddress", b =>
@@ -445,6 +776,10 @@ namespace KTSite.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AdminApproval")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
                     b.Property<bool>("AvailableForSellers")
                         .HasColumnType("bit");
 
@@ -465,6 +800,14 @@ namespace KTSite.DataAccess.Migrations
 
                     b.Property<string>("MadeIn")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<double>("MinimumPrice")
                         .HasColumnType("float");
@@ -495,6 +838,10 @@ namespace KTSite.DataAccess.Migrations
                     b.Property<bool>("ReStock")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
                     b.Property<double>("SellersCost")
                         .HasColumnType("float");
 
@@ -521,8 +868,22 @@ namespace KTSite.DataAccess.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<double>("AmountChargedFromMerch")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AmountRefunded")
+                        .HasColumnType("float");
+
                     b.Property<double>("Cost")
                         .HasColumnType("float");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
@@ -553,6 +914,62 @@ namespace KTSite.DataAccess.Migrations
                     b.ToTable("Refunds");
                 });
 
+            modelBuilder.Entity("KTSite.Models.RefundArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("AmountChargedFromMerch")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AmountRefunded")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RefundDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RefundQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RefundedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ReturnId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("StoreNameId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserNameId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefundsArchive");
+                });
+
             modelBuilder.Entity("KTSite.Models.ReturnLabel", b =>
                 {
                     b.Property<long>("Id")
@@ -571,6 +988,14 @@ namespace KTSite.DataAccess.Migrations
 
                     b.Property<string>("FileURL")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
@@ -591,6 +1016,57 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("returnLabels");
+                });
+
+            modelBuilder.Entity("KTSite.Models.ReturnLabelArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CommentsToWarehouse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MerchId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchType")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<long>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("ReturnDelivered")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReturnQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReturnTracking")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserNameId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("returnLabelsArchive");
                 });
 
             modelBuilder.Entity("KTSite.Models.ReturningItem", b =>
@@ -622,6 +1098,40 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReturningItems");
+                });
+
+            modelBuilder.Entity("KTSite.Models.ReturningItemArchive", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateArrived")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ItemStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("OriginalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReturningItemsArchive");
                 });
 
             modelBuilder.Entity("KTSite.Models.SellersInventory", b =>
@@ -932,6 +1442,15 @@ namespace KTSite.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("KTSite.Models.ComplaintsArchive", b =>
+                {
+                    b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("KTSite.Models.PaymentBalance", b =>
                 {
                     b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
@@ -941,7 +1460,34 @@ namespace KTSite.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("KTSite.Models.PaymentBalanceMerch", b =>
+                {
+                    b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("KTSite.Models.PaymentHistory", b =>
+                {
+                    b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentHistoryMerch", b =>
+                {
+                    b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserNameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("KTSite.Models.PaymentMethodMerch", b =>
                 {
                     b.HasOne("KTSite.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()

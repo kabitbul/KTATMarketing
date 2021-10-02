@@ -27,9 +27,12 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             string uNameId = "";
             string uName = "";
-            var productsList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers).OrderBy(a=>a.ProductName);
             uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
+            var productsList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && ((a.MerchId != SD.Kfir_Merch && uNameId != SD.Kfir_Buyer)||
+                                                                                               (uNameId == SD.Kfir_Buyer)))
+            .OrderBy(a=>a.ProductName);
+            
 
             dynamic myModel = new System.Dynamic.ExpandoObject();
             myModel.Products = productsList;

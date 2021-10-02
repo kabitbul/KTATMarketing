@@ -12,6 +12,12 @@
         <a class="btn btn-primary" asp-action="Index" style="background-color:darkslateblue"><i class="fas fa-eye"></i> &nbsp; Back to Admin Tickets</a>
     </div>
 </div>
+ &nbsp;
+<div class="row">
+    <div class="col-12 text-right">
+        <a class="btn btn-primary" asp-action="ShowMerchComplaint" style="background-color:coral"><i class="fas fa-eye"></i> &nbsp; Show Merch Tickets</a>
+    </div>
+</div>
 
 <br />
 <div class="p-4 border rounded">
@@ -38,78 +44,88 @@
                 <th>Warehouse Responsibility</th>
                 <th>Change Responsibility</th>
                 <th></th>
-</thead>
+        </thead>
 
         @foreach (Complaints complaints in Model)
         {
-    <tr>
-        <td>@complaints.Id</td>
-        @if (complaints.UserNameId != null)
-        {
-    <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td> }
-                    else
-                    {
-    <td></td>}
-        <td>@complaints.OrderId</td>
-        <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
-        <td>@complaints.ProductName</td>
-        <td>@complaints.CustName</td>
-        <td><textarea readonly>@complaints.Description</textarea></td>
-        <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
-        @if (@complaints.Solved)
-        {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
-        <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
-        <td>@complaints.HandledBy</td>
-        <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
-        <td>@complaints.NewTrackingNumber</td>
-        @if (ViewBag.Refunded(complaints.OrderId.ToString()))
-        {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
-        @if (@complaints.WarehouseResponsibility)
-        {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>
+<tr>
+    <td>@complaints.Id</td>
+    @if (complaints.UserNameId != null)
+    {
+<td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td>
+ }
+else
+{
+<td></td>
 }
-        <td>
-            <div class="text-center">
-                <input type="hidden" asp-for="@complaints.Id" />
-                <input type="checkbox" asp-for="@complaints.isChecked" />
-            </div>
-        </td>
-        @if (!complaints.Solved)
-        {
+    <td>@complaints.OrderId</td>
+    <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
+    <td>@complaints.ProductName</td>
+    <td>@complaints.CustName</td>
+    <td><textarea readonly>@complaints.Description</textarea></td>
+    <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
+    @if (@complaints.Solved)
+    {
+<td>Yes</td>
+ }
+else
+{
+<td>No</td>
+}
+    <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
+    <td>@complaints.HandledBy</td>
+    <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
+    <td>@complaints.NewTrackingNumber</td>
+    @if (ViewBag.Refunded(complaints.OrderId.ToString()))
+    {
+<td>Yes</td>
+ }
+else
+{
+<td>No</td>
+}
+    @if (@complaints.WarehouseResponsibility)
+    {
+<td>Yes</td>
+ }
+else
+{
+<td>No</td>}
     <td>
         <div class="text-center">
-            <a href="/Admin/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer">
-                <i class="fas fa-edit"></i>
-            </a>
+            <input type="hidden" asp-for="@complaints.Id" />
+            <input type="checkbox" asp-for="@complaints.isChecked" />
         </div>
-    </td> }
-                    else
-                    {
-                        if (!ViewBag.Refunded(complaints.OrderId.ToString()))
-                        {
-    <td>
-        <div class="text-center">
-            <a href="/Admin/Refund/AddRefund/@complaints.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
-                <i class="fas fa-dollar-sign"></i>
-            </a>
-        </div>
-    </td> }
-                        else
-                        {
-    <td></td>}
-                    }
-    </tr>            }
+    </td>
+    @if (!complaints.Solved)
+    {
+<td>
+    <div class="text-center">
+        <a href="/Admin/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer">
+            <i class="fas fa-edit"></i>
+        </a>
+    </div>
+</td>
+ }
+else
+{
+if (!ViewBag.Refunded(complaints.OrderId.ToString()))
+{
+<td>
+    <div class="text-center">
+        <a href="/Admin/Refund/AddRefund/@complaints.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
+            <i class="fas fa-dollar-sign"></i>
+        </a>
+    </div>
+</td>
+ }
+else
+{
+<td></td>
+}
+}
+</tr>
+   }
 
     </table>
 </div>

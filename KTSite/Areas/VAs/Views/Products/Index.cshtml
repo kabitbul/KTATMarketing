@@ -23,6 +23,8 @@
                     <th>Product Description</th>
                     <th>Made In</th>
                     <th>Product ASIN</th>
+                    <th>Merch Type</th>
+                    <th>Merch Name</th>
 </thead>
             @foreach (Product prod in Model)
             {
@@ -40,6 +42,15 @@
             <td>@prod.ProductDesc</td>
             <td>@prod.MadeIn</td>
             <td>@prod.ProductASIN</td>
+            <td>@prod.MerchType</td>
+            @if (prod.MerchId != null)
+            {
+              <td>@ViewBag.getMerchName(prod.MerchId.ToString()).ToString()</td>
+            }
+            else
+            {
+                <td></td>
+            }
         </tr>
             }
         </table>

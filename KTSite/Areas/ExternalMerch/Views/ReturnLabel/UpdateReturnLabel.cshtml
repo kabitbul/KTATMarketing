@@ -1,0 +1,84 @@
+﻿@model KTSite.Models.ReturnLabel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Label";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="form-group row">
+                        <div style="font-size:22px" class="col-4">
+                            Upload Label
+                        </div>
+                        <div class="col-8">
+                            <input type="file" name="files" id="uploadBox" multiple class="form-control" />
+                            <span asp-validation-for="FileURL" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="DateCreated" class="form-control" value=@DateTime.Now />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="UserNameId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="OrderId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="CommentsToWarehouse" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="ReturnQuantity" class="form-control" value=@ViewBag.ReturnQuantity />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="MerchId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="MerchType" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-8 pt-4">
+                    <div class="form-group row">
+                        <div class="col-8 offset-4">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary form-control">Add</button>
+                                </div>
+                                <div class="col">
+                                    <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: 'file edit format'
+        });
+    </script>
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg && ViewBag.success)
+    {
+        <script>
+            swal("Success!", "Added Successfully!", "success")
+                .then((value) => { window.location.href = '/ExternalMerch/ReturnLabel'; })
+        </script>
+    }
+}

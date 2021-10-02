@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using KTSite.Models;
-using Newtonsoft.Json;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Utility;
 using Microsoft.AspNetCore.Authorization;
-using System.Web.WebPages;
 
 namespace KTSite.Areas.UserRole.Controllers
 {

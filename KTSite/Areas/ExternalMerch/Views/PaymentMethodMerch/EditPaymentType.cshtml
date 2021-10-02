@@ -1,0 +1,77 @@
+﻿
+
+@model KTSite.Models.PaymentMethodMerchVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Update Payment Method"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentMethodMerch.PaymentTypeAddress">Address Of Payment Type</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="PaymentMethodMerch.PaymentTypeAddress" class="form-control" />
+                        <span asp-validation-for="PaymentMethodMerch.PaymentTypeAddress" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentMethodMerch.PaymentType">Choose Payment Type</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.PaymentMethodMerch.PaymentType, Model.paymentType, "Choose Payment Type",
+                                                          new { @class = "form-control" })
+                        <span asp-validation-for="PaymentMethodMerch.PaymentType" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="PaymentMethodMerch.PrefferdMethod">Preferred Method to get paid</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="PaymentMethodMerch.PrefferdMethod" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentMethodMerch.PaymentType" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentMethodMerch.UserNameId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentMethodMerch.Id" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="PaymentMethodMerch.MerchType" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                   <partial name="_EditAndBackToListButton" model="Model.PaymentMethodMerch.Id" /> 
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg && ViewBag.success)
+    {
+      <script>
+          swal("Success!", "Payment Type Updated Successfully", "success")
+              .then((value) => { window.location.href = '/ExternalMerch/PaymentMethodMerch'; })
+        </script>
+        }
+    }

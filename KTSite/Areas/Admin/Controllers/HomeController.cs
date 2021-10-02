@@ -58,7 +58,8 @@ namespace KTSite.Areas.Admin.Controllers
                                              }).Select(a => a.adminVATask).Count();
                 ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
                 ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
-                var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0);
+                ViewBag.PendingApprovalProducts = _unitOfWork.Product.GetAll().Where(a => a.AdminApproval == SD.MerchProductStatusPending).Count();
+                var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0 && a.MerchId == null);
                 double totalInventoryValue = 0; 
                 foreach(Product prod in product)
                 {
@@ -89,6 +90,14 @@ namespace KTSite.Areas.Admin.Controllers
             else if (User.IsInRole(SD.Role_Warehouse))
             {
                 return Redirect("Warehouse/Home");
+            }
+            else if (User.IsInRole(SD.Role_KTMerch))
+            {
+                return Redirect("KTMerch/Home");
+            }
+            else if (User.IsInRole(SD.Role_ExMerch))
+            {
+                return Redirect("ExternalMerch/Home");
             }
             return Redirect("UserRole/HomeAnonym");
 

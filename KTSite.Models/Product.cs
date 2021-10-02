@@ -40,10 +40,21 @@ namespace KTSite.Models
         public string MadeIn { get; set; }
         public double BestOffer { get; set; }
         public double MinimumPrice { get; set; }
+        [MaxLength(50)]
+        public string MerchId { get; set; }
+        [MaxLength(20)]
+        public string MerchType { get; set; }//KT/External
+        [MaxLength(20)]
+        public string AdminApproval { get; set; }
+        [MaxLength(100)]
+        public string RejectReason { get; set; }
         [NotMapped]
         public double WarehouseProfit { get; set; }
-      //  [DefaultValue(false)]
-      //  public bool IsArchived { get; set; }
+        [NotMapped]
+        [DefaultValue(false)]
+        public bool isChecked { get; set; }
+        //  [DefaultValue(false)]
+        //  public bool IsArchived { get; set; }
 
     }
 }

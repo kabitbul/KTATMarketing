@@ -323,6 +323,32 @@ namespace KTSite.Areas.Identity.Pages.Account
                                 }
                                 
                             }
+                            //else if (Input.Role == SD.Role_KTMerch)
+                            //{
+                            //        string userNameId =
+                            //    _unitOfWork.ApplicationUser.GetAll().Where(a => a.Email == Input.Email && a.Name == Input.Name
+                            //    && a.Role == SD.Role_KTMerch).Select(a => a.Id).FirstOrDefault();
+                            //        PaymentBalance paymentBalance = new PaymentBalance();
+                            //        paymentBalance.UserNameId = userNameId;
+                            //        paymentBalance.Balance = 0;
+                            //        paymentBalance.IsWarehouseBalance = false;
+                            //        paymentBalance.AllowNegativeBalance = false;
+                            //        _unitOfWork.PaymentBalance.Add(paymentBalance);
+                            //        _unitOfWork.Save();
+                            //}
+                            //else if (Input.Role == SD.Role_ExMerch)
+                            //{
+                            //        string userNameId =
+                            //    _unitOfWork.ApplicationUser.GetAll().Where(a => a.Email == Input.Email && a.Name == Input.Name
+                            //    && a.Role == SD.Role_ExMerch).Select(a => a.Id).FirstOrDefault();
+                            //        PaymentBalance paymentBalance = new PaymentBalance();
+                            //        paymentBalance.UserNameId = userNameId;
+                            //        paymentBalance.Balance = 0;
+                            //        paymentBalance.IsWarehouseBalance = false;
+                            //        paymentBalance.AllowNegativeBalance = false;
+                            //        _unitOfWork.PaymentBalance.Add(paymentBalance);
+                            //        _unitOfWork.Save();
+                            //}
                             //admin is registering a new user
                             return RedirectToAction("Index", "User", new { Area = "Admin" });
                         }

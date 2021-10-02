@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.OrderId, Model.OrdersList,
-                                                                              new { @class = "form-control", @disabled = "disabled" })
+                                                                                        new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.OrderId" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.complaints.StoreId, Model.StoresList,
-                                                                         new { @class = "form-control", @disabled = "disabled" })
+                                                                                   new { @class = "form-control", @disabled = "disabled" })
                         <span asp-validation-for="complaints.StoreId" class="text-danger"></span>
                     </div>
                 </div>
@@ -74,19 +74,18 @@
                         <span asp-validation-for="complaints.NewTrackingNumber" class="text-danger"></span>
                     </div>
                 </div>
-               @if(!Model.GeneralNotOrderRelated)
-               {
-                <div class="form-group row">
-                    <div class="col-4" style="font-weight:bold;color:red">
-                        <label asp-for="complaints.TicketResolution">Ticket Resolution</label>
-                    </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(m => m.complaints.TicketResolution, Model.TicketResolutionList,
-                                                          new { @class = "form-control" })
-                        <span asp-validation-for="complaints.TicketResolution" class="text-danger"></span>
-                    </div>
+                @if (!Model.GeneralNotOrderRelated)
+                {
+            <div class="form-group row">
+                <div class="col-4" style="font-weight:bold;color:red">
+                    <label asp-for="complaints.TicketResolution">Ticket Resolution</label>
                 </div>
-               }
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.complaints.TicketResolution, Model.TicketResolutionList,
+                                                                new { @class = "form-control" })
+                    <span asp-validation-for="complaints.TicketResolution" class="text-danger"></span>
+                </div>
+            </div>}
                 <div class="col-8">
                     <input type="hidden" asp-for="complaints.UserNameId" class="form-control" />
                 </div>
@@ -119,6 +118,12 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="complaints.ModifiedDate" class="form-control" value="@DateTime.Now" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="complaints.MerchType" class="form-control" />
                 </div>
             </div>
             <div class="col-8 pt-4">
@@ -165,13 +170,20 @@
     </script>
 
 }
- else if (ViewBag.IsAdmin)
+ else if (ViewBag.isMerch)
                     {
+<script>
+    swal("Success!", "Complaint Added!", "success")
+        .then((value) => { window.location.href = '/Admin/Complaints/ShowMerchComplaint'; })
+</script>
+}
+else if(ViewBag.IsAdmin)
+{
 <script>
     swal("Success!", "Complaint Added!", "success")
         .then((value) => { window.location.href = '/Admin/Complaints'; })
 </script>
- }
+}
 else if (ViewBag.success)
 {
 <script>

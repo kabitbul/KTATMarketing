@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Runtime.InteropServices;
-using Microsoft.EntityFrameworkCore;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -43,7 +36,7 @@ namespace KTSite.Areas.Admin.Controllers
             }
             List<InventoryAnalysis> InventoryNeedRestock = new List<InventoryAnalysis>();
             ViewBag.getProductName = new Func<int, string>(returnProductName);
-            var product = _unitOfWork.Product.GetAll().Where(a => a.ReStock);
+            var product = _unitOfWork.Product.GetAll().Where(a => a.ReStock && a.MerchType != SD.Role_ExMerch);
             foreach(Product prod in product)
             {
                 if (prod.InventoryCount <= 0)

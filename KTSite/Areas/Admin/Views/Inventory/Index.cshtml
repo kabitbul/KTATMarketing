@@ -23,6 +23,8 @@
                 <th>DailyAvg(3 days)</th>
                 <th>DailyAvg(Week)</th>
                 <th>Days to OOS</th>
+                <th>Days to Warehouse OOS</th>
+                <th>KT Merch</th>
                 <th></th>
             </tr>
         </thead>
@@ -37,6 +39,8 @@
             <td>DailyAvg(3 days)</td>
             <td>DailyAvg(Week)</td>
             <td>Days to OOS</td>
+            <td>Days to Warehouse OOS</td>
+            <th>KT Merch</th>
             <td></td>
         </tr>
     </table>
@@ -83,6 +87,18 @@
                             }
                         }
                     },
+                    {
+                        "data": "daysToWarehouseOOSstr", "name": "DaysToWarehouseOOSstr",
+                        "render": function (data) {
+                            if (data <= 7) {
+                                return `<div class="text-center" style="font-weight:bold;color:red"><label >${data}</label></div>`
+                            }
+                            else {
+                                return `<div class="text-center"><label >${data}</label></div>`
+                            }
+                        }
+                    },
+                    { "data": "ktMerch", "name": "KtMerch" },
                     {
                         "data": "productId", "name": "ProductId",
                         "render": function (data) {

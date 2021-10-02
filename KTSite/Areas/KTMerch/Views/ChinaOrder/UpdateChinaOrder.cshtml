@@ -1,0 +1,131 @@
+﻿
+@model KTSite.Models.ChinaOrderVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Update China Order";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.Id" class="form-control" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.ProductId">Product</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.chinaOrder.ProductId, Model.ProductList, "Select Product",
+                            new { @class = "form-control", @disabled = "disabled" })
+                        <span asp-validation-for="chinaOrder.ProductId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.ProductId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.Quantity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.DateOrdered" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.DateReceived" class="form-control" value="@DateTime.Now" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.Quantity">Quantity</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="chinaOrder.Quantity" class="form-control" disabled />
+                        <span asp-validation-for="chinaOrder.Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.QuantityReceived">Quantity Received</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="chinaOrder.QuantityReceived" class="form-control" />
+                        <span asp-validation-for="chinaOrder.QuantityReceived" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.BoxCount">Number Of Shipped boxes</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="chinaOrder.BoxCount" class="form-control" />
+                        <span asp-validation-for="chinaOrder.BoxCount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.IgnoreMissingQuantity">Ignore the  Missing\Extra Quantity</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="chinaOrder.IgnoreMissingQuantity" class="form-control" disabled="@ViewBag.Ignore" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="chinaOrder.IgnoreMissingQuantity" class="form-control" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="chinaOrder.ReceivedAll">Received All</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="chinaOrder.ReceivedAll" class="form-control" disabled="@ViewBag.Received" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="chinaOrder.KTMerchId" class="form-control" />
+                    </div>
+                </div>
+            </div>
+                <div class="col-8 pt-4">
+                    <div class="form-group row">
+                        <div class="col-8 offset-4">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary form-control">Update</button>
+                                </div>
+                                <div class="col">
+                                    <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (ViewBag.QuantityZero)
+        {
+            <script>
+                swal("Error!", "Quantity Received Can't Be 0 Or Less!", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else if (ViewBag.success)
+        {
+            <script>
+                swal("Success!", "Order Updated!", "success")
+                    .then((value) => { window.location.href = '/KTMerch/ChinaOrder'; })
+            </script>
+          }
+        }
+
+    }

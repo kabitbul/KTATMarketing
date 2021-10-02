@@ -25,9 +25,15 @@ namespace KTSite.Areas.VAs.Controllers
         public IActionResult Index()
         {
             var productsList = _unitOfWork.Product.GetAll().OrderByDescending(q=>q.Id);
+            ViewBag.getMerchName =
+               new Func<string, string>(getMerchName);
             return View(productsList);
         }
-        
+        public string getMerchName(string merchId)
+        {
+            return _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == merchId).Select(a => a.Name).FirstOrDefault();
+        }
+
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
