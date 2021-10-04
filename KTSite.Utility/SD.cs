@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace KTSite.Utility
 {
     public static class SD
-    {
-        public const string Kfir_Merch = "2811c25b-0667-4593-a354-6d7200dd914f";//KfirLogicAdded
-        public const string Kfir_Buyer = "954af016-4664-4048-96ba-c7f02de9738e";// KfirLogicAdded
+    {                                     
+        public const string Kfir_Merch = "2f85dc2e-c6ab-4523-aa51-f4a5814e518d";//KfirLogicAdded
+        public const string Kfir_Buyer = "76fbc16f-d46e-4cba-ad59-c00045ffa711";// KfirLogicAdded
         public const string Role_Admin = "Admin";
         public const string Role_Warehouse = "Warehouse";
         public const string Role_Users = "Users";
@@ -30,7 +30,7 @@ namespace KTSite.Utility
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
         public const string ReturningItemDefective = "Defective";
-        public const double shipping_cost = 4;
+        public const double shipping_cost = 4.3;//back to 4 when rate is back to normal
         public const double shipping_cost_warehouse_items = 4;
         public const double shipping_cost_for_return = 4;
         public const double paypalPercentFees = 3;
@@ -48,10 +48,11 @@ namespace KTSite.Utility
         public const double weightFor1Rate = 0.5;
         public const double weightFor2Rate = 0.6875;
         public const double weightForMaxRate = 1;
-        public const double priceFor1Rate = 4.0;
-        public const double priceFor2Rate = 5.0;
-        public const double priceForMaxRate = 6.13;
-        public const double addToKTMerchRate = 0.2;
+        public const double priceFor1Rate = 4.3;// change back to 4 once rate increase not relevant
+        public const double priceFor2Rate = 5.3;// change back to 5 once rate increase not relevant
+        public const double priceForMaxRate = 6.43;// change back to 6.13 once rate increase not relevant
+        public const double addToKTMerchRate = 0.2;// add back once rate increase not relevant
+        //public const double addToKTMerchRate = 0.5; // add to kt merch with rateIncrease*******RATE INCREASE********
         //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =
             @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"

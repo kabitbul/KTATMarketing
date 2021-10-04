@@ -61,8 +61,8 @@ else
         }
     </td>
     <td>@product.Weight</td>
-    <td>@product.Cost$</td>
-    <td>@product.SellersCost$</td>
+    <td>@product.Cost.ToString("0.00")$</td>
+    <td>@product.SellersCost.ToString("0.00")$</td>
     <td>@product.ShippingCharge$</td>
     <td>@ViewBag.Profit(product.Id)</td>
     <td>@product.InventoryCount</td>

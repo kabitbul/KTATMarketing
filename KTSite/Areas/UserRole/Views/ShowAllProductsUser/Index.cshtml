@@ -56,7 +56,7 @@
             </td>
             @if (ViewBag.IsAuthenticated)
             {
-                <td>@product.SellersCost$</td>
+                <td>@product.SellersCost.ToString("0.00")$</td>
             }
             @if (product.OOSForSellers)
             {

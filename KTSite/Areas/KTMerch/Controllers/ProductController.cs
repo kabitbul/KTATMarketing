@@ -51,10 +51,16 @@ namespace KTSite.Areas.KTMerch.Controllers
         public string getProfit(int productId)
         {
            double dollar;
+            double addToMinimum;
            Product product = _unitOfWork.Product.Get(productId);
            dollar = product.Cost - (SD.FeesOfKTMerch * product.Cost) - (product.ShippingCharge+SD.addToKTMerchRate);
-            
-           return dollar.ToString("0.00") + "$";
+            if ((product.SellersCost * SD.FeesOfKTMerch) < 0.8)
+            {
+                addToMinimum = 0.8 - (product.SellersCost * SD.FeesOfKTMerch);
+                dollar = dollar - (addToMinimum);
+            }
+
+            return dollar.ToString("0.00") + "$";
         }
         public string getShippingCost(int productId)
         {

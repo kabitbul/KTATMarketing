@@ -46,7 +46,6 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.getShippingCharge =
               new Func<int, string>(getShippingCharge);
             return View(product);
-            return View(product);
         }
         public string getMerchName(string MerchId)
         {
