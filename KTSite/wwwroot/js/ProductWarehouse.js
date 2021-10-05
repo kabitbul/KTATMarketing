@@ -10,9 +10,9 @@ function loadDataTable() {
             "url": "/Warehouse/Product/GetAll"
         },
         "columns": [
-            { "data": "productName", "width": "10%" },
-            { "data": "cost", "width": "10%" },
-            { "data": "profit", "width": "10%" },
+            { "data": "id", "width": "10%" },
+            { "data": "productName", "width": "20%" },
+            { "data": "cost" , "width": "10%" },
             { "data": "inventoryCount", "width": "10%" },
             { "data": "onTheWayInventory", "width": "10%" },
             {

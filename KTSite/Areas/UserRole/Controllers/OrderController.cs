@@ -967,6 +967,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 {
                     addToMinimum = 0.8 - (product.SellersCost * SD.FeesOfKTMerch);
                     totalProfit = totalProfit - (addToMinimum * quantity);
+                    totalProfit = Math.Round(totalProfit, 2);
                 }
                 KTMerchPaymentBalance.Balance = KTMerchPaymentBalance.Balance + totalProfit;
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
+using System.Collections.Generic;
+using System;
 
 namespace KTSite.Areas.Warehouse.Controllers
 {
@@ -22,7 +24,14 @@ namespace KTSite.Areas.Warehouse.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Product> product = _unitOfWork.Product.GetAll().Where(a => a.MerchId != SD.Role_ExMerch).OrderBy(a => a.ProductName);
+            ViewBag.getCategoryName =
+              new Func<int, string>(getCategoryName);
+            return View(product);
+        }
+        public string getCategoryName(int CategoryId)
+        {
+            return _unitOfWork.Category.GetAll().Where(a => a.Id == CategoryId).Select(a => a.Name).FirstOrDefault();
         }
         public IActionResult Upsert(int? id)
         {

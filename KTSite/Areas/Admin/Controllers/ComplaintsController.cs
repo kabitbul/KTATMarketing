@@ -20,7 +20,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.IsAdmin && a.MerchType == null);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a=>a.IsAdmin && (a.MerchType == null || a.MerchType == ""));
             ViewBag.getStore =
                new Func<string, string>(getStore);
             ViewBag.IsAdmin = new Func<string, bool>(returnIsAdmin);
@@ -90,6 +90,7 @@ namespace KTSite.Areas.Admin.Controllers
                     TicketResolutionList = SD.TicketResolution
                 };
                 Order ord = _unitOfWork.Order.Get((long)Id);
+                
             }
             else
             {
