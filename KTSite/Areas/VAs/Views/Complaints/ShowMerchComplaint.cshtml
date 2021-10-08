@@ -47,13 +47,21 @@
     <tr>
         <td>@complaints.Id</td>
         <td style="font-weight:bold;color:crimson">@complaints.MerchType</td>
-        <td>@ViewBag.getUserName(complaints.MerchId).ToString()</td>
-        @if (complaints.UserNameId != null)
+        @if (complaints.MerchId != null && complaints.MerchId != "")
         {
-    <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td> }
+    <td>@ViewBag.getUserName(complaints.MerchId).ToString()</td> }
                     else
                     {
-    <td></td>}
+                        <td></td>
+                    }
+        @if (complaints.UserNameId != null)
+        {
+    <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td>
+ }
+else
+{
+    <td></td>
+}
         <td>@complaints.OrderId</td>
         <td>@string.Format("{0:dd/MM/yyyy}", complaints.CreatedDate)</td>
         <td>@complaints.ProductName</td>
@@ -62,27 +70,31 @@
         <td><textarea readonly>@complaints.SolutionDesc</textarea></td>
         @if (@complaints.Solved)
         {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
+    <td>Yes</td>
+ }
+else
+{
+    <td>No</td>
+}
         <td style="font-weight:bold;color:red">@complaints.TicketResolution</td>
         <td>@complaints.HandledBy</td>
         <td>@string.Format("{0:dd/MM/yyyy}", complaints.ModifiedDate)</td>
         <td>@complaints.NewTrackingNumber</td>
         @if (ViewBag.Refunded(complaints.OrderId.ToString()))
         {
-    <td>Yes</td> }
-                    else
-                    {
-    <td>No</td>}
-        @if (@complaints.WarehouseResponsibility)
-        {
-    <td>Yes</td> }
-                    else
-                    {
+    <td>Yes</td>
+ }
+else
+{
     <td>No</td>
 }
+        @if (@complaints.WarehouseResponsibility)
+        {
+    <td>Yes</td>
+ }
+else
+{
+    <td>No</td>}
         <td>
             <div class="text-center">
                 <input type="hidden" asp-for="@complaints.Id" />
@@ -91,33 +103,32 @@
         </td>
         @*@if (!complaints.Solved &&)*@
         @*show update button if problem not solved yet but dont show update at all when it is external and send again(it is ex warehouse responsibility*@
-        @if(!complaints.Solved && !(complaints.MerchType == KTSite.Utility.SD.Role_ExMerch && complaints.TicketResolution == KTSite.Utility.SD.SendAgain))
+        @if (!complaints.Solved && !(complaints.MerchType == KTSite.Utility.SD.Role_ExMerch && complaints.TicketResolution == KTSite.Utility.SD.SendAgain))
         {
-            <td>
-                <div class="text-center">
-                    <a href="/VAs/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                </div>
-            </td> 
-         }
-         else
-          {
-            if (!ViewBag.Refunded(complaints.OrderId.ToString()))
-              {
-                <td>
-                    <div class="text-center">
-                        <a href="/VAs/Refund/AddRefund/@complaints.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
-                            <i class="fas fa-dollar-sign"></i>
-                        </a>
-                    </div>
-                </td> 
-             }
-             else
-             {
-              <td></td>
-             }
-          }
+    <td>
+        <div class="text-center">
+            <a href="/VAs/Complaints/UpdateComplaint/@complaints.Id" class="btn btn-success text-white" style="cursor:pointer">
+                <i class="fas fa-edit"></i>
+            </a>
+        </div>
+    </td>
+ }
+                    else
+                    {
+                        if (!ViewBag.Refunded(complaints.OrderId.ToString()))
+                        {
+    <td>
+        <div class="text-center">
+            <a href="/VAs/Refund/AddRefund/@complaints.OrderId" class="btn btn-danger text-white" style="cursor:pointer">
+                <i class="fas fa-dollar-sign"></i>
+            </a>
+        </div>
+    </td>
+ }
+                        else
+                        {
+    <td></td>}
+                    }
     </tr>            }
 
     </table>

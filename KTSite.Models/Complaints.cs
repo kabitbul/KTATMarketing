@@ -37,7 +37,8 @@ namespace KTSite.Models
         [NotMapped]
         [DefaultValue(false)]
         public bool isChecked { get; set; }
-
+        [NotMapped]
+        public int sentQuantity { get; set; }
         public int StoreId { get; set; }
         public string ProductName { get; set; }
         public string CustName { get; set; }

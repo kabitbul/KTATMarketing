@@ -34,7 +34,7 @@ namespace KTSite.Areas.VAs.Controllers
         {
             ViewBag.getUserName =
                    new Func<string, string>(getUserName);
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a =>!a.IsAdmin && a.MerchType == null);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a =>!a.IsAdmin && (a.MerchType == null || a.MerchType == ""));
             ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
             return View(complaints);
         }
@@ -42,7 +42,7 @@ namespace KTSite.Areas.VAs.Controllers
         {
             ViewBag.getUserName =
                    new Func<string, string>(getUserName);
-            var complaints = _unitOfWork.Complaints.GetAll().Where(a => a.MerchType != null);
+            var complaints = _unitOfWork.Complaints.GetAll().Where(a => a.MerchType != null && a.MerchType != "");
             ViewBag.Refunded = new Func<string, bool>(returnIsRefunded);
             return View(complaints);
         }
@@ -129,7 +129,7 @@ namespace KTSite.Areas.VAs.Controllers
         {
             Complaints comp = _unitOfWork.Complaints.GetAll().Where(a => a.Id == Id).FirstOrDefault();
             bool IsAdmin = comp.IsAdmin;
-            if (comp.MerchType == null)
+            if (comp.MerchType == null || comp.MerchType == "")
             {
                 ViewBag.isMerch = false;
             }
@@ -251,7 +251,7 @@ namespace KTSite.Areas.VAs.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                if (complaintsVM.complaints.MerchType == null)
+                if (complaintsVM.complaints.MerchType == null || complaintsVM.complaints.MerchType == "")
                 {
                     ViewBag.isMerch = false;
                 }

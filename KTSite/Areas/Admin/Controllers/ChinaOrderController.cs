@@ -128,11 +128,12 @@ namespace KTSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateChinaOrder(ChinaOrderVM chinaOrderVM)
         {
+            string uNameId = returnUserNameId();
             ViewBag.success = false;
             ChinaOrderVM chinaOrderVM2 = new ChinaOrderVM()
             {
                 chinaOrder = _unitOfWork.ChinaOrder.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.Id).FirstOrDefault(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchId == null).OrderBy(a => a.ProductName).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.MerchId == uNameId && a.AdminApproval == SD.MerchProductStatusApproved).OrderBy(a => a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.ProductName,
@@ -142,7 +143,7 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.QuantityZero = false;
             if (ModelState.IsValid)
             {
-                if (chinaOrderVM.chinaOrder.QuantityReceived <= 0)
+                if (chinaOrderVM.chinaOrder.QuantityReceived < 0)
                 {
                     ViewBag.QuantityZero = true;
                 }
@@ -151,12 +152,18 @@ namespace KTSite.Areas.Admin.Controllers
                     ChinaOrder oldChinaOrder = _unitOfWork.ChinaOrder.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.Id).FirstOrDefault();
                     Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == chinaOrderVM.chinaOrder.ProductId).FirstOrDefault();
                     int QuantityUpdate = chinaOrderVM.chinaOrder.QuantityReceived - oldChinaOrder.QuantityReceived;
+                    int QuantityBoxUpdate = chinaOrderVM.chinaOrder.BoxCount - oldChinaOrder.BoxCount;
+                    if (chinaOrderVM.chinaOrder.ReceivedAll)
+                    {
+                        QuantityUpdate = chinaOrderVM.chinaOrder.Quantity - oldChinaOrder.QuantityReceived;
+                        chinaOrderVM.chinaOrder.QuantityReceived = chinaOrderVM.chinaOrder.Quantity;
+                    }
                     //update Inventory
                     product.InventoryCount = product.InventoryCount + QuantityUpdate;
                     //update onTheWayInventory
                     if (QuantityUpdate == 0 && !chinaOrderVM.chinaOrder.IgnoreMissingQuantity)//ignore didnt change and quantity didnt change
                     {
-
+                        chinaOrderVM.chinaOrder.DateReceived = oldChinaOrder.DateReceived;
                     }
                     else if (QuantityUpdate == 0 && chinaOrderVM.chinaOrder.IgnoreMissingQuantity && !oldChinaOrder.IgnoreMissingQuantity)//quantity didnt change ignore did
                     {
@@ -165,6 +172,7 @@ namespace KTSite.Areas.Admin.Controllers
                         {
                             product.OnTheWayInventory = product.OnTheWayInventory - missingQ;
                         }
+                        chinaOrderVM.chinaOrder.ReceivedAll = true;
                     }
                     else if (QuantityUpdate != 0 && !chinaOrderVM.chinaOrder.IgnoreMissingQuantity)//quantity changed and ignore didnt
                     {
@@ -187,6 +195,7 @@ namespace KTSite.Areas.Admin.Controllers
                         {
                             product.OnTheWayInventory = product.OnTheWayInventory - QuantityUpdate - (chinaOrderVM.chinaOrder.Quantity - chinaOrderVM.chinaOrder.QuantityReceived);
                         }
+                        chinaOrderVM.chinaOrder.ReceivedAll = true;
                     }
                     _unitOfWork.ChinaOrder.update(chinaOrderVM.chinaOrder);
                     _unitOfWork.Save();

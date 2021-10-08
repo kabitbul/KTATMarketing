@@ -4,7 +4,7 @@
 <br />
 <div class="row">
     <div class="col-6">
-        <h2 class="text-primary">External Merch Tickets List </h2>
+        <h2 class="text-primary">Merch Tickets List </h2> 
     </div>
 </div>
 <div class="row">
@@ -40,6 +40,7 @@
                 <th>Warehouse Responsibility</th>
                 <th>Change Responsibility</th>
                 <th></th>
+                </tr>
 </thead>
 
         @foreach (Complaints complaints in Model)
@@ -47,7 +48,14 @@
     <tr>
         <td>@complaints.Id</td>
         <td style="font-weight:bold;color:crimson">@complaints.MerchType</td>
-        <td>@ViewBag.getUserName(complaints.MerchId).ToString()</td>
+        @if (complaints.MerchId != null && complaints.MerchId != "")
+        {
+    <td>@ViewBag.getUserName(complaints.MerchId).ToString()</td>
+        }
+        else
+        {
+            <td></td>
+        }
         @if (complaints.UserNameId != null)
         {
     <td>@ViewBag.getUserName(complaints.UserNameId).ToString()</td> }
