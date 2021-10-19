@@ -114,18 +114,18 @@ namespace KTSite.Areas.UserRole.Controllers
                         (paymentHistoryVM.PaymentHistory.Amount * SD.paypalPercentFees / 100);
                 }
                 //check if its first payment - if it is , add 5$ if amount is 50-99 or 10$ if 100 and up
-                PaymentHistory ph = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
-                if (ph == null)
-                {
-                    if (paymentHistoryVM.PaymentHistory.Amount >= 50 && paymentHistoryVM.PaymentHistory.Amount < 100)
-                    {
-                        paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount + 5;
-                    }
-                    else if (paymentHistoryVM.PaymentHistory.Amount >= 100)
-                    {
-                        paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount + 10;
-                    }
-                }
+                //PaymentHistory ph = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
+                //if (ph == null)
+                //{
+                //    if (paymentHistoryVM.PaymentHistory.Amount >= 50 && paymentHistoryVM.PaymentHistory.Amount < 100)
+                //    {
+                //        paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount + 5;
+                //    }
+                //    else if (paymentHistoryVM.PaymentHistory.Amount >= 100)
+                //    {
+                //        paymentHistoryVM.PaymentHistory.Amount = paymentHistoryVM.PaymentHistory.Amount + 10;
+                //    }
+                //}
                 _unitOfWork.PaymentHistory.Add(paymentHistoryVM.PaymentHistory);
                  _unitOfWork.Save();
                 ViewBag.success = true;
@@ -192,21 +192,21 @@ namespace KTSite.Areas.UserRole.Controllers
 
             PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == paymentHistory.UserNameId).FirstOrDefault();
             paymentBalance.Balance = paymentBalance.Balance + (amount * 0.97);
-            //check if its first payment - if it is , add 5$ if amount is 50-99 or 10$ if 100 and up
-            PaymentHistory ph = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
-            if (ph == null)
-            {
-                if (amount >= 50 && amount < 100)
-                {
-                    paymentHistory.Amount = paymentHistory.Amount + 5;
-                    paymentBalance.Balance = paymentBalance.Balance + 5;
-                }
-                else if (amount >= 100)
-                {
-                    paymentHistory.Amount = paymentHistory.Amount + 10;
-                    paymentBalance.Balance = paymentBalance.Balance + 10;
-                }
-            }
+            ////check if its first payment - if it is , add 5$ if amount is 50-99 or 10$ if 100 and up
+            //PaymentHistory ph = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
+            //if (ph == null)
+            //{
+            //    if (amount >= 50 && amount < 100)
+            //    {
+            //        paymentHistory.Amount = paymentHistory.Amount + 5;
+            //        paymentBalance.Balance = paymentBalance.Balance + 5;
+            //    }
+            //    else if (amount >= 100)
+            //    {
+            //        paymentHistory.Amount = paymentHistory.Amount + 10;
+            //        paymentBalance.Balance = paymentBalance.Balance + 10;
+            //    }
+            //}
             _unitOfWork.Save();
             _unitOfWork.PaymentHistory.Add(paymentHistory);
             _unitOfWork.Save();

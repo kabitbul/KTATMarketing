@@ -42,6 +42,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.Status = paymentHistory.Status;
                 objFromDb.PayDate = paymentHistory.PayDate;
                 objFromDb.SentFromAddressId = paymentHistory.SentFromAddressId;
+                objFromDb.RejectReason = paymentHistory.RejectReason;
             }
         }
     }

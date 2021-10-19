@@ -116,22 +116,22 @@ namespace KTSite.Areas.Warehouse.Controllers
             }
             //if resolution is send again and it is changed to solved -
             //remove inventory count AND add record to returningItem Table
-            if(complaintsVM.complaints.TicketResolution == SD.SendAgain && complaintsVM.complaints.Solved)
-            {
-                Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
-                int prodId = ord.ProductId;
-                Product pr = _unitOfWork.Product.Get(prodId);
-                pr.InventoryCount = pr.InventoryCount - ord.Quantity;
+            //if(complaintsVM.complaints.TicketResolution == SD.SendAgain && complaintsVM.complaints.Solved)
+            //{
+            //    Order ord = _unitOfWork.Order.Get((long)complaintsVM.complaints.OrderId);
+            //    int prodId = ord.ProductId;
+            //    Product pr = _unitOfWork.Product.Get(prodId);
+            //    pr.InventoryCount = pr.InventoryCount - ord.Quantity;
 
-                ReturningItem rt = new ReturningItem();
-                rt.ProductId = prodId;
-                rt.ItemStatus = SD.ReturningItemRemove;
-                rt.Quantity = ord.Quantity;
-                rt.DateArrived = DateTime.Now;
-                rt.CreatedBy = SD.warehouseTicket;
-                _unitOfWork.ReturningItem.Add(rt);
-                _unitOfWork.Save();
-            }
+            //    ReturningItem rt = new ReturningItem();
+            //    rt.ProductId = prodId;
+            //    rt.ItemStatus = SD.ReturningItemRemove;
+            //    rt.Quantity = ord.Quantity;
+            //    rt.DateArrived = DateTime.Now;
+            //    rt.CreatedBy = SD.warehouseTicket;
+            //    _unitOfWork.ReturningItem.Add(rt);
+            //    _unitOfWork.Save();
+            //}
             ViewBag.IsAdmin = complaintsVM2.complaints.IsAdmin;
             return View(complaintsVM2);
         }

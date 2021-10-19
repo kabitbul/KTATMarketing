@@ -24,9 +24,9 @@
                     <th>Image</th>
                     <th>Product</th>
                     <th>ASIN</th>
-                    @if (ViewBag.IsAuthenticated)
-                    {
-                <th>Price</th>}
+                    @*@if (ViewBag.IsAuthenticated)
+                    {*@
+                <th>Price</th>@*}*@
                     <th>Status</th>
                     <th>Product Details</th>
                     @if (ViewBag.IsAuthenticated)
@@ -43,29 +43,27 @@
             <td>@ViewBag.getCategory(product.CategoryId).ToString()</td>
             @if (product.ImageUrl != null)
             {
-        <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
- }
-    else
-    {
-        <td></td>}
+        <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td> }
+                        else
+                        {
+        <td></td>
+}
             <td>@product.ProductName</td>
             <td>
                 @if (product.ProductURL != null && product.ProductASIN != null)
                 {
         <a href="@Html.DisplayFor(model => product.ProductURL)" target="_blank">@product.ProductASIN</a>}
             </td>
-            @if (ViewBag.IsAuthenticated)
-            {
-                <td>@product.SellersCost.ToString("0.00")$</td>
-            }
+            @*@if (ViewBag.IsAuthenticated)
+        {*@
+            <td>@product.SellersCost.ToString("0.00")$</td>
+            @*}*@
             @if (product.OOSForSellers)
             {
-        <td style="font-weight:bold;color:red">Out Of Stock</td>
- }
-    else
-    {
-        <td style="font-weight:bold;color:forestgreen">In Stock</td>
-}
+        <td style="font-weight:bold;color:red">Out Of Stock</td> }
+                        else
+                        {
+        <td style="font-weight:bold;color:forestgreen">In Stock</td>}
             <td><textarea readonly>@product.ProductDesc</textarea></td>
             @foreach (var sellerInvRec in Model.SellInv)
             {
@@ -90,8 +88,7 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 </div>
-                            </td>
-}
+                            </td>}
         </tr>
             }
 

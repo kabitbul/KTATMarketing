@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,6 +27,8 @@ namespace KTSite.Models
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DefaultValue("Now")]
         public DateTime PayDate { get; set; }
+        [MaxLength(100)]
+        public string RejectReason { get; set; }
         [NotMapped]
         [DefaultValue(false)]
         public bool isChecked { get; set; }

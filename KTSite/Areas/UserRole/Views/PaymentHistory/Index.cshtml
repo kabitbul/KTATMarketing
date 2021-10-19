@@ -38,7 +38,8 @@
                     <th>Payment Date</th>
                     <th>Status</th>
                     <th></th>
-            </thead>
+                    <th></th>
+</thead>
 
             @foreach (PaymentHistory paymentHistory in Model)
             {
@@ -46,25 +47,25 @@
             <td>@paymentHistory.Id</td>
             @if (paymentHistory.SentFromAddressId == 0)
             {
-        <td>Paypal</td> }
-                        else
-                        {
-                            <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>
-                        }
+        <td>Paypal</td>
+ }
+    else
+    {
+        <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>}
             @*<td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>*@
             <td>@paymentHistory.Amount.ToString("0.00")$</td>
             <td>@paymentHistory.PayDate</td>
             @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusApproved)
             {
-        <td style="font-weight:bold;color:forestgreen">@paymentHistory.Status</td> }
-                        else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
-                        {
-        <td style="font-weight:bold;color:red">@paymentHistory.Status</td>
+        <td style="font-weight:bold;color:forestgreen">@paymentHistory.Status</td>
  }
-    else
+    else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
     {
-        <td>@paymentHistory.Status</td>
-}
+        <td style="font-weight:bold;color:red">@paymentHistory.Status</td> }
+                        else
+                        {
+        <td>@paymentHistory.Status</td>}
+            <td><textarea readonly>@paymentHistory.RejectReason</textarea></td>
             @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusPending)
             {
         <td>
@@ -74,10 +75,12 @@
                     <i class="fas fa-edit"></i>
                 </a>
             </div>
-        </td> }
-                        else
-                        {
-        <td></td>}
+        </td>
+ }
+    else
+    {
+        <td></td>
+}
         </tr>            }
 
         </table>

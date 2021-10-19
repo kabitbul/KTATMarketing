@@ -47,47 +47,48 @@
                     <th>Payment Date</th>
                     <th>Status</th>
                     <th></th>
-            </thead>
+                    <th></th>
+</thead>
 
             @foreach (PaymentHistory paymentHistory in Model)
             {
-<tr>
-    <td>@paymentHistory.Id</td>
-    @if (paymentHistory.SentFromAddressId == 0)
-    {
-<td>Paypal</td>
- }
-else
-{
-<td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>}
-    <td>@ViewBag.getUserName(paymentHistory.UserNameId)</td>
-    @*<td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>*@
-    <td>@paymentHistory.Amount.ToString("0.00")$</td>
-    <td>@paymentHistory.PayDate</td>
-    @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusApproved)
-    {
-<td style="font-weight:bold;color:forestgreen">@paymentHistory.Status</td>
- }
-else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
-{
-<td style="font-weight:bold;color:red">@paymentHistory.Status</td> }
-                else
-                {
-<td>@paymentHistory.Status</td>}
-    @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusPending)
-    {
-<td>
-    <div class="text-center">
-        <input type="hidden" asp-for="@paymentHistory.Id" />
-        <input type="checkbox" asp-for="@paymentHistory.isChecked" />
-    </div>
-</td>
- }
-else
-{
-<td></td>
+        <tr>
+            <td>@paymentHistory.Id</td>
+            @if (paymentHistory.SentFromAddressId == 0)
+            {
+        <td>Paypal</td> }
+                        else
+                        {
+        <td>@ViewBag.getPaymentAddress(paymentHistory.SentFromAddressId).ToString()</td>
 }
-</tr>
+            <td>@ViewBag.getUserName(paymentHistory.UserNameId)</td>
+            @*<td>@ViewBag.getPaymentType(paymentHistory.SentFromAddressId).ToString()</td>*@
+            <td>@paymentHistory.Amount.ToString("0.00")$</td>
+            <td>@paymentHistory.PayDate</td>
+            @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusApproved)
+            {
+        <td style="font-weight:bold;color:forestgreen">@paymentHistory.Status</td> }
+                        else if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusRejected)
+                        {
+        <td style="font-weight:bold;color:red">@paymentHistory.Status</td>
+ }
+    else
+    {
+        <td>@paymentHistory.Status</td>
+}
+            @if (paymentHistory.Status == KTSite.Utility.SD.PaymentStatusPending)
+            {
+        <td>
+            <div class="text-center">
+                <input type="hidden" asp-for="@paymentHistory.Id" />
+                <input type="checkbox" asp-for="@paymentHistory.isChecked" />
+            </div>
+        </td> }
+                        else
+                        {
+        <td></td>}
+            <td><textarea readonly>@paymentHistory.RejectReason</textarea></td>
+        </tr>
 }
 
         </table>
@@ -95,6 +96,8 @@ else
     &nbsp;
     <div class="row">
         <div class="col-12 text-right">
+            <label style="font-weight: bold; color:black; font-size: 20px">Reject Reason for all checked lines: </label>
+            <textarea style="width:200px" id="txtrej"></textarea>
             <button class="btn btn-primary" onclick="RejectStatus()" style="background-color:red"><i class="fas fa-thumbs-down"></i>&nbsp; Reject Checked Lines</button>
             <button class="btn btn-primary" onclick="ApproveStatus()" style="background-color:forestgreen"><i class="fas fa-thumbs-up"></i>&nbsp; Approve Checked Lines</button>
         </div>
@@ -150,6 +153,8 @@ else
         }
         function RejectStatus() {
             var pdata = new FormData();
+            var rejReason = document.getElementById("txtrej").value;
+            pdata.append("rejectReason", rejReason);
             $("input[name='paymentHistory.isChecked']:checked").each(function (index, el) {
                 var Id = $(this).siblings("input[type='hidden']").val();
                 pdata.append("Ids", Id);
