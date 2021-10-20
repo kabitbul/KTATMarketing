@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace KTSite.Models
@@ -18,5 +15,7 @@ namespace KTSite.Models
         public double Amount { get; set; }
         public string Status { get; set; }
         public DateTime PayDate { get; set; }
+        [MaxLength(100)]
+        public string RejectReason { get; set; }
     }
 }

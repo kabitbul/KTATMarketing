@@ -160,6 +160,11 @@ namespace KTSite.Areas.UserRole.Controllers
         public double returnCost(int productId, double quantity)
         {
             double productCost = (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.SellersCost)).FirstOrDefault();
+            string uNameId = returnUserNameId();
+            if(uNameId == SD.FBMP_USER_KARIN)
+            {
+                return Convert.ToDouble(String.Format("{0:0.00}", ((productCost+SD.FBMP_FEE) * quantity)));
+            }
             return Convert.ToDouble(String.Format("{0:0.00}", (productCost * quantity))); 
         }
         public PaymentBalance userBalance(string userNameId)
@@ -363,8 +368,16 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.MerchId = pr.MerchId;
                             orderVM.Orders.MerchType = pr.MerchType;
                         }
-                        _unitOfWork.Order.Add(orderVM.Orders);
+                            _unitOfWork.Order.Add(orderVM.Orders);
                         updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                        //if(uNameId == SD.FBMP_USER_KARIN)
+                        // {
+                        //     updateSellerBalance(orderVM.Orders.Cost+(SD.FBMP_FEE*orderVM.Orders.Quantity));
+                        // }
+                        //else
+                        // {
+                        //     updateSellerBalance(orderVM.Orders.Cost);
+                        // }
                         updateSellerBalance(orderVM.Orders.Cost);
                         updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                         _unitOfWork.Save();
@@ -431,7 +444,15 @@ namespace KTSite.Areas.UserRole.Controllers
                         {
                             updateInventory(oldProductId, oldQuantity * (-1));
                             updateWarehouseBalance(oldQuantity * (-1), oldProductId);
-                            updateSellerBalance(oldCost*(-1));
+                            //if (uNameId == SD.FBMP_USER_KARIN)
+                            //{
+                            //    updateSellerBalance(oldCost * (-1) - (SD.FBMP_FEE*oldQuantity));
+                            //}
+                            //else
+                            //{
+                            //    updateSellerBalance(oldCost * (-1));
+                            //}
+                            updateSellerBalance(oldCost * (-1));
                             // if it's a cancellation - we dont want any change but the cancellation it self
                             orderVM.Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id).FirstOrDefault();
                             orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
@@ -441,7 +462,16 @@ namespace KTSite.Areas.UserRole.Controllers
                         {
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                            //if (uNameId == SD.FBMP_USER_KARIN)
+                            //{
+                            //    updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity*SD.FBMP_FEE));
+                            //}
+                            //else
+                            //{
+                            //    updateSellerBalance(orderVM.Orders.Cost);
+                            //}
                             updateSellerBalance(orderVM.Orders.Cost);
+
                         }
                         //status didnt change
                         else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
@@ -450,6 +480,11 @@ namespace KTSite.Areas.UserRole.Controllers
                             {
                                 updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
                                 updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
+                                //if (uNameId == SD.FBMP_USER_KARIN)
+                                //{
+                                //    orderVM.Orders.Cost = orderVM.Orders.Cost + (SD.FBMP_FEE*(orderVM.Orders.Quantity-oldQuantity));
+                                //}
+                                
                                 updateSellerBalance(orderVM.Orders.Cost - oldCost);
                             }
                         }
@@ -493,6 +528,15 @@ namespace KTSite.Areas.UserRole.Controllers
                 _unitOfWork.Order.update(order);
                 updateInventory(order.ProductId, (order.Quantity*(-1)));
                 updateWarehouseBalance((order.Quantity * (-1)), order.ProductId);
+                string uNameId = returnUserNameId();
+                //if(uNameId == SD.FBMP_USER_KARIN)
+                //{
+                //    updateSellerBalance((order.Cost * (-1))-(SD.FBMP_FEE*order.Quantity));
+                //}
+                //else
+                //{
+                //    updateSellerBalance((order.Cost * (-1)));
+                //}
                 updateSellerBalance((order.Cost * (-1)));
                 _unitOfWork.Save();
             }
@@ -624,9 +668,21 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                             orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                             orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                            if(uNameId == SD.FBMP_USER_KARIN)
+                            {
+                                orderVM.Orders.Cost = orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE);
+                            }
                             _unitOfWork.Order.Add(orderVM.Orders);
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity );
                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                            //if (uNameId == SD.FBMP_USER_KARIN)
+                            //{
+                            //    updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity*SD.FBMP_FEE));
+                            //}
+                            //else
+                            //{
+                            //    updateSellerBalance(orderVM.Orders.Cost);
+                            //}
                             updateSellerBalance(orderVM.Orders.Cost);
                             _unitOfWork.Save();
                             processedLines++;

@@ -44,11 +44,22 @@ namespace KTSite.Areas.UserRole.Controllers
             ViewBag.getCategory =
                   new Func<int, string>(getCategory);
             ViewBag.IsAuthenticated = User.Identity.IsAuthenticated;
+            ViewBag.getSellerCost =
+               new Func<double, string>(returnSellerCost);
             return View(myModel);
         }
         public string getCategory(int Id)
         {
             return _unitOfWork.Category.GetAll().Where(a => a.Id == Id).Select(a => a.Name).FirstOrDefault();
+        }
+        public string returnSellerCost(double price)
+        {
+            string uNameId = returnUserNameId();
+            if(uNameId == SD.FBMP_USER_KARIN)
+            {
+                return (price + 1).ToString("0.00");
+            }
+            return price.ToString("0.00");
         }
         public IActionResult AddStoreToProduct(int Id)
         {

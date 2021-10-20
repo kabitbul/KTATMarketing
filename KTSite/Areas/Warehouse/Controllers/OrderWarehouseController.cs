@@ -13,7 +13,6 @@ using System.Data;
 using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Hosting;
 using KTSite.DataAccess.Data;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace KTSite.Areas.Warehouse.Controllers
 {
@@ -123,7 +122,8 @@ namespace KTSite.Areas.Warehouse.Controllers
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
             IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).
-                OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a=>a.Quantity).Take(300);
+                //OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a=>a.Quantity).Take(300);
+                OrderBy(a => a.ProductId).ThenByDescending(a => a.Quantity).Take(300);
             ViewBag.errSaveInProgress = false;
             int lineCounter = 0;
             bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
@@ -181,7 +181,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                     {
                         break;
                     }
-                    sb.Append(getProductName(order.ProductId) + "- " + order.Quantity + ',');
+                    sb.Append("KT " + order.ProductId + "# " +getProductName(order.ProductId) + " - " + order.Quantity + ',');
                     sb.Append(',');
                     sb.Append(order.CustName.Replace(",", "").Replace("\"", "") + ',');
                     sb.Append(order.CustStreet1.Replace(",", "").Replace("\"", "") + ',');
