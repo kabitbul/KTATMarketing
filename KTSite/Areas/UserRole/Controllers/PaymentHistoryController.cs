@@ -185,13 +185,27 @@ namespace KTSite.Areas.UserRole.Controllers
             }
             PaymentHistory paymentHistory = new PaymentHistory();
             paymentHistory.UserNameId = uNameId;
-            paymentHistory.Amount = amount*0.97;
+            if (amount >= 100)
+            {
+                paymentHistory.Amount = amount * 0.97;
+            }
+            else
+            {
+                paymentHistory.Amount = (amount * 0.97) - 0.3;
+            }
             paymentHistory.PayDate = DateTime.Now;
             paymentHistory.SentFromAddressId = 0;
             paymentHistory.Status = SD.PaymentStatusApproved;
 
             PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == paymentHistory.UserNameId).FirstOrDefault();
-            paymentBalance.Balance = paymentBalance.Balance + (amount * 0.97);
+            if (amount >= 100)
+            {
+                paymentBalance.Balance = paymentBalance.Balance + (amount * 0.97);
+            }
+            else
+            {
+                paymentBalance.Balance = paymentBalance.Balance + ((amount * 0.97) - 0.3);
+            }
             ////check if its first payment - if it is , add 5$ if amount is 50-99 or 10$ if 100 and up
             //PaymentHistory ph = _unitOfWork.PaymentHistory.GetAll().Where(a => a.UserNameId == uNameId).FirstOrDefault();
             //if (ph == null)
