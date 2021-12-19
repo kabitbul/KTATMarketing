@@ -31,6 +31,15 @@
                         <span asp-validation-for="Orders.TrackingNumber" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Orders.Carrier">Carrier Company</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Orders.Carrier" class="form-control" />
+                        <span asp-validation-for="Orders.Carrier" class="text-danger"></span>
+                    </div>
+                </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.ProductId" class="form-control" />
                 </div>

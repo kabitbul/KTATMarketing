@@ -92,6 +92,7 @@
                     <th>Quantity</th>
                     <th>Full Address</th>
                     <th>Cost</th>
+                    <th>Carrier</th>
                     <th>Tracking Number</th>
                     <th></th>
                     <th>Tracking Updated</th>
@@ -106,6 +107,7 @@
                 <td>Quantity</td>
                 <td>Full Address</td>
                 <td>Cost</td>
+                <td>Carrier</td>
                 <td>Tracking Number</td>
                 <td></td>
                 <td>Tracking Updated</td>
@@ -157,6 +159,7 @@
                             return `<label>${data}$</label>`
                         }
                     },
+                    { "data": "carrier", "name": "Carrier" },
                     {
                         "data": {
                             "trackingUpdated": "trackingUpdated",

@@ -93,6 +93,7 @@ if (ViewBag.ComplaintsPending > 1)
                 <th>Store</th>
                 <th>Quantity</th>
                 <th>Full Address</th>
+                <th>Carrier</th>
                 <th>Tracking Number</th>
                 <th></th>
                 <th>Tracking Updated</th>
@@ -107,6 +108,7 @@ if (ViewBag.ComplaintsPending > 1)
             <td>Store</td>
             <td>Quantity</td>
             <td>Full Address</td>
+            <td>Carrier</td>
             <td>Tracking Number</td>
             <td></td>
             <td>Tracking Updated</td>
@@ -154,6 +156,7 @@ if (ViewBag.ComplaintsPending > 1)
                         },
                         "width": "20%"
                     },
+                    { "data": "carrier", "name": "Carrier" },
                     {
                         "data": {
                             "trackingUpdated": "trackingUpdated",

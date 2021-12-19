@@ -119,7 +119,8 @@
             if (details.status.toUpperCase() == "COMPLETED")
             //window.location.replace("http://localhost:63342/tutorial/paypal/success.php")
                 var amount = document.getElementById("PaypalAmount").value;
-            
+            if (amount == 0 || amount == null)
+                amount = 10;
             
             $.ajax({
                 type: "POST",

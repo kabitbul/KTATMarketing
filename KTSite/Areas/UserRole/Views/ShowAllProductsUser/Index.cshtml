@@ -22,6 +22,7 @@
                     <th>Id</th>
                     <th>Category</th>
                     <th>Image</th>
+                    <th>External Seller(Item shipped from another address)</th>
                     <th>Product</th>
                     <th>ASIN</th>
                     @*@if (ViewBag.IsAuthenticated)
@@ -48,6 +49,11 @@
                         {
         <td></td>
 }
+            @if (product.MerchType == KTSite.Utility.SD.Role_ExMerch)
+            {
+                <td style="font-weight:bold;color:darkorange">Yes</td>
+            }
+            else { <td></td>}
             <td>@product.ProductName</td>
             <td>
                 @if (product.ProductURL != null && product.ProductASIN != null)

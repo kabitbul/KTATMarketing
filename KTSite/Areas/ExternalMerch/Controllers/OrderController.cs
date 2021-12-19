@@ -4,11 +4,8 @@ using System.Linq;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using KTSite.Utility;
-using System.Text;
-using Microsoft.AspNetCore.Http;
 using System.Data;
 using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Hosting;
@@ -33,26 +30,8 @@ namespace KTSite.Areas.ExternalMerch.Controllers
         public IActionResult Index()
         {
             dynamic myModel = new System.Dynamic.ExpandoObject();
-            //myModel.ordercsv = new List<KTSite.Areas.Warehouse.Views.OrderWarehouse.CSVOrderLine>();
-            //ViewBag.getProductName =
-             //  new Func<int, string>(returnProductName);
-            //ViewBag.getStoreName =
-             //  new Func<int, string>(returnStoreName);
-            //ViewBag.getCost =
-              //            new Func<int, double, double>(returnCost);
-            //ViewBag.errSaveInProgress = false;
-            //ViewBag.ExistInProgress = false;
-            //ViewBag.NoOrdersMsg = false;
             return View(myModel);
         }
-        //public void setInProgressStatus(long Id)
-        //{
-        //    _unitOfWork.Order.Get(Id).OrderStatus = SD.OrderStatusInProgress;
-        //    //Order order = _unitOfWork.Order.Get(Id);
-        //    //order.OrderStatus = SD.OrderStatusInProgress;
-        //    //_unitOfWork.Order.update(order);
-        //    _unitOfWork.Save();
-        //}
         public string getProductName(int productId)
         {
             return _unitOfWork.Product.Get(productId).ProductName;
@@ -311,7 +290,30 @@ namespace KTSite.Areas.ExternalMerch.Controllers
             _unitOfWork.Save();
             return Json(new { success = true, message = "Delete Successfull" });
         }
-
+        [HttpPost]
+        public IActionResult ToInProgress(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Order order = _unitOfWork.Order.Get(Id);
+                if (order.OrderStatus == SD.OrderStatusAccepted)
+                    order.OrderStatus = SD.OrderStatusInProgress;
+                _unitOfWork.Save();
+            }
+            return View();
+        }
+        [HttpPost]
+        public IActionResult BackToAccepted(int[] Ids)
+        {
+            foreach (int Id in Ids)
+            {
+                Order order = _unitOfWork.Order.Get(Id);
+                if (order.OrderStatus == SD.OrderStatusInProgress)
+                    order.OrderStatus = SD.OrderStatusAccepted;
+                _unitOfWork.Save();
+            }
+            return View();
+        }
         #endregion
     }
 }

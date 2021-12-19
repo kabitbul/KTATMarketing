@@ -97,7 +97,7 @@ namespace KTSite.Areas.Warehouse.Controllers
         [HttpPost]
         public JsonResult ChangeInProgress()
         {
-            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress);
+            var orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress && a.MerchType != SD.Role_ExMerch) ;
             using (var dbContextTransaction = _db.Database.BeginTransaction())
             {
                 try
@@ -121,12 +121,14 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
-            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).
+            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted &&
+                     a.MerchType != SD.Role_ExMerch).
                 //OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a=>a.Quantity).Take(300);
                 OrderBy(a => a.ProductId).ThenByDescending(a => a.Quantity).Take(300);
             ViewBag.errSaveInProgress = false;
             int lineCounter = 0;
-            bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
+            bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress &&
+                                                                  a.MerchType != SD.Role_ExMerch);
             if (existInProgress)
             {
                 dynamic myModel = new System.Dynamic.ExpandoObject();
@@ -231,11 +233,13 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + "_NEW.csv";
-            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted).
+            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted &&
+             a.MerchType != SD.Role_ExMerch).
                 OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a => a.Quantity).Take(300);
             ViewBag.errSaveInProgress = false;
             int lineCounter = 0;
-            bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress);
+            bool existInProgress = _unitOfWork.Order.GetAll().Any(a => a.OrderStatus == SD.OrderStatusInProgress &&
+             a.MerchType != SD.Role_ExMerch);
             if (existInProgress)
             {
                 dynamic myModel = new System.Dynamic.ExpandoObject();
@@ -351,7 +355,7 @@ namespace KTSite.Areas.Warehouse.Controllers
             string sortColumnName = Request.Form["columns[" + Request.Form["order[0][column]"] + "][name]"].FirstOrDefault();
             string sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
             List<Order> orderList = new List<Order>();
-            orderList = _unitOfWork.Order.GetAll().ToList();
+            orderList = _unitOfWork.Order.GetAll().Where(a=> a.MerchType != SD.Role_ExMerch).ToList();
             int totalRows = orderList.Count;
             foreach (Order order in orderList)
             {
@@ -493,7 +497,8 @@ namespace KTSite.Areas.Warehouse.Controllers
                 _unitOfWork.Save();
                 string[] lines = result.ToString().Split(Environment.NewLine.ToCharArray());
                 lines = lines.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-                var OrdersInProgress = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress && a.TrackingNumber == null);
+                var OrdersInProgress = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress && a.TrackingNumber == null
+                && a.MerchType != SD.Role_ExMerch);
                 using (var dbContextTransaction = _db.Database.BeginTransaction())
                 {
                     foreach (String line in lines)

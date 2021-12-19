@@ -44,7 +44,7 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.getMerchName =
               new Func<string, string>(getMerchName);
             ViewBag.getShippingCharge =
-              new Func<int, string>(getShippingCharge);
+              new Func<int, string,string>(getShippingCharge);
             return View(product);
         }
         public string getMerchName(string MerchId)
@@ -52,11 +52,19 @@ namespace KTSite.Areas.Admin.Controllers
             return
                 _unitOfWork.ApplicationUser.GetAll().Where(a => a.Id == MerchId).Select(a=> a.Name).FirstOrDefault();
         }
-        public string getShippingCharge(int productId)
+        public string getShippingCharge(int productId, string merchType)
         {
             double dollar;
-            Product product = _unitOfWork.Product.Get(productId);       
-            dollar = product.ShippingCharge+SD.addToKTMerchRate;
+            Product product = _unitOfWork.Product.Get(productId);
+            if(merchType == SD.Role_KTMerch)
+            {
+                dollar = product.ShippingCharge + SD.addToKTMerchRate;
+            }
+            else// Ex Merch
+            {
+                dollar = product.ShippingCharge;
+            }
+            
             return  dollar.ToString("0.00") + "$";
 
         }

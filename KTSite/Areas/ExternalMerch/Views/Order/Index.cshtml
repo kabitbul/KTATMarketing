@@ -9,61 +9,65 @@
             <div id="divLoader" style="display:none;"> <img src="~/gif/ajax-loader.gif" alt="Loader" /> </div>
         </div>
     </div>
+    <div class="col-12 text-right">
+        <button class="btn btn-primary" onclick="ToInProgress()" style="background-color:darkorange"><i class="fas fa-thumbs-up"></i>&nbsp;In Progress</button>  
+        <button class="btn btn-primary" onclick="BackToAccepted()" style="background-color:orangered"><i class="fas fa-thumbs-up"></i>&nbsp;Back To Accepted</button>
+    </div>
     @*<div class="row">
-        <div class="col-12 text-right">
-            @using (Html.BeginForm("Export", "OrderWarehouse", FormMethod.Post))
-            {
-                <button class="btn btn-primary" style="background-color:forestgreen">
-                    <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)-OLD
-                </button>
-            }
-        </div>
-    </div>&nbsp;
-    <div class="row">
-        <div class="col-12 text-right">
-            @using (Html.BeginForm("ExportNew", "OrderWarehouse", FormMethod.Post))
-            {
-                <button class="btn btn-primary" style="background-color:forestgreen">
-                    <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)-NEW
-                </button>
-            }
-        </div>
-    </div>&nbsp;
-    <div class="row">
-        <div class="col-12 text-right">
-            <button class="btn btn-primary" style="background-color:crimson" onclick="ChangeInProgress()">Change Status "In Progress" Back to "Accepted"</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-2">
-            <div>
-                <h2 class="text-primary" style="font-size:20px">Update Tracking- OLD </h2>
+            <div class="col-12 text-right">
+                @using (Html.BeginForm("Export", "OrderWarehouse", FormMethod.Post))
+                {
+                    <button class="btn btn-primary" style="background-color:forestgreen">
+                        <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)-OLD
+                    </button>
+                }
+            </div>
+        </div>&nbsp;
+        <div class="row">
+            <div class="col-12 text-right">
+                @using (Html.BeginForm("ExportNew", "OrderWarehouse", FormMethod.Post))
+                {
+                    <button class="btn btn-primary" style="background-color:forestgreen">
+                        <i class="fas fa-file-download"></i>&nbsp;Export Orders To CSV (Up to 300)-NEW
+                    </button>
+                }
+            </div>
+        </div>&nbsp;
+        <div class="row">
+            <div class="col-12 text-right">
+                <button class="btn btn-primary" style="background-color:crimson" onclick="ChangeInProgress()">Change Status "In Progress" Back to "Accepted"</button>
             </div>
         </div>
-        <div class="col-2 text-left">
-            <div>
-                <input id="CSVFile" type="file">
+        <div class="row">
+            <div class="col-2">
+                <div>
+                    <h2 class="text-primary" style="font-size:20px">Update Tracking- OLD </h2>
+                </div>
+            </div>
+            <div class="col-2 text-left">
+                <div>
+                    <input id="CSVFile" type="file">
+                </div>
+            </div>
+            <div class="col-3 text-center">
+                <button class="btn btn-primary" onclick="Submit()">Update Tracking from file- OLD</button>
             </div>
         </div>
-        <div class="col-3 text-center">
-            <button class="btn btn-primary" onclick="Submit()">Update Tracking from file- OLD</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-2">
-            <div>
-                <h2 class="text-primary" style="font-size:20px">Update Tracking NEW</h2>
+        <div class="row">
+            <div class="col-2">
+                <div>
+                    <h2 class="text-primary" style="font-size:20px">Update Tracking NEW</h2>
+                </div>
             </div>
-        </div>
-        <div class="col-2 text-left">
-            <div>
-                <input id="CSVFileNew" type="file">
+            <div class="col-2 text-left">
+                <div>
+                    <input id="CSVFileNew" type="file">
+                </div>
             </div>
-        </div>
-        <div class="col-3 text-center">
-            <button class="btn btn-primary" onclick="SubmitNEW()">Update Tracking from file-NEW</button>
-        </div>
-    </div>*@
+            <div class="col-3 text-center">
+                <button class="btn btn-primary" onclick="SubmitNEW()">Update Tracking from file-NEW</button>
+            </div>
+        </div>*@
     <br />
     <div class="p-4 border rounded">
         @*<div class="custom-control custom-checkbox custom-control-inline">
@@ -100,6 +104,8 @@
                     <th>Quantity</th>
                     <th>Full Address</th>
                     <th>Tracking Number</th>
+                    <th>Carrier</th>
+                    <th>Status Change</th>
                     <th></th>
                 </tr>
             </thead>
@@ -111,6 +117,8 @@
                 <td>Quantity</td>
                 <td>Full Address</td>
                 <td>Tracking Number</td>
+                <td>Carrier</td>
+                <th>Status Change</th>
                 <td></td>
             </tr>
         </table>
@@ -156,22 +164,37 @@
                         "width": "20%"
                     },
                     { "data": "trackingNumber", "name": "TrackingNumber", "width": "200px" },
+                    { "data": "carrier", "name": "Carrier", "width": "100px" },
                     {
                         "data": {
                             "orderStatus": "orderStatus",
                             "id": "id"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Accepted' || data.orderStatus == 'Done') {
+                            if (data.orderStatus == 'Accepted' || data.orderStatus == 'Done' || data.orderStatus == 'In Progress') {
                                 return `
-                                            <div class="text-center">
-                                                <a href="/ExternalMerch/Order/AddTrackingManually/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </div>
-                                             `}
+                                                    <div class="text-center">
+                                                        <a href="/ExternalMerch/Order/AddTrackingManually/${data.id}" class="btn btn-success text-white" style="cursor:pointer">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                    </div>
+                                                     `}
                             else { return `<div></div>` }
                         }, "width": "5%"
+                    },
+                    {
+                        "data": {
+                            "id": "id",
+                            "orderStatus": "orderStatus",
+                            "isChecked": "isChecked"
+                        },
+                        "render": function (data) {
+                            if (data.orderStatus == 'Accepted' || data.orderStatus == 'In Progress') {
+                                return `<input type="hidden" name="ordStatusId" value="${data.id}" />
+                                                <input type="checkbox" name="ordStatusId" value="${data.isChecked}" />`
+                            }
+                            else { return `<div></div>` }
+                        }
                     }
                 ],
                 "serverSide": "true",
@@ -202,198 +225,277 @@
                 table.draw();
             });
     </script>
-
-    @*<script type="text/javascript">
-        function Submit() {
-            $("#divLoader").show();
+    <script type="text/javascript">
+        function ToInProgress() {
             var pdata = new FormData();
-            var files = $("#CSVFile").get(0).files;
-            pdata.append('CSVFile', files[0]);
-            $.ajax({
-                url: "Order/Submit",
-                type: "POST",
-                data: pdata,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    // var input = $("#CSVFile");
-                    //input.replaceWith(input.val('').clone(true));
-                    $("#divLoader").hide();
-                    if (data.success == 0) {
-                        swal("Error!", data.excep, "error").then((value) => { location.reload(); })
-
-                    }
-                    else {
-
-                        swal("Success!", data.excep, "success").then((value) => { location.reload(); })
-                    }
-                },
-                error: function (data) {
-                    $("#divLoader").hide();
-                    swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
-                }
-            });
-        }
-    </script>*@
-
-    @*<script type="text/javascript">
-        function SubmitNEW() {
-            $("#divLoader").show();
-            var pdata = new FormData();
-            var files = $("#CSVFileNew").get(0).files;
-            pdata.append('CSVFileNew', files[0]);
-            $.ajax({
-                url: "Order/SubmitNew",
-                type: "POST",
-                data: pdata,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    $("#divLoader").hide();
-                    if (data.success == 0) {
-                        swal("Error!", data.excep, "error").then((value) => { location.reload(); })
-
-                    }
-                    else {
-
-                        swal("Success!", data.excep, "success").then((value) => { location.reload(); })
-                    }
-                },
-                error: function (data) {
-                    $("#divLoader").hide();
-                    swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
-                }
-            });
-        }
-    </script>*@
-    @*<script type="text/javascript">
-        function Export() {
-            var pdata = new FormData();
+            $("input[name='ordStatusId']:checked").each(function (index, el) {
+                var Id = $(this).siblings("input[type='hidden']").val();
+                pdata.append("Ids", Id);
+            })
             swal({
                 title: "Are you sure?",
-                text: "Csv file will be created, are you sure?",
+                text: "Are you sure?",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
             })
                 .then((willDelete) => {
                     if (willDelete) {
-                        $("#divLoader").show();
                         $.ajax({
-                            url: "OrderWarehouse/Export",
+                            url: "Order/ToInProgress",
                             type: "POST",
                             data: pdata,
                             processData: false,
                             contentType: false,
                             success: function (data) {
-                                $("#divLoader").hide();
-                                swal("Success!", "Success!", "success").then((value) => { })
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                $("#divLoader").hide();
-                                var respJson = XMLHttpRequest.responseText;
-                                if (respJson.includes("exceptStatusInProgress")) {
-                                    swal("Error!", "Cannot create file, some orders are already in status In Progress.", "error").then((value) => { location.reload(); })
-                                }
-                                else if (respJson.includes("exceptStatusNoAcceptedLeft")) {
-                                    swal("Error!", "No Orders In Status Accepted left.", "error").then((value) => { location.reload(); })
-                                }
-                                else {
-                                    swal("Error!", "Unknonw Error Occured!.", "error").then((value) => { location.reload(); })
-                                }
+                                swal("Success!", {
+                                    icon: "success",
+                                });
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 100);
                             }
                         });
-                    }
-                });
-        }
-    </script>*@
-    @*<script type="text/javascript">
-        function ExportNew() {
-            var pdata = new FormData();
-            swal({
-                title: "Are you sure?",
-                text: "Csv file will be created, are you sure?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $("#divLoader").show();
-                        $.ajax({
-                            url: "OrderWarehouse/ExportNew",
-                            type: "POST",
-                            data: pdata,
-                            processData: false,
-                            contentType: false,
-                            success: function (data) {
-                                $("#divLoader").hide();
-                                swal("Success!", "Success!", "success").then((value) => { })
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                $("#divLoader").hide();
-                                var respJson = XMLHttpRequest.responseText;
-                                if (respJson.includes("exceptStatusInProgress")) {
-                                    swal("Error!", "Cannot create file, some orders are already in status In Progress.", "error").then((value) => { location.reload(); })
-                                }
-                                else if (respJson.includes("exceptStatusNoAcceptedLeft")) {
-                                    swal("Error!", "No Orders In Status Accepted left.", "error").then((value) => { location.reload(); })
-                                }
-                                else {
-                                    swal("Error!", "Unknonw Error Occured!.", "error").then((value) => { location.reload(); })
-                                }
-                            }
-                        });
-                    }
-                });
-        }
-    </script>*@
-    @*<script type="text/javascript">
-        function ChangeInProgress() {
-            var pdata = new FormData();
-            swal({
-                title: "Are you sure?",
-                text: "Change Status Back To In Progress?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $("#divLoader").show();
-                        $.ajax({
-                            url: "OrderWarehouse/ChangeInProgress",
-                            type: "POST",
-                            data: pdata,
-                            processData: false,
-                            contentType: false,
-                            success: function (data) {
-                                $("#divLoader").hide();
-                                swal("Success!", "Success!", "success").then((value) => { location.reload(); })
-                            },
-                            error: function (data) {
-                                $("#divLoader").hide();
-                            }
-                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 100);
                     } else {
                         swal("Nothing Changed!");
                     }
                 });
         }
-    </script>*@
+    </script>
+    <script type="text/javascript">
+        function BackToAccepted() {
+            var pdata = new FormData();
+            $("input[name='ordStatusId']:checked").each(function (index, el) {
+                var Id = $(this).siblings("input[type='hidden']").val();
+                pdata.append("Ids", Id);
+            })
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "Order/BackToAccepted",
+                            type: "POST",
+                            data: pdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                swal("Success!", {
+                                    icon: "success",
+                                });
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 100);
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 100);
+                    } else {
+                        swal("Nothing Changed!");
+                    }
+                });
+        }
+    </script>
+    @*<script type="text/javascript">
+            function Submit() {
+                $("#divLoader").show();
+                var pdata = new FormData();
+                var files = $("#CSVFile").get(0).files;
+                pdata.append('CSVFile', files[0]);
+                $.ajax({
+                    url: "Order/Submit",
+                    type: "POST",
+                    data: pdata,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        // var input = $("#CSVFile");
+                        //input.replaceWith(input.val('').clone(true));
+                        $("#divLoader").hide();
+                        if (data.success == 0) {
+                            swal("Error!", data.excep, "error").then((value) => { location.reload(); })
+
+                        }
+                        else {
+
+                            swal("Success!", data.excep, "success").then((value) => { location.reload(); })
+                        }
+                    },
+                    error: function (data) {
+                        $("#divLoader").hide();
+                        swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
+                    }
+                });
+            }
+        </script>*@
+
+    @*<script type="text/javascript">
+            function SubmitNEW() {
+                $("#divLoader").show();
+                var pdata = new FormData();
+                var files = $("#CSVFileNew").get(0).files;
+                pdata.append('CSVFileNew', files[0]);
+                $.ajax({
+                    url: "Order/SubmitNew",
+                    type: "POST",
+                    data: pdata,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        $("#divLoader").hide();
+                        if (data.success == 0) {
+                            swal("Error!", data.excep, "error").then((value) => { location.reload(); })
+
+                        }
+                        else {
+
+                            swal("Success!", data.excep, "success").then((value) => { location.reload(); })
+                        }
+                    },
+                    error: function (data) {
+                        $("#divLoader").hide();
+                        swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
+                    }
+                });
+            }
+        </script>*@
+    @*<script type="text/javascript">
+            function Export() {
+                var pdata = new FormData();
+                swal({
+                    title: "Are you sure?",
+                    text: "Csv file will be created, are you sure?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $("#divLoader").show();
+                            $.ajax({
+                                url: "OrderWarehouse/Export",
+                                type: "POST",
+                                data: pdata,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    $("#divLoader").hide();
+                                    swal("Success!", "Success!", "success").then((value) => { })
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    $("#divLoader").hide();
+                                    var respJson = XMLHttpRequest.responseText;
+                                    if (respJson.includes("exceptStatusInProgress")) {
+                                        swal("Error!", "Cannot create file, some orders are already in status In Progress.", "error").then((value) => { location.reload(); })
+                                    }
+                                    else if (respJson.includes("exceptStatusNoAcceptedLeft")) {
+                                        swal("Error!", "No Orders In Status Accepted left.", "error").then((value) => { location.reload(); })
+                                    }
+                                    else {
+                                        swal("Error!", "Unknonw Error Occured!.", "error").then((value) => { location.reload(); })
+                                    }
+                                }
+                            });
+                        }
+                    });
+            }
+        </script>*@
+    @*<script type="text/javascript">
+            function ExportNew() {
+                var pdata = new FormData();
+                swal({
+                    title: "Are you sure?",
+                    text: "Csv file will be created, are you sure?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $("#divLoader").show();
+                            $.ajax({
+                                url: "OrderWarehouse/ExportNew",
+                                type: "POST",
+                                data: pdata,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    $("#divLoader").hide();
+                                    swal("Success!", "Success!", "success").then((value) => { })
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    $("#divLoader").hide();
+                                    var respJson = XMLHttpRequest.responseText;
+                                    if (respJson.includes("exceptStatusInProgress")) {
+                                        swal("Error!", "Cannot create file, some orders are already in status In Progress.", "error").then((value) => { location.reload(); })
+                                    }
+                                    else if (respJson.includes("exceptStatusNoAcceptedLeft")) {
+                                        swal("Error!", "No Orders In Status Accepted left.", "error").then((value) => { location.reload(); })
+                                    }
+                                    else {
+                                        swal("Error!", "Unknonw Error Occured!.", "error").then((value) => { location.reload(); })
+                                    }
+                                }
+                            });
+                        }
+                    });
+            }
+        </script>*@
+    @*<script type="text/javascript">
+            function ChangeInProgress() {
+                var pdata = new FormData();
+                swal({
+                    title: "Are you sure?",
+                    text: "Change Status Back To In Progress?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $("#divLoader").show();
+                            $.ajax({
+                                url: "OrderWarehouse/ChangeInProgress",
+                                type: "POST",
+                                data: pdata,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    $("#divLoader").hide();
+                                    swal("Success!", "Success!", "success").then((value) => { location.reload(); })
+                                },
+                                error: function (data) {
+                                    $("#divLoader").hide();
+                                }
+                            });
+                        } else {
+                            swal("Nothing Changed!");
+                        }
+                    });
+            }
+        </script>*@
     @*@if (ViewBag.ExistInProgress)
-    {
-        <script>
-            swal("CSV File not created!", "There Are orders already in status \"In Progress\"", "error")
-                .then((value) => { })
-        </script>
-    }
-    else if (ViewBag.NoOrdersMsg)
-    {
-        <script>
-            swal("CSV File not created!", "No Orders in status \"Accepted\"", "error")
-                .then((value) => { })
-        </script>
-    }*@
+        {
+            <script>
+                swal("CSV File not created!", "There Are orders already in status \"In Progress\"", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else if (ViewBag.NoOrdersMsg)
+        {
+            <script>
+                swal("CSV File not created!", "No Orders in status \"Accepted\"", "error")
+                    .then((value) => { })
+            </script>
+        }*@
 
 }
