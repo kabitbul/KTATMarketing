@@ -36,4 +36,9 @@
     <Folder Include="wwwroot\ReturnLabels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\chosen-sprite.png" />
+    <None Include="wwwroot\css\chosen.min.css" />
+  </ItemGroup>
+
 </Project>

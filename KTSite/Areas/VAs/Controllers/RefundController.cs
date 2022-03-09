@@ -155,7 +155,7 @@ namespace KTSite.Areas.VAs.Controllers
                             //if ktMerch - charge pr.cost - pr.shippingcharge*quantity - Fees
                             PaymentBalanceMerch pbMerch = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == pr.MerchId).FirstOrDefault();
                             double reduceAmount =
-                                (costPerOne * refundVM.refund.RefundQuantity * (1 - SD.FeesOfKTMerch)) - ((pr.ShippingCharge+SD.addToKTMerchRate) * refundVM.refund.RefundQuantity);
+                                (costPerOne * refundVM.refund.RefundQuantity * (1 - SD.FeesOfKTMerch)) - ((pr.ShippingCharge) * refundVM.refund.RefundQuantity);
                             pbMerch.Balance = pbMerch.Balance - reduceAmount;
                             refundVM.refund.AmountChargedFromMerch = reduceAmount;
                         }

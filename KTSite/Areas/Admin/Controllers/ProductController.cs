@@ -25,7 +25,8 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Product> product = _unitOfWork.Product.GetAll().Where(a=>a.MerchId == null).OrderBy(a => a.ProductName);
+            IEnumerable<Product> product = _unitOfWork.Product.GetAll().Where(a=>a.MerchId == null && (a.ReStock || a.InventoryCount > 0))
+                .OrderBy(a => a.ProductName);
             
             ViewBag.getCategoryName =
               new Func<int, string>(getCategoryName);
@@ -58,7 +59,7 @@ namespace KTSite.Areas.Admin.Controllers
             Product product = _unitOfWork.Product.Get(productId);
             if(merchType == SD.Role_KTMerch)
             {
-                dollar = product.ShippingCharge + SD.addToKTMerchRate;
+                dollar = product.ShippingCharge;// + SD.addToKTMerchRate;
             }
             else// Ex Merch
             {
@@ -84,8 +85,8 @@ namespace KTSite.Areas.Admin.Controllers
             //}
             if (product.MerchType == SD.Role_KTMerch)
             {
-                precent = ((product.SellersCost - product.Cost - (product.ShippingCharge + SD.addToKTMerchRate)) / product.Cost) * 100;
-                dollar = product.SellersCost - product.Cost - (product.ShippingCharge + SD.addToKTMerchRate);
+                precent = ((product.SellersCost - product.Cost - (product.ShippingCharge)) / product.Cost) * 100;
+                dollar = product.SellersCost - product.Cost - (product.ShippingCharge);
                 return precent.ToString("0.00") + "%(" + dollar.ToString("0.00") + "$)";
             }
             precent = ((product.SellersCost - product.Cost - product.ShippingCharge) / product.Cost) * 100;

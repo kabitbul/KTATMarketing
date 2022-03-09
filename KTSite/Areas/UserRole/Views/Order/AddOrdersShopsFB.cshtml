@@ -1,0 +1,154 @@
+﻿@model KTSite.Models.ExcelUploadsForShopsVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="container">
+        <div class="row">
+            <div class="col-6 ">
+            <h2 class="text-primary">Add FB Shop Orders </h2>
+            <div id="divLoader" style="display:none;"> <img src="~/gif/ajax-loader.gif" alt="Loader" /> </div>
+        </div>
+    </div>
+    <div class="row">
+                    <div class="col-6">
+                        <label asp-for="excelUploadsForShops.StoreId">Store</label>
+                        @Html.DropDownListFor(m => m.excelUploadsForShops.StoreId, Model.StoresList , "Select Store",
+                       new { @class = "form-control" })
+                        <span asp-validation-for="excelUploadsForShops.StoreId" class="text-danger"></span>
+                    </div>
+                </div>
+                <br/>
+        <div class="row">
+                <div class="col-3">
+            <div>
+                <h2 class="text-primary" style="font-size:20px">Upload Orders From Excel </h2>
+            </div>
+        </div>
+        <div class="col-3 text-left">
+            <div>
+                <input id="CSVFile" type="file">
+            </div>
+        </div>
+        <div class="col-3 text-left">
+            <button class="btn btn-primary" onclick="Submit()">Upload</button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-6 ">
+            <h2 class="text-primary">Update Tracking </h2>
+            <div id="divLoader" style="display:none;"> <img src="~/gif/ajax-loader.gif" alt="Loader" /> </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="form-group row">
+                    
+                </div>
+        <div class="col-6 text-left">
+            @using (Html.BeginForm("Export", "Order",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
+            {
+                <div class="col-12">
+                        <label asp-for="excelUploadsForShops.StoreId">Store</label>
+                        @Html.DropDownListFor(m => m.excelUploadsForShops.StoreId, Model.StoresListTR , "Select Store",
+                       new { @class = "form-control" })
+                        <span asp-validation-for="excelUploadsForShops.StoreId" class="text-danger"></span>
+                    </div>
+                    <br/>
+                <button class="btn btn-primary" style="background-color:forestgreen">
+                    <i class="fas fa-file-download"></i>&nbsp;Download Tracking
+                </button>
+            }
+        </div>
+      </div>
+</div>
+</div>
+@section Scripts{
+
+
+    <script type="text/javascript">
+        function Submit() {
+            var storeId = document.getElementById('excelUploadsForShops_StoreId').value;
+            var storeId2 = document.getElementById('excelUploadsForShops_StoreId').value;
+           //window.alert('store id '+storeId);
+//            $("#divLoader").show();
+            var pdata = new FormData();
+            var files = $("#CSVFile").get(0).files;
+            pdata.append('CSVFile', files[0]);
+            pdata.append('storeId', storeId);
+            var CSVFile = files[0];
+            $.ajax({ 
+                url: "/UserRole/Order/SubmitForShops",
+                type: "POST",
+                //type: "JSON",
+                data:pdata,//{storeId: storeId, storeId2: storeId2},//pdata,//,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    // var input = $("#CSVFile");
+                    //input.replaceWith(input.val('').clone(true));
+                    //$("#divLoader").hide();
+                    window.alert('success');
+                    if (data.success == 0) {
+
+                        swal("Error!", data.excep, "error").then((value) => { location.reload(); })
+
+                    }
+                    else {
+
+                        swal("Success!", data.excep, "success").then((value) => { location.reload(); })
+                    }
+                },
+                error: function (data) {
+                    window.alert('err');
+                    //$("#divLoader").hide();
+                    //swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        function Export() {
+            window.alert('in export');
+            var pdata = new FormData();
+            swal({
+                title: "Are you sure?",
+                text: "Csv file will be created, are you sure?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $("#divLoader").show();
+                        $.ajax({
+                            url: "Order/Export",
+                            type: "POST",
+                            data: pdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                $("#divLoader").hide();
+                                swal("Success!", "Success!", "success").then((value) => { })
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                $("#divLoader").hide();
+                                var respJson = XMLHttpRequest.responseText;
+                                if (respJson.includes("exceptStatusInProgress")) {
+                                    swal("Error!", "Cannot create file, some orders are already in status In Progress.", "error").then((value) => { location.reload(); })
+                                }
+                                else if (respJson.includes("exceptStatusNoAcceptedLeft")) {
+                                    swal("Error!", "No Orders In Status Accepted left.", "error").then((value) => { location.reload(); })
+                                }
+                                else {
+                                    swal("Error!", "Unknonw Error Occured!.", "error").then((value) => { location.reload(); })
+                                }
+                            }
+                        });
+                    }
+                });
+        }
+    </script>
+    }

@@ -1,5 +1,22 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
+.bootstrap-select .dropdown-menu > li > a small.muted {
+    display: none;
+}
+
+.bootstrap-select .dropdown-toggle .filter-option {
+    position: relative;
+    padding-left: 38px;
+}
+
+    .bootstrap-select .dropdown-toggle .filter-option:before {
+        content: "Size:";
+        font-size: 14px;
+        font-weight: 700;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
 .checkbox-lg .custom-control-label::before,
 .checkbox-lg .custom-control-label::after {
     top: .8rem;

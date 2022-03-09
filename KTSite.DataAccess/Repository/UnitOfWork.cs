@@ -39,6 +39,7 @@ namespace KTSite.DataAccess.Repository
             paymentMethodMerch = new PaymentMethodMerchRepository(_db);
             SP_Call = new SP_Call(_db);
             logsData = new LogsDataRepository(_db);
+            excelUploadsForShops = new ExcelUploadsForShopsRepository(_db);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
@@ -70,6 +71,7 @@ namespace KTSite.DataAccess.Repository
         public IPaymentMethodMerchRepository paymentMethodMerch { get; private set; }
         public ISP_Call SP_Call { get; private set; }
         public ILogsDataRepository logsData { get; private set; }
+        public IExcelUploadsForShopsRepository excelUploadsForShops { get; private set; }
 
         public void Dispose()
         {

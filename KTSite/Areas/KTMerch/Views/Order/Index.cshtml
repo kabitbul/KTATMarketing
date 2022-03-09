@@ -1,26 +1,7 @@
 ﻿@model dynamic
 @{ Layout = "~/Views/Shared/_Layout.cshtml"; }
 
-<br />
-<div class="row">
-    <div class="col-6">
-        <h2 class="text-primary">Orders List </h2>
-    </div>
-    <div class="col-6 text-right">
-        <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12 text-right">
-        <a class="btn btn-primary" asp-action="AddOrdersManually" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp;&nbsp; Add Admin Orders Manually</a>
-    </div>
-</div>
 
-<br />
-
-<div class="col-12 text-right">
-    <button class="btn btn-primary" onclick="TrackUpdate()" style="background-color:darkorange"><i class="fas fa-thumbs-up"></i>&nbsp; Updated In Store</button>
-</div>
 
 @*<div id="AllOrders">
         <input type="checkbox" id="pos" value=true />  Show All Orders

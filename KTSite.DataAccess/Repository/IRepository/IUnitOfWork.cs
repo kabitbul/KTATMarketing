@@ -37,6 +37,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         IPaymentMethodMerchRepository paymentMethodMerch { get; }
         ISP_Call SP_Call { get; }
         ILogsDataRepository logsData  { get; }
+        IExcelUploadsForShopsRepository excelUploadsForShops { get; }
 
         void Save();
     }

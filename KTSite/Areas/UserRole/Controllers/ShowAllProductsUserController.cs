@@ -55,7 +55,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public string returnSellerCost(double price)
         {
             string uNameId = returnUserNameId();
-            if(uNameId == SD.FBMP_USER_KARIN)
+            if(uNameId == SD.FBMP_USER_HAY)
             {
                 return (price + 1).ToString("0.00");
             }

@@ -792,7 +792,7 @@ namespace KTSite.Areas.Admin.Controllers
                 //pay merch --product cost minus shipping minus feeprecent SD.FeesOfKTMerch
                 PaymentBalanceMerch KTMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 double totalProfit = 0.0;
-                totalProfit = (product.SellersCost * quantity * (1 - SD.FeesOfKTMerch)) - ((product.ShippingCharge+SD.addToKTMerchRate) * quantity);
+                totalProfit = (product.SellersCost * quantity * (1 - SD.FeesOfKTMerch)) - ((product.ShippingCharge) * quantity);
                 totalProfit = Math.Round(totalProfit, 2);
                 KTMerchPaymentBalance.Balance = KTMerchPaymentBalance.Balance + totalProfit;
 

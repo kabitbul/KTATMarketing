@@ -53,7 +53,7 @@ namespace KTSite.Areas.KTMerch.Controllers
            double dollar;
             double addToMinimum;
            Product product = _unitOfWork.Product.Get(productId);
-           dollar = product.Cost - (SD.FeesOfKTMerch * product.Cost) - (product.ShippingCharge+SD.addToKTMerchRate);
+           dollar = product.Cost - (SD.FeesOfKTMerch * product.Cost) - (product.ShippingCharge);
             if ((product.SellersCost * SD.FeesOfKTMerch) < 0.8)
             {
                 addToMinimum = 0.8 - (product.SellersCost * SD.FeesOfKTMerch);
@@ -66,7 +66,7 @@ namespace KTSite.Areas.KTMerch.Controllers
         {
             double dollar;
             Product product = _unitOfWork.Product.Get(productId);
-            dollar = (product.ShippingCharge + SD.addToKTMerchRate);
+            dollar = (product.ShippingCharge);
 
             return dollar.ToString("0.00") + "$";
         }
@@ -302,15 +302,15 @@ namespace KTSite.Areas.KTMerch.Controllers
             }
             else if (weight < SD.weightFor1Rate && weight > 0)
             {
-                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceFor1Rate+SD.addToKTMerchRate);
+                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceFor1Rate);
             }
             else if (weight < SD.weightFor2Rate && weight >= SD.weightFor1Rate)
             {
-                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceFor2Rate + SD.addToKTMerchRate);
+                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceFor2Rate);
             }
             else if (weight < SD.weightForMaxRate && weight >= SD.weightFor2Rate)
             {
-                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceForMaxRate + SD.addToKTMerchRate);
+                netProfit = price - (SD.FeesOfKTMerch * price) - (SD.priceForMaxRate);
             }
             if ((price * SD.FeesOfKTMerch) < 0.8)
             {

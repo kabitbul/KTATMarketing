@@ -10,6 +10,7 @@ namespace KTSite.Utility
         public const string Kfir_Buyer = "76fbc16f-d46e-4cba-ad59-c00045ffa711";// KfirLogicAdded
         public const int FBMP_FEE = 1;
         public const string FBMP_USER_KARIN = "0000000000";//"d7b9d539-d661-4101-acb5-5f9777c9cc77";// Karin prod
+        public const string FBMP_USER_HAY = "9dbe2478-2b3c-49f5-a0a5-0e82b0eeaa2e";
         //public const string FBMP_USER_KARIN = "6189ff89-8a05-4385-8f2d-27c4b4d3d65d";// newuser test
         public const string Role_Admin = "Admin";
         public const string Role_Warehouse = "Warehouse";
@@ -34,7 +35,7 @@ namespace KTSite.Utility
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
         public const string ReturningItemDefective = "Defective";
-        public const double shipping_cost = 4.3;//back to 4 when rate is back to normal
+        public const double shipping_cost = 4.0;//back to 4 when rate is back to normal
         public const double shipping_cost_warehouse_items = 4;
         public const double shipping_cost_for_return = 4;
         public const double paypalPercentFees = 3;
@@ -55,7 +56,7 @@ namespace KTSite.Utility
         public const double priceFor1Rate = 4.3;// change back to 4 once rate increase not relevant
         public const double priceFor2Rate = 5.3;// change back to 5 once rate increase not relevant
         public const double priceForMaxRate = 6.43;// change back to 6.13 once rate increase not relevant
-        public const double addToKTMerchRate = 0.2;// add back once rate increase not relevant
+        //public const double addToKTMerchRate = 0.2;// add back once rate increase not relevant
         //public const double addToKTMerchRate = 0.5; // add to kt merch with rateIncrease*******RATE INCREASE********
         //public const string PathToCreateCSV = @"D:\KT shipping";
         public const string MatchEmailPattern =

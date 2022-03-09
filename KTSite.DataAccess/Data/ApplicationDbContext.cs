@@ -45,5 +45,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<PaymentBalanceBackup> PaymentBalanceBackups { get; set; }
         public DbSet<PaymentMethodMerch> PaymentMethodMerchs { get; set; }
         public DbSet<LogsData> LogsDatas { get; set; }
+        public DbSet<ExcelUploadsForShops> ExcelUploadsForShopss { get; set; }
     }
 }

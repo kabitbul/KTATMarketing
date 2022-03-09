@@ -20,5 +20,7 @@ namespace KTSite.Models
         public string UserName { get; set; }
 
         public bool IsAdminStore { get; set; }
+        public long FromOrdId { get; set; }
+        public long ToOrdId { get; set; }
     }
 }

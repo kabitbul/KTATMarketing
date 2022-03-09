@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                           new { @class = "form-control" })
+                                           new { @class = "form-control", id = "productDropdown" })
                         <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                           new { @class = "form-control" })
+                                           new { @class = "form-control", id = "stateDropdown" })
                         <span asp-validation-for="Orders.CustState" class="text-danger"></span>
                     </div>
                 </div>
@@ -178,6 +178,10 @@ else if (ViewBag.success)
         function showBtn() {
             $("#AddBtn").show(0);
         }
+        $(function () {
+            $("#productDropdown").chosen();
+            $("#stateDropdown").chosen();
+        });
     </script>
     <script type="text/javascript">
         function change() {
