@@ -102,10 +102,13 @@ namespace KTSite.Areas.Admin.Controllers
             foreach(int Id in Ids)
             {
                 PaymentHistory paymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.Id == Id).FirstOrDefault();
-                paymentHistory.Status = SD.PaymentStatusApproved;
-                PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == paymentHistory.UserNameId).FirstOrDefault();
-                paymentBalance.Balance = paymentBalance.Balance + paymentHistory.Amount;
-                _unitOfWork.Save();
+                if (paymentHistory.Status == SD.PaymentStatusPending)
+                {
+                    paymentHistory.Status = SD.PaymentStatusApproved;
+                    PaymentBalance paymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.UserNameId == paymentHistory.UserNameId).FirstOrDefault();
+                    paymentBalance.Balance = paymentBalance.Balance + paymentHistory.Amount;
+                    _unitOfWork.Save();
+                }
             }
             return View();
         }
@@ -114,9 +117,12 @@ namespace KTSite.Areas.Admin.Controllers
             foreach (int Id in Ids)
             {
                 PaymentHistory paymentHistory = _unitOfWork.PaymentHistory.GetAll().Where(a => a.Id == Id).FirstOrDefault();
-                paymentHistory.Status = SD.PaymentStatusRejected;
-                paymentHistory.RejectReason = rejectReason;
-                _unitOfWork.Save();
+                if (paymentHistory.Status == SD.PaymentStatusPending)
+                {
+                    paymentHistory.Status = SD.PaymentStatusRejected;
+                    paymentHistory.RejectReason = rejectReason;
+                    _unitOfWork.Save();
+                }
             }
             return View();
         }
