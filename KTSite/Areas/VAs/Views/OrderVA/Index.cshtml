@@ -37,10 +37,17 @@ if (ViewBag.ComplaintsPending > 1)
     </h1>
 </div>}
 <div class="row">
-    <div class="col-6">
+    <div class="col-6 text-right">
         <h2 class="text-primary">Orders List </h2>
     </div>
-    <div class="col-6 text-right">
+    </div>
+    <div class="row">
+            <div class="col-12 text-right">
+                <a class="btn btn-primary" asp-action="AddOrdersShopsFB" style="background-color:blueviolet"><i class="fas fa-plus"></i> &nbsp; Add Orders FB Shops</a>
+            </div>
+        </div>
+        <br/>
+    <div class="col-12 text-right">
         <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
     </div>
 </div>

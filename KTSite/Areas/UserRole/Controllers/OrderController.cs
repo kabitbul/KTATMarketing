@@ -198,7 +198,7 @@ namespace KTSite.Areas.UserRole.Controllers
         {
             double productCost = (_unitOfWork.Product.GetAll().Where(q => q.Id == productId).Select(q => q.SellersCost)).FirstOrDefault();
             string uNameId = returnUserNameId();
-            if (uNameId == SD.FBMP_USER_HAY)
+            if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
             {
                 return Convert.ToDouble(String.Format("{0:0.00}", ((productCost + SD.FBMP_FEE) * quantity)));
             }
@@ -405,19 +405,24 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.MerchId = pr.MerchId;
                             orderVM.Orders.MerchType = pr.MerchType;
                         }
-                        _unitOfWork.Order.Add(orderVM.Orders);
-                        updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                        if (uNameId == SD.FBMP_USER_HAY)
+                        using (var dbContextTransaction = _db.Database.BeginTransaction())
                         {
-                            updateSellerBalance(orderVM.Orders.Cost + (SD.FBMP_FEE * orderVM.Orders.Quantity));
+                            _unitOfWork.Order.Add(orderVM.Orders);
+                            updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                            if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
+                            {
+                                updateSellerBalance(orderVM.Orders.Cost + (SD.FBMP_FEE * orderVM.Orders.Quantity));
+                            }
+                            else
+                            {
+                                updateSellerBalance(orderVM.Orders.Cost);
+                            }
+                            //updateSellerBalance(orderVM.Orders.Cost);
+                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                            //_unitOfWork.Save();
+                            _db.SaveChanges();
+                            dbContextTransaction.Commit();
                         }
-                        else
-                        {
-                            updateSellerBalance(orderVM.Orders.Cost);
-                        }
-                        //updateSellerBalance(orderVM.Orders.Cost);
-                        updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                        _unitOfWork.Save();
                     }
                     ViewBag.success = true;
                     ViewBag.failed = false;
@@ -461,86 +466,93 @@ namespace KTSite.Areas.UserRole.Controllers
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now &&
                     ((uNameId == SD.Kfir_Buyer) || (orderVM.Orders.MerchId != SD.Kfir_Merch)))
                 {
-                    Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
-                    int oldQuantity = ord.Quantity;
-                    int oldProductId = ord.ProductId;
-                    double oldCost = ord.Cost;
-                    string oldStatus = ord.OrderStatus;
-                    PaymentBalance paymentBalance = userBalance(uNameId);
-                    if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < (orderVM.Orders.Cost - oldCost))
+                    using (var dbContextTransaction = _db.Database.BeginTransaction())
                     {
-                        ViewBag.InsufficientFunds = true;
-                        ViewBag.failed = false;
-                        return View(orderVM2);
-                    }
-                    bool fail = false;
-                    try
-                    {
-                        //changed to cancel
-                        if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
-                        {
-                            updateInventory(oldProductId, oldQuantity * (-1));
-                            updateWarehouseBalance(oldQuantity * (-1), oldProductId);
-                            if (uNameId == SD.FBMP_USER_HAY)
-                            {
-                                updateSellerBalance(oldCost * (-1) - (SD.FBMP_FEE * oldQuantity));
-                            }
-                            else
-                            {
-                                updateSellerBalance(oldCost * (-1));
-                            }
-                            //updateSellerBalance(oldCost * (-1));
-                            // if it's a cancellation - we dont want any change but the cancellation it self
-                            orderVM.Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id).FirstOrDefault();
-                            orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
-                        }
-                        //change from cancel
-                        else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
-                        {
-                            updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                            if (uNameId == SD.FBMP_USER_HAY)
-                            {
-                                updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
-                            }
-                            else
-                            {
-                                updateSellerBalance(orderVM.Orders.Cost);
-                            }
-                            //updateSellerBalance(orderVM.Orders.Cost);
 
-                        }
-                        //status didnt change
-                        else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
+                        Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
+                        int oldQuantity = ord.Quantity;
+                        int oldProductId = ord.ProductId;
+                        double oldCost = ord.Cost;
+                        string oldStatus = ord.OrderStatus;
+                        PaymentBalance paymentBalance = userBalance(uNameId);
+                        if (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < (orderVM.Orders.Cost - oldCost))
                         {
-                            if (oldQuantity != orderVM.Orders.Quantity)
+                            ViewBag.InsufficientFunds = true;
+                            ViewBag.failed = false;
+                            return View(orderVM2);
+                        }
+                        bool fail = false;
+                        try
+                        {
+                            //changed to cancel
+                            if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                             {
-                                updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
-                                if (uNameId == SD.FBMP_USER_HAY)
+                                updateInventory(oldProductId, oldQuantity * (-1));
+                                updateWarehouseBalance(oldQuantity * (-1), oldProductId);
+                                if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
-                                    orderVM.Orders.Cost = orderVM.Orders.Cost + (SD.FBMP_FEE * (orderVM.Orders.Quantity - oldQuantity));
+                                    updateSellerBalance(oldCost * (-1) - (SD.FBMP_FEE * oldQuantity));
                                 }
-
-                                updateSellerBalance(orderVM.Orders.Cost - oldCost);
+                                else
+                                {
+                                    updateSellerBalance(oldCost * (-1));
+                                }
+                                //updateSellerBalance(oldCost * (-1));
+                                // if it's a cancellation - we dont want any change but the cancellation it self
+                                orderVM.Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == orderVM.Orders.Id).FirstOrDefault();
+                                orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
                             }
+                            //change from cancel
+                            else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
+                            {
+                                updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                                updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
+                                {
+                                    updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
+                                }
+                                else
+                                {
+                                    updateSellerBalance(orderVM.Orders.Cost);
+                                }
+                                //updateSellerBalance(orderVM.Orders.Cost);
+
+                            }
+                            //status didnt change
+                            else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
+                            {
+                                if (oldQuantity != orderVM.Orders.Quantity)
+                                {
+                                    updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
+                                    updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
+                                    if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
+                                    {
+                                        orderVM.Orders.Cost = orderVM.Orders.Cost + (SD.FBMP_FEE * (orderVM.Orders.Quantity - oldQuantity));
+                                    }
+
+                                    updateSellerBalance(orderVM.Orders.Cost - oldCost);
+                                }
+                            }
+                            orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
+                            orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                            orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                            orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
+                            _unitOfWork.Order.update(orderVM.Orders);
                         }
-                        orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                        orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
-                        orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
-                        orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
-                        _unitOfWork.Order.update(orderVM.Orders);
+                        catch
+                        {
+                            fail = true;
+                        }
+                        if (!fail)
+                        {
+                            //_unitOfWork.Save();
+                            ViewBag.success = true;
+                            _db.SaveChanges();
+                            dbContextTransaction.Commit();
+
+                        }
+                        ViewBag.failed = false;
                     }
-                    catch
-                    {
-                        fail = true;
-                    }
-                    if (!fail)
-                    {
-                        _unitOfWork.Save();
-                        ViewBag.success = true;
-                    }
-                    ViewBag.failed = false;
                 }
                 else
                 {
@@ -566,7 +578,7 @@ namespace KTSite.Areas.UserRole.Controllers
                 updateInventory(order.ProductId, (order.Quantity * (-1)));
                 updateWarehouseBalance((order.Quantity * (-1)), order.ProductId);
                 string uNameId = returnUserNameId();
-                if (uNameId == SD.FBMP_USER_HAY)
+                if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                 {
                     updateSellerBalance((order.Cost * (-1)) - (SD.FBMP_FEE * order.Quantity));
                 }
@@ -618,6 +630,8 @@ namespace KTSite.Areas.UserRole.Controllers
                 int lineNum = 0;
                 foreach (var order in ordersList)
                 {
+                    using (var dbContextTransaction = _db.Database.BeginTransaction())
+                    { 
                     initializeVM(orderVM);
                     lineNum++;
                     try
@@ -705,14 +719,14 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                             orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                             orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
-                            if (uNameId == SD.FBMP_USER_HAY)
+                            if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                             {
                                 orderVM.Orders.Cost = orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE);
                             }
                             _unitOfWork.Order.Add(orderVM.Orders);
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                            if (uNameId == SD.FBMP_USER_HAY)
+                            if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                             {
                                 updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
                             }
@@ -720,9 +734,11 @@ namespace KTSite.Areas.UserRole.Controllers
                             {
                                 updateSellerBalance(orderVM.Orders.Cost);
                             }
-                            //updateSellerBalance(orderVM.Orders.Cost);
-                            _unitOfWork.Save();
-                            processedLines++;
+                                //updateSellerBalance(orderVM.Orders.Cost);
+                                //_unitOfWork.Save();
+                                _db.SaveChanges();
+                                dbContextTransaction.Commit();
+                                processedLines++;
                         }
                         else
                         {
@@ -750,7 +766,7 @@ namespace KTSite.Areas.UserRole.Controllers
                             failedLines = failedLines + "/n" + addLine;
                         }
                     }
-
+                }
                 }
                 ViewBag.success = true;
                 // if(failedLines.Length == 0 )
@@ -1097,6 +1113,7 @@ namespace KTSite.Areas.UserRole.Controllers
             return View();
         }
         [HttpPost]
+        //read the orders coming from facebook excel
         public JsonResult SubmitForShops(fileAndStoreIdVM fVM)//IFormFile CSVFile, int storeId)
         {
             int success = 0;
@@ -1108,6 +1125,12 @@ namespace KTSite.Areas.UserRole.Controllers
             string UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             try
             {
+                if (!fVM.CSVFile.FileName.ToUpper().EndsWith("XLSX"))
+                {
+                    success = 0;
+                    excep = "File must be of type xlsx (Excel file)";
+                    return Json(new { excep, success });
+                }
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var stream = new MemoryStream())
                 {
@@ -1152,11 +1175,11 @@ namespace KTSite.Areas.UserRole.Controllers
                                         ord.StoreName = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).Select(a => a.StoreName).FirstOrDefault();
                                         ord.UserNameToShow = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(a => a.Name).FirstOrDefault();
                                         ord.Cost = returnCost(prodId, ord.Quantity);
-                                        _unitOfWork.Product.GetAll().Where(q => q.Id == prodId).Select(a => a.SellersCost).FirstOrDefault();
+                                        
                                         ord.StoreNameId = fVM.storeId;
                                         ord.OrderStatus = SD.OrderStatusAccepted;
                                         ord.UserNameId = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id).FirstOrDefault();
-                                        ord.UsDate = DateTime.Now;
+                                        ord.UsDate = DateTime.Now.Date;
                                         //balance
                                         PaymentBalance paymentBalance = userBalance(UNameId);
                                         if (paymentBalance == null || (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < ord.Cost))
@@ -1176,14 +1199,14 @@ namespace KTSite.Areas.UserRole.Controllers
                                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                                             orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
                                             orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
-                                            if (UNameId == SD.FBMP_USER_HAY)
+                                            if (UNameId == SD.FBMP_USER_HAY || UNameId == SD.FBMP_USER_BENNY)
                                             {
                                                 orderVM.Orders.Cost = orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE);
                                             }
                                             _db.Orders.Add(ord);
                                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                                            if (UNameId == SD.FBMP_USER_HAY)
+                                            if (UNameId == SD.FBMP_USER_HAY || UNameId == SD.FBMP_USER_BENNY)
                                             {
                                                 updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
                                             }
@@ -1236,7 +1259,7 @@ namespace KTSite.Areas.UserRole.Controllers
                         if (!existFail)
                         {
                             success = 1;
-                            excep = "Orders Added successfully!";
+                            excep = proccessedOrders + " Orders Added successfully!";
                         }
                         else
                         {
@@ -1255,6 +1278,7 @@ namespace KTSite.Areas.UserRole.Controllers
 
             }
         }
+        //create excel with tracking numbers to upload to shops
         [HttpPost]
         public ActionResult Export(ExcelUploadsForShopsVM excelUploadsForShopsVM)
         {

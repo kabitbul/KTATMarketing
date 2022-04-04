@@ -1,4 +1,5 @@
 ﻿using KTSite.Models;
+using System.Collections.Generic;
 
 namespace KTSite.DataAccess.Repository.IRepository
 {
@@ -6,5 +7,6 @@ namespace KTSite.DataAccess.Repository.IRepository
     {
         void update(Order order);
         Order Get(long id);
+        public IEnumerable<Order> GetAllOrders();
     }
 }

@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-6 ">
             <h2 class="text-primary">Add FB Shop Orders </h2>
-           
+            <div id="divLoader" style="display:none;"> <img src="~/gif/ajax-loader.gif" alt="Loader" /> </div>
         </div>
     </div>
     <div class="row">
@@ -26,19 +26,18 @@
                 </div>
                 <br/>
         <div class="row">
-                <div class="col-2">
+                <div class="col-3">
             <div>
                 <h2 class="text-primary" style="font-size:20px">Upload Orders From Excel </h2>
             </div>
         </div>
-        <div class="col-2 text-left">
+        <div class="col-3 text-left">
             <div>
                 <input id="CSVFile" type="file">
             </div>
         </div>
-        <div class="col-2 text-left">
+        <div class="col-3 text-left">
             <button class="btn btn-primary" onclick="Submit()">Upload</button>
-            <img src="~/gif/WMDx.gif" alt="Loader" style="height:40px; width: 40px; display:none;" id="divLoader">
         </div>
     </div>
     <br />
@@ -53,7 +52,7 @@
                     
                 </div>
         <div class="col-6 text-left">
-            @using (Html.BeginForm("Export", "Order",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
+            @using (Html.BeginForm("Export", "OrderVA",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
             {
                 <div class="col-12">
                         <label asp-for="excelUploadsForShops.StoreId">Store</label>
@@ -75,9 +74,8 @@
 
     <script type="text/javascript">
         function Submit() {
-            $("#divLoader").show();
             var storeId = document.getElementById('excelUploadsForShops_StoreId').value;
-            var storeId2 = document.getElementById('excelUploadsForShops_StoreId').value;
+           
            //window.alert('store id '+storeId);
 //            $("#divLoader").show();
             var pdata = new FormData();
@@ -86,7 +84,7 @@
             pdata.append('storeId', storeId);
             var CSVFile = files[0];
             $.ajax({ 
-                url: "/UserRole/Order/SubmitForShops",
+                url: "/VAs/OrderVA/SubmitForShops",
                 type: "POST",
                 //type: "JSON",
                 data:pdata,//{storeId: storeId, storeId2: storeId2},//pdata,//,
@@ -108,7 +106,7 @@
                     }
                 },
                 error: function (data) {
-                    window.alert('An error Occured!');
+                    window.alert('err');
                     //$("#divLoader").hide();
                     //swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
                 }
@@ -118,7 +116,7 @@
 
     <script type="text/javascript">
         function Export() {
-            window.alert('in export');
+            
             var pdata = new FormData();
             swal({
                 title: "Are you sure?",
@@ -131,7 +129,7 @@
                     if (willDelete) {
                         $("#divLoader").show();
                         $.ajax({
-                            url: "Order/Export",
+                            url: "/VAs/OrderVA/Export",
                             type: "POST",
                             data: pdata,
                             processData: false,

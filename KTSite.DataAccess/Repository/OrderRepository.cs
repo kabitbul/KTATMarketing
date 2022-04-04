@@ -44,5 +44,10 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.TrackingUpdated = order.TrackingUpdated;
             }
         }
+        public IEnumerable<Order> GetAllOrders()
+        {
+            IQueryable<Order> res = _db.Orders;
+            return res;
+        }
     }
 }

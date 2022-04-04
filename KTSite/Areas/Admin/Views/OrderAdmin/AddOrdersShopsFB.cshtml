@@ -4,11 +4,16 @@
 }
 
 <br />
+<div class="overlay">
+     
+     <div>
+
 <div class="container">
+</div>
+
         <div class="row">
             <div class="col-6 ">
-            <h2 class="text-primary">Add FB Shop Orders </h2>
-           
+            <h2 class="text-primary">Add FB Shop Orders</h2>
         </div>
     </div>
     <div class="row">
@@ -37,7 +42,7 @@
             </div>
         </div>
         <div class="col-2 text-left">
-            <button class="btn btn-primary" onclick="Submit()">Upload</button>
+            <button class="btn btn-primary" onclick="Submit()" id="btnUpload">Upload</button>
             <img src="~/gif/WMDx.gif" alt="Loader" style="height:40px; width: 40px; display:none;" id="divLoader">
         </div>
     </div>
@@ -45,7 +50,6 @@
     <div class="row">
         <div class="col-6 ">
             <h2 class="text-primary">Update Tracking </h2>
-            <div id="divLoader" style="display:none;"> <img src="~/gif/ajax-loader.gif" alt="Loader" /> </div>
         </div>
     </div>
     <div class="row">
@@ -53,8 +57,9 @@
                     
                 </div>
         <div class="col-6 text-left">
-            @using (Html.BeginForm("Export", "Order",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
-            {
+                @*@using (Html.BeginForm("Export", "OrderAdmin",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
+                {*@
+                    <form asp-action="Export" asp-controller="OrderAdmin" data-ajax-method="POST" data-ajax-complete="OnComplete" >@*data-ajax="true"*@
                 <div class="col-12">
                         <label asp-for="excelUploadsForShops.StoreId">Store</label>
                         @Html.DropDownListFor(m => m.excelUploadsForShops.StoreId, Model.StoresListTR , "Select Store",
@@ -62,41 +67,54 @@
                         <span asp-validation-for="excelUploadsForShops.StoreId" class="text-danger"></span>
                     </div>
                     <br/>
-                <button class="btn btn-primary" style="background-color:forestgreen">
+                <button type="submit" class="btn btn-primary" style="background-color:forestgreen" >@*onClick="showLoader()"*@
                     <i class="fas fa-file-download"></i>&nbsp;Download Tracking
-                </button>
-            }
+                </button><img src="~/gif/WMDx.gif" alt="Loader" style="height:40px; width: 40px; display:none;" id="divLoader2">
+                </form>
+            @*}*@
         </div>
       </div>
 </div>
 </div>
 @section Scripts{
+  @* <script> window.onload = function () { $("#divLoader").show(); } </script>*@
+  
+  <script type="text/javascript">
+      function showLoader(){$("#divLoader2").show();}  
+      function OnComplete(){window.alert('COMPLETEEEEE');}//$("#divLoader2").hide();}
 
-
-    <script type="text/javascript">
-        function Submit() {
-            $("#divLoader").show();
+       /* async */function Submit() {
             var storeId = document.getElementById('excelUploadsForShops_StoreId').value;
-            var storeId2 = document.getElementById('excelUploadsForShops_StoreId').value;
-           //window.alert('store id '+storeId);
-//            $("#divLoader").show();
+           
+            $("#divLoader").show();
+            document.getElementById("btnUpload").disabled = true;
+            //await new Promise(r => setTimeout(r, 4000));
             var pdata = new FormData();
+            
             var files = $("#CSVFile").get(0).files;
+            
+            if(files.length == 0)
+            {
+                swal("Error!", "No File Uploaded!", "error").then((value) => { location.reload(); })
+            }
+            else if(!storeId)
+            {
+                swal("Error!", "Please Choose a store and try again!", "error").then((value) => { location.reload(); })
+            }
+            else
+            {
             pdata.append('CSVFile', files[0]);
             pdata.append('storeId', storeId);
             var CSVFile = files[0];
+            
             $.ajax({ 
-                url: "/UserRole/Order/SubmitForShops",
+                url: "/Admin/OrderAdmin/SubmitForShops",
                 type: "POST",
                 //type: "JSON",
                 data:pdata,//{storeId: storeId, storeId2: storeId2},//pdata,//,
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    // var input = $("#CSVFile");
-                    //input.replaceWith(input.val('').clone(true));
-                    //$("#divLoader").hide();
-                    //window.alert('success');
                     if (data.success == 0) {
 
                         swal("Error!", data.excep, "error").then((value) => { location.reload(); })
@@ -108,17 +126,19 @@
                     }
                 },
                 error: function (data) {
-                    window.alert('An error Occured!');
-                    //$("#divLoader").hide();
-                    //swal("Error!", "Unknown error", "error").then((value) => { location.reload(); })
+                    window.alert('err');
+                    $("#divLoader").hide();
+                    document.getElementById("btnUplaod").disabled = false;
+                     swal("Error!", "Unknown Error Occured", "error").then((value) => { location.reload(); })
                 }
             });
+            }
         }
     </script>
 
     <script type="text/javascript">
         function Export() {
-            window.alert('in export');
+            
             var pdata = new FormData();
             swal({
                 title: "Are you sure?",
@@ -131,7 +151,7 @@
                     if (willDelete) {
                         $("#divLoader").show();
                         $.ajax({
-                            url: "Order/Export",
+                            url: "/Admin/OrderAdmin/Export",
                             type: "POST",
                             data: pdata,
                             processData: false,
