@@ -195,6 +195,8 @@ namespace KTSite.Utility
 //mail kabitbul@gmail.com
 //KkkK111122!
 
+//KT MErch  Prepitus@gmail.com Admin123!
+
 //when ModelState.IsValid equal to FALSE
 //var errors = ModelState.Where(x => x.Value.Errors.Count > 0).Select(x => new { x.Key, x.Value.Errors }).ToArray()
 

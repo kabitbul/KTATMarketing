@@ -59,7 +59,7 @@
         <div class="col-6 text-left">
                 @*@using (Html.BeginForm("Export", "OrderAdmin",FormMethod.Post))//Model.excelUploadsForShops.StoreId}))
                 {*@
-                    <form asp-action="Export" asp-controller="OrderAdmin" data-ajax-method="POST" data-ajax-complete="OnComplete" >@*data-ajax="true"*@
+                    <form asp-action="Export" asp-controller="OrderAdmin" method="POST" data-ajax-method="POST" data-ajax-complete="OnComplete" data-ajax="true">
                 <div class="col-12">
                         <label asp-for="excelUploadsForShops.StoreId">Store</label>
                         @Html.DropDownListFor(m => m.excelUploadsForShops.StoreId, Model.StoresListTR , "Select Store",
@@ -81,7 +81,7 @@
   
   <script type="text/javascript">
       function showLoader(){$("#divLoader2").show();}  
-      function OnComplete(){window.alert('COMPLETEEEEE');}//$("#divLoader2").hide();}
+      function OnComplete(){$("#divLoader2").hide();}//window.alert('COMPLETEEEEE');}//
 
        /* async */function Submit() {
             var storeId = document.getElementById('excelUploadsForShops_StoreId').value;

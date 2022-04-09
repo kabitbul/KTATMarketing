@@ -1125,7 +1125,7 @@ namespace KTSite.Areas.UserRole.Controllers
             string UNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             try
             {
-                if (!fVM.CSVFile.FileName.ToUpper().EndsWith("XLSX"))
+                if (!fVM.CSVFile.FileName.ToUpper().EndsWith("XLSX") && !fVM.CSVFile.FileName.ToUpper().EndsWith("XLS"))
                 {
                     success = 0;
                     excep = "File must be of type xlsx (Excel file)";
@@ -1151,8 +1151,10 @@ namespace KTSite.Areas.UserRole.Controllers
                                     {
                                         skuNamefromExcel = reader.GetValue(3).ToString();
                                     }
-                                    int prodId = getProductIdByName(skuNamefromExcel);
-                                    if (prodId > 0)
+                                    string prd = skuNamefromExcel.Trim();
+                                    Product pr = _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                                    //int prodId = getProductIdByName(skuNamefromExcel);
+                                    if (pr != null && pr.Id > 0)
                                     {
                                             Order ord = new Order();
                                         ord.CustName = reader.GetValue(5).ToString();
@@ -1170,16 +1172,26 @@ namespace KTSite.Areas.UserRole.Controllers
                                         }
                                         ord.CustCity = reader.GetValue(8).ToString();
                                         ord.CustState = reader.GetValue(9).ToString();
-                                        ord.ProductId = prodId;
+                                        ord.ProductId = pr.Id;
                                         ord.ProductName = skuNamefromExcel;
                                         ord.StoreName = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).Select(a => a.StoreName).FirstOrDefault();
                                         ord.UserNameToShow = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(a => a.Name).FirstOrDefault();
-                                        ord.Cost = returnCost(prodId, ord.Quantity);
+                                        ord.Cost = returnCost(pr.Id, ord.Quantity);
                                         
                                         ord.StoreNameId = fVM.storeId;
                                         ord.OrderStatus = SD.OrderStatusAccepted;
                                         ord.UserNameId = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id).FirstOrDefault();
                                         ord.UsDate = DateTime.Now.Date;
+                                        if (pr.MerchType == SD.Role_KTMerch)
+                                        {
+                                            ord.MerchType = SD.Role_KTMerch;
+                                            ord.MerchId = pr.MerchId;
+                                        }
+                                        else if (pr.MerchType == SD.Role_ExMerch)
+                                        {
+                                            ord.MerchType = SD.Role_ExMerch;
+                                            ord.MerchId = pr.MerchId;
+                                        }
                                         //balance
                                         PaymentBalance paymentBalance = userBalance(UNameId);
                                         if (paymentBalance == null || (!paymentBalance.AllowNegativeBalance && paymentBalance.Balance < ord.Cost))
@@ -1203,7 +1215,8 @@ namespace KTSite.Areas.UserRole.Controllers
                                             {
                                                 orderVM.Orders.Cost = orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE);
                                             }
-                                            _db.Orders.Add(ord);
+                                            //_db.Orders.Add(ord);
+                                            _db.Orders.AddRange(ord);
                                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                                             if (UNameId == SD.FBMP_USER_HAY || UNameId == SD.FBMP_USER_BENNY)
@@ -1214,57 +1227,91 @@ namespace KTSite.Areas.UserRole.Controllers
                                             {
                                                 updateSellerBalance(orderVM.Orders.Cost);
                                             }
-                                            //updateSellerBalance(orderVM.Orders.Cost);
-                                            _unitOfWork.Save();
+                                            _db.SaveChanges();
                                         }
-                                        ///////////////////////////////////////////
-                                        //_unitOfWork.Order.Add(ord);
+                                    else
+                                        {
+                                            success = 0;
+                                            excep = "Line " + countRec + " Error Occured";
+                                            dbContextTransaction.Rollback();
+                                            return Json(new { excep, success });
+                                        }
                                         
                                         proccessedOrders++;
                                         //_unitOfWork.Save();
-                                       
-                                        if (countRec == 0)//first time, create rec
-                                        {
-                                           
-                                        }
-                                        countRec++;
                                     }
+                                    else if(countRec > 1)// if product not found stop entire process(ignore first 2 lines which is a header
+                                    {
+                                        success = 0;
+                                        excep = "Line " + countRec + " Product not recognized: "+ skuNamefromExcel;
+                                        dbContextTransaction.Rollback();
+
+                                        return Json(new { excep, success });
+                                     }
+                                    countRec++;
                                 }
                                 catch (Exception ex)
                                 {
+                                    dbContextTransaction.Rollback();
                                     existFail = true;
                                 }
                             }
-                            if (!insufficientFunds)
+                            if (insufficientFunds)
                             {
-                                _db.SaveChanges();
-                                dbContextTransaction.Commit();
+                                success = 0;
+                                excep = "Insufficient Funds!";
+
+                                return Json(new { excep, success });
                             }
-                        }
-                        ExcelUploadsForShops exUp = new ExcelUploadsForShops();
-                        long toOrd = _db.Orders.Max(o => o.Id);
-                        exUp.UserId = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id).FirstOrDefault();
-                        exUp.FromOrderId = toOrd - (proccessedOrders - 1);
-                        exUp.TrackingUpdated = false;
-                        exUp.CreatedDate = DateTime.Now; exUp.StoreId = fVM.storeId;
-                        exUp.ToOrderId = toOrd;
-                        _unitOfWork.excelUploadsForShops.Add(exUp);
-                        _unitOfWork.Save();
-                        UserStoreName usStore = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).FirstOrDefault();
-                        usStore.FromOrdId = toOrd - (proccessedOrders - 1);
-                        usStore.ToOrdId = toOrd;
-                        _unitOfWork.UserStoreName.update(usStore);
-                        _unitOfWork.Save();
-                        
-                        if (!existFail)
-                        {
-                            success = 1;
-                            excep = proccessedOrders + " Orders Added successfully!";
-                        }
-                        else
-                        {
-                            success = 0;
-                            excep = "There was an Error, some orders were not proccessed: ";
+                            else if (existFail)
+                            {
+                                success = 0;
+                                excep = "Unknwon Error Occured, Transction aborted.";
+                            }
+                            else
+                            {
+                                dbContextTransaction.Commit();
+                                ExcelUploadsForShops exUp = new ExcelUploadsForShops();
+                                long toOrd = _db.Orders.Max(o => o.Id);
+                                long fromOrd = 0;
+                                exUp.UserId = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id).FirstOrDefault();
+                                IEnumerable<Order> orderList =   _unitOfWork.Order.GetAll().Where(q => q.UsDate.Date == DateTime.Now.Date).OrderByDescending(a=>a.Id);
+                                if (orderList.Any())
+                                {
+                                    int countOrd = 0;
+                                    foreach (Order order in orderList)
+                                    {
+
+                                        
+                                        if(order.StoreNameId == fVM.storeId)
+                                        {
+                                            countOrd++;
+                                        }
+                                        if(countOrd == proccessedOrders)
+                                        {
+                                            //exUp.FromOrderId = order.Id;
+                                            fromOrd = order.Id;
+                                            break;
+                                        }
+                                    }
+                                }
+                                //exUp.FromOrderId = toOrd - (proccessedOrders - 1);
+                                exUp.TrackingUpdated = false;
+                                exUp.CreatedDate = DateTime.Now; exUp.StoreId = fVM.storeId;
+                                exUp.ToOrderId = toOrd;
+                                exUp.FromOrderId = fromOrd;
+                                _db.ExcelUploadsForShopss.Add(exUp);
+                                _unitOfWork.excelUploadsForShops.Add(exUp);
+                                _unitOfWork.Save();
+                                UserStoreName usStore = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).FirstOrDefault();
+                                usStore.FromOrdId = fromOrd;
+                                usStore.ToOrdId = toOrd;
+                                _unitOfWork.UserStoreName.update(usStore);
+                                _unitOfWork.Save();
+                                success = 1;
+                                excep = proccessedOrders + " Orders Added successfully!";
+                                return Json(new { excep, success });
+                            }
                         }
                     }
                 }
@@ -1286,9 +1333,9 @@ namespace KTSite.Areas.UserRole.Controllers
                 .FirstOrDefault();
             string storeName = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == ex.StoreId).Select(a => a.StoreName).FirstOrDefault();
             string fileName = storeName+ "_"+DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
-            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.Id >= ex.FromOrderId && a.Id <= ex.ToOrderId).
+            IEnumerable<Order> orderList =  _unitOfWork.Order.GetAll().Where(a => a.Id >= ex.FromOrderId && a.Id <= ex.ToOrderId).
                                            OrderBy(a => a.Id);
-          
+            int missingtrackingCounter = 0;
             StringBuilder sb = new StringBuilder();
             //Header
             int lineCounter = 0;
@@ -1298,24 +1345,45 @@ namespace KTSite.Areas.UserRole.Controllers
                 {
                     foreach (Order order in orderList)
                     {
-                        sb.Append(order.Quantity.ToString());
-                        sb.Append(',');
-                        sb.Append("USPS");
-                        sb.Append(',');
-                        sb.Append("=\"");
-                        sb.Append(order.TrackingNumber);
-                        sb.Append("\"");
-                        //_unitOfWork.Order.Get(order.Id).OrderStatus = SD.OrderStatusDone;
-                        _unitOfWork.Order.Get(order.Id).TrackingUpdated = true;
-                        _db.Orders.Update(_unitOfWork.Order.Get(order.Id));
-                        sb.Append("\r\n");
-                        lineCounter++;
+                        if (excelUploadsForShopsVM.excelUploadsForShops.StoreId == order.StoreNameId)
+                        {
+                            sb.Append(order.Quantity.ToString());
+                            sb.Append(',');
+                            sb.Append("USPS");
+                            sb.Append(',');
+                            sb.Append("=\"");
+                            sb.Append(order.TrackingNumber);
+                            sb.Append("\"");
+                            sb.Append(',');
+                            sb.Append(order.CustName);
+                            //_unitOfWork.Order.Get(order.Id).OrderStatus = SD.OrderStatusDone;
+                            //_unitOfWork.Order.Get(order.Id).TrackingUpdated = true;
+                            order.TrackingUpdated = true;
+                            //_db.Orders.Update(_unitOfWork.Order.Get(order.Id));
+                            _db.Orders.Update(order);
+                            sb.Append("\r\n");
+                            lineCounter++;
+                            if (order.TrackingNumber == "" || order.TrackingNumber == null || order.TrackingNumber.Length < 5)
+                            {
+                                missingtrackingCounter++;
+                            }
+                        }
                     }
-                    _db.SaveChanges();
-                    dbContextTransaction.Commit();
+                    if (missingtrackingCounter > 0)
+                    {
+                        if (missingtrackingCounter == 1)
+                            sb.Insert(0, "********,**********,There is a record without tracking number" + "**********,***********\r\n");
+                        else
+                            sb.Insert(0, "********,**********,There are " + missingtrackingCounter + " records without tracking number" + "**********,***********\r\n");
+                    }
+
                     //update when file downloaded
                     ex.TrackingUpdated = true;
-                    _unitOfWork.Save();
+                    //_unitOfWork.Save();
+                    _db.ExcelUploadsForShopss.Update(ex);
+                    _db.SaveChanges();
+                    dbContextTransaction.Commit();
+                    DeleteOldRecFromTable(excelUploadsForShopsVM.excelUploadsForShops.StoreId, ex.Id);
                 }
                 catch
                 {
@@ -1323,6 +1391,17 @@ namespace KTSite.Areas.UserRole.Controllers
                 }
             }
             return File(Encoding.ASCII.GetBytes(sb.ToString()), "text/csv", fileName);
+        }
+
+        public void DeleteOldRecFromTable(int storeId, int Id)
+        {
+
+            IEnumerable<ExcelUploadsForShops> exList = _unitOfWork.excelUploadsForShops.GetAll().Where(a => a.StoreId == storeId && a.Id != Id);
+            foreach (ExcelUploadsForShops ex in exList)
+            {
+                _unitOfWork.excelUploadsForShops.Remove(ex);
+            }
+            _unitOfWork.Save();
         }
     }
 }
