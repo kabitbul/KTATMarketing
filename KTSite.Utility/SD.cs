@@ -56,7 +56,7 @@ namespace KTSite.Utility
         public const double weightForMaxRate = 1;
         public const double priceFor1Rate = 4.3;// change back to 4 once rate increase not relevant
         public const double priceFor2Rate = 5.3;// change back to 5 once rate increase not relevant
-        public const double priceForMaxRate = 6.43;// change back to 6.13 once rate increase not relevant
+        public const double priceForMaxRate = 6.72;// change back to 6.13 once rate increase not relevant
         //public const double addToKTMerchRate = 0.2;// add back once rate increase not relevant
         //public const double addToKTMerchRate = 0.5; // add to kt merch with rateIncrease*******RATE INCREASE********
         //public const string PathToCreateCSV = @"D:\KT shipping";

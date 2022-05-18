@@ -14,6 +14,7 @@ using System.Linq.Dynamic.Core;
 using KTSite.DataAccess.Data;
 using System.IO;
 using ExcelDataReader;
+using System.Data;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -897,24 +898,35 @@ namespace KTSite.Areas.Admin.Controllers
             bool existFail = false;
             int proccessedOrders = 0;
             int countRec = 0;
+            ApplicationUser appUser = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).FirstOrDefault();
+            string UNameId = appUser.Id;
             try
             {
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                string uNameToShow = "Admin";
+                string storeName = returnStoreName(fVM.storeId);
                 if (!fVM.CSVFile.FileName.ToUpper().EndsWith("XLSX") && !fVM.CSVFile.FileName.ToUpper().EndsWith("XLS"))
                 {
                     success = 0;
                     excep = "File must be of type xlsx (Excel file)";
                     return Json(new { excep, success });
                 }
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var stream = new MemoryStream())
                 {
                     fVM.CSVFile.CopyTo(stream);
                     stream.Position = 0;
-                    long fromOrderId = 0;
+                    DataTable dt = new DataTable();
+                    DataTable dtEx = new DataTable();
+                    DataTable dtKT = new DataTable();
+                    double warehouseCharge = 0;
+                    dt.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
+                    dtEx.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
+                    dtKT.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
                         using (var dbContextTransaction = _db.Database.BeginTransaction())
                         {
+                            IEnumerable<Product> prodList = _unitOfWork.Product.GetAll().Where(a => a.ReStock || a.InventoryCount > 0);
                             while (reader.Read()) //Each row of the file
                             {
                                 try
@@ -925,7 +937,7 @@ namespace KTSite.Areas.Admin.Controllers
                                         skuNamefromExcel = reader.GetValue(3).ToString();
                                     }
                                     string prd = skuNamefromExcel.Trim();
-                                    Product pr = _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+                                    Product pr = prodList.Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                                     //int prodId = getProductIdByName(skuNamefromExcel);
                                     if (pr != null && pr.Id > 0)
                                     {
@@ -947,13 +959,13 @@ namespace KTSite.Areas.Admin.Controllers
                                         ord.CustState = reader.GetValue(9).ToString();
                                         ord.ProductId = pr.Id;
                                         ord.ProductName = skuNamefromExcel;
-                                        ord.StoreName = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).Select(a => a.StoreName).FirstOrDefault();
-                                        ord.UserNameToShow = "Admin";
+                                        ord.StoreName = storeName;
+                                        ord.UserNameToShow = uNameToShow;
                                         ord.Cost = returnCost(pr.Id, ord.Quantity);
-                                        //_unitOfWork.Product.GetAll().Where(q => q.Id == prodId).Select(a => a.SellersCost).FirstOrDefault();
+
                                         ord.StoreNameId = fVM.storeId;
                                         ord.OrderStatus = SD.OrderStatusAccepted;
-                                        ord.UserNameId = returnUserNameId();
+                                        ord.UserNameId = UNameId;
                                         ord.UsDate = DateTime.Now.Date;
                                         if (pr.MerchType == SD.Role_KTMerch)
                                         {
@@ -965,23 +977,20 @@ namespace KTSite.Areas.Admin.Controllers
                                             ord.MerchType = SD.Role_ExMerch;
                                             ord.MerchId = pr.MerchId;
                                         }
+
                                         OrderVM orderVM = new OrderVM();
                                         orderVM.Orders = ord;
-                                        if (isStoreAuthenticated(orderVM) && orderVM.Orders.ProductId > 0 &&
-                                            orderVM.Orders.UsDate <= DateTime.Now && Enumerable.Range(1, 100).Contains(orderVM.Orders.Quantity) &&
-                                            orderVM.Orders.CustName.Length > 0 && orderVM.Orders.CustStreet1.Length > 0 &&
-                                            Enumerable.Range(5, 10).Contains(orderVM.Orders.CustZipCode.Length) &&
-                                            orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2 &&
-                                            orderVM.Orders.MerchId != SD.Kfir_Merch)
+                                        if ((orderVM.Orders.MerchId != SD.Kfir_Merch))
                                         {
-                                            orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                                            orderVM.Orders.UserNameToShow = "Admin";
-                                            orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
+                                            orderVM.Orders.ProductName = pr.ProductName;
+                                            orderVM.Orders.UserNameToShow = uNameToShow;
+                                            orderVM.Orders.StoreName = storeName;
 
                                             //_db.Orders.Add(ord);
                                             _db.Orders.AddRange(ord);
-                                            updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                            updateInventoryShops(orderVM.Orders.ProductId, orderVM.Orders.Quantity, ref dt);
+                                            WarehouseBalanceShops(orderVM.Orders.Quantity, pr.ShippingCharge, pr.MerchType, pr.MerchId, pr.SellersCost, pr.OwnByWarehouse,
+                                                pr.Cost, ref warehouseCharge, ref dtEx, ref dtKT);
                                             _db.SaveChanges();
                                         }
                                         else
@@ -993,12 +1002,14 @@ namespace KTSite.Areas.Admin.Controllers
                                         }
 
                                         proccessedOrders++;
+                                        //_unitOfWork.Save();
                                     }
                                     else if (countRec > 1)// if product not found stop entire process(ignore first 2 lines which is a header
                                     {
                                         success = 0;
                                         excep = "Line " + countRec + " Product not recognized: " + skuNamefromExcel;
                                         dbContextTransaction.Rollback();
+
                                         return Json(new { excep, success });
                                     }
                                     countRec++;
@@ -1009,49 +1020,59 @@ namespace KTSite.Areas.Admin.Controllers
                                     existFail = true;
                                 }
                             }
-                            dbContextTransaction.Commit();
-                            ExcelUploadsForShops exUp = new ExcelUploadsForShops();
-                            long toOrd = _db.Orders.Max(o => o.Id);
-                            long fromOrd = 0;
-
-                            exUp.UserId = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id).FirstOrDefault();
-                            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(q => q.UsDate.Date == DateTime.Now.Date).OrderByDescending(a => a.Id);
-                            if (orderList.Any())
+                            if (existFail)
                             {
-                                int countOrd = 0;
-                                foreach (Order order in orderList)
+                                success = 0;
+                                excep = "Unknwon Error Occured, Transction aborted.";
+                            }
+                            else
+                            {
+
+                                dbContextTransaction.Commit();
+                                //update db with balance and inventory
+                                updateDBWithBalanceAndInv(dt, dtEx, dtKT, warehouseCharge);
+                                ExcelUploadsForShops exUp = new ExcelUploadsForShops();
+                                long toOrd = _db.Orders.Max(o => o.Id);
+                                long fromOrd = 0;
+                                exUp.UserId = UNameId;
+                                IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(q => q.UsDate.Date == DateTime.Now.Date).OrderByDescending(a => a.Id);
+                                if (orderList.Any())
                                 {
+                                    int countOrd = 0;
+                                    foreach (Order order in orderList)
+                                    {
 
 
-                                    if (order.StoreNameId == fVM.storeId)
-                                    {
-                                        countOrd++;
-                                    }
-                                    if (countOrd == proccessedOrders)
-                                    {
-                                        //exUp.FromOrderId = order.Id;
-                                        fromOrd = order.Id;
-                                        break;
+                                        if (order.StoreNameId == fVM.storeId)
+                                        {
+                                            countOrd++;
+                                        }
+                                        if (countOrd == proccessedOrders)
+                                        {
+                                            //exUp.FromOrderId = order.Id;
+                                            fromOrd = order.Id;
+                                            break;
+                                        }
                                     }
                                 }
+                                //exUp.FromOrderId = toOrd - (proccessedOrders - 1);
+                                exUp.TrackingUpdated = false;
+                                exUp.CreatedDate = DateTime.Now; exUp.StoreId = fVM.storeId;
+                                exUp.ToOrderId = toOrd;
+                                exUp.FromOrderId = fromOrd;
+                                _db.ExcelUploadsForShopss.Add(exUp);
+                                _unitOfWork.excelUploadsForShops.Add(exUp);
+                                _unitOfWork.Save();
+                                UserStoreName usStore = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).FirstOrDefault();
+                                usStore.FromOrdId = fromOrd;
+                                usStore.ToOrdId = toOrd;
+                                _unitOfWork.UserStoreName.update(usStore);
+                                _unitOfWork.Save();
+                                success = 1;
+                                excep = proccessedOrders + " Orders Added successfully!";
+                                return Json(new { excep, success });
                             }
-                            exUp.TrackingUpdated = false;
-                            exUp.CreatedDate = DateTime.Now; exUp.StoreId = fVM.storeId;
-                            exUp.ToOrderId = toOrd;
-                            exUp.FromOrderId = fromOrd;
-                            _unitOfWork.excelUploadsForShops.Add(exUp);
-                            _unitOfWork.Save();
-                            UserStoreName usStore = _unitOfWork.UserStoreName.GetAll().Where(a => a.Id == fVM.storeId).FirstOrDefault();
-                            usStore.FromOrdId = fromOrd;
-                            usStore.ToOrdId = toOrd;
-                            _unitOfWork.UserStoreName.update(usStore);
-                            _unitOfWork.Save();
-                            // }
-                            success = 1;
-                            excep = proccessedOrders + " Orders Added successfully!";
-                            return Json(new { excep, success });
                         }
-                        
                     }
                 }
                 return Json(new { excep, success });
@@ -1064,6 +1085,116 @@ namespace KTSite.Areas.Admin.Controllers
 
             }
         }
+
+        public void updateDBWithBalanceAndInv(DataTable dt, DataTable dtEx, DataTable dtKT, double warehouseCharge)
+        {
+            //update Inventory
+            IEnumerable<Product> prodList = _unitOfWork.Product.GetAll().Where(a => (a.ReStock || a.InventoryCount > 0));
+            foreach (DataRow row in dt.Rows)
+            {
+                int prodId = Int32.Parse(row["key"].ToString());
+                Product prod = prodList.Where(a => a.Id == prodId).FirstOrDefault();
+                prod.InventoryCount = prod.InventoryCount - Int32.Parse(row["value"].ToString());
+            }
+            _unitOfWork.Save();
+
+            //update ExMerch
+            IEnumerable<PaymentBalanceMerch> paymentList = _unitOfWork.PaymentBalanceMerch.GetAll();
+            foreach (DataRow row in dtEx.Rows)
+            {
+                string merchId = row["key"].ToString();
+                PaymentBalanceMerch paymentMerch = paymentList.Where(a => a.UserNameId == merchId).FirstOrDefault();
+                paymentMerch.Balance = paymentMerch.Balance + double.Parse(row["value"].ToString());
+            }
+            //update KTMerch
+            foreach (DataRow row in dtKT.Rows)
+            {
+                string merchId = row["key"].ToString();
+                PaymentBalanceMerch paymentMerch = paymentList.Where(a => a.UserNameId == merchId).FirstOrDefault();
+                paymentMerch.Balance = paymentMerch.Balance + double.Parse(row["value"].ToString());
+            }
+            _unitOfWork.Save();
+            //update warehouse balance
+            PaymentBalance warehouseRec = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+            warehouseRec.Balance = warehouseRec.Balance - warehouseCharge;
+            _unitOfWork.Save();
+        }
+        public void updateInventoryShops(int productId, int quantity, ref DataTable dt)
+        {
+
+            DataRow[] drows = dt.Select("key=" + productId);
+            if (drows.Length == 0)
+            {
+                DataRow dr2 = dt.NewRow();
+                dr2[0] = productId.ToString();
+                dr2[1] = quantity.ToString();
+                dt.Rows.Add(dr2);
+            }
+            else if (drows.Length == 1)
+            {
+                drows[0]["value"] = Int32.Parse(drows[0]["value"].ToString()) + quantity;
+            }
+            //Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
+            //product.InventoryCount = product.InventoryCount - quantity;
+        }
+        public void WarehouseBalanceShops(int quantity, double ShippingCharge, string MerchType, string MerchId, double SellersCost, bool OwnByWarehouse, double Cost,
+            ref double warehouseCharge, ref DataTable dtEx, ref DataTable dtKT)
+        {
+            if (MerchType == SD.Role_KTMerch)
+            {
+                warehouseCharge = warehouseCharge + (quantity * (ShippingCharge));
+
+                double totalProfit = 0.0;
+                double addToMinimum = 0;
+
+                totalProfit = (SellersCost * quantity * (1 - SD.FeesOfKTMerch)) - ((ShippingCharge) * quantity);
+                if ((SellersCost * SD.FeesOfKTMerch) < 0.8)
+                {
+                    addToMinimum = 0.8 - (SellersCost * SD.FeesOfKTMerch);
+                    totalProfit = totalProfit - (addToMinimum * quantity);
+                    totalProfit = Math.Round(totalProfit, 2);
+                }
+
+                //KTMerchPaymentBalance.Balance = KTMerchPaymentBalance.Balance + totalProfit;
+                DataRow[] drowsKT = dtKT.Select("key='" + MerchId + "'");
+                if (drowsKT.Length == 0)
+                {
+                    DataRow drKT2 = dtKT.NewRow();
+                    drKT2[0] = MerchId.ToString();
+                    drKT2[1] = totalProfit.ToString();
+                    dtKT.Rows.Add(drKT2);
+                }
+                else if (drowsKT.Length == 1)
+                {
+                    drowsKT[0]["value"] = Double.Parse(drowsKT[0]["value"].ToString()) + totalProfit;
+                }
+            }
+            else if (MerchType == SD.Role_ExMerch)
+            {
+                //payMerch - add 
+                DataRow[] drowsEx = dtEx.Select("key='" + MerchId + "'");
+                if (drowsEx.Length == 0)
+                {
+                    DataRow drEx2 = dtEx.NewRow();
+                    drEx2[0] = MerchId.ToString();
+                    drEx2[1] = (SellersCost * quantity * (1 - SD.FeesOfEXMerch)).ToString();
+                    dtEx.Rows.Add(drEx2);
+                }
+                else if (drowsEx.Length == 1)
+                {
+                    drowsEx[0]["value"] = Double.Parse(drowsEx[0]["value"].ToString()) + (SellersCost * quantity * (1 - SD.FeesOfEXMerch));
+                }
+            }
+            else if (OwnByWarehouse)
+            {
+                warehouseCharge = warehouseCharge + (quantity * (ShippingCharge + Cost));
+            }
+            else
+            {
+                warehouseCharge = warehouseCharge + (quantity * (ShippingCharge));
+            }
+        }
+
         //create excel with tracking numbers to upload to shops
         [HttpPost]
         public ActionResult Export(ExcelUploadsForShopsVM excelUploadsForShopsVM)
@@ -1074,7 +1205,6 @@ namespace KTSite.Areas.Admin.Controllers
             string fileName = storeName + "_" + DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
             IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.Id >= ex.FromOrderId && a.Id <= ex.ToOrderId).
                                            OrderBy(a => a.Id);
-
             int missingtrackingCounter = 0;
             StringBuilder sb = new StringBuilder();
             //Header
@@ -1094,8 +1224,12 @@ namespace KTSite.Areas.Admin.Controllers
                             sb.Append("=\"");
                             sb.Append(order.TrackingNumber);
                             sb.Append("\"");
+                            sb.Append(',');
+                            sb.Append(order.CustName);
                             //_unitOfWork.Order.Get(order.Id).OrderStatus = SD.OrderStatusDone;
+                            //_unitOfWork.Order.Get(order.Id).TrackingUpdated = true;
                             order.TrackingUpdated = true;
+                            //_db.Orders.Update(_unitOfWork.Order.Get(order.Id));
                             _db.Orders.Update(order);
                             sb.Append("\r\n");
                             lineCounter++;
@@ -1112,6 +1246,7 @@ namespace KTSite.Areas.Admin.Controllers
                         else
                             sb.Insert(0, "********,**********,There are " + missingtrackingCounter + " records without tracking number" + "**********,***********\r\n");
                     }
+
                     //update when file downloaded
                     ex.TrackingUpdated = true;
                     //_unitOfWork.Save();

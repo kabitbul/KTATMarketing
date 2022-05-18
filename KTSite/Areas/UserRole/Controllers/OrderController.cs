@@ -595,7 +595,9 @@ namespace KTSite.Areas.UserRole.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersExtension(OrderVM orderVM)
         {
-            string uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+            ApplicationUser appUser = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).FirstOrDefault());
+            string uNameId = appUser.Id;//(_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
+            string uNameToShow = appUser.Name;
             ViewBag.uNameId = uNameId;
             ViewBag.ShowMsg = true;
             ViewBag.success = false;
@@ -641,12 +643,13 @@ namespace KTSite.Areas.UserRole.Controllers
                             orderDetails = orderDetails.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                             addAddressDetailsToVM(orderDetails[4], orderVM);
                             orderVM.Orders.ProductId = getProductIdByName(orderDetails[0]);
-                            orderVM.Orders.UserNameId = returnUserNameId();
-                            orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1], returnUserNameId());
+                            orderVM.Orders.UserNameId = uNameId;//returnUserNameId();
+                            orderVM.Orders.StoreNameId = getStoreNameId(orderDetails[1], uNameId/*returnUserNameId()*/);
                             orderVM.Orders.Quantity = Int32.Parse(orderDetails[3]);
+                            Product pr = new Product(); 
                             if (orderVM.Orders.ProductId > 0)
                             {
-                                Product pr = _unitOfWork.Product.Get(orderVM.Orders.ProductId);
+                                pr = _unitOfWork.Product.Get(orderVM.Orders.ProductId);
                                 if (pr.MerchType == SD.Role_KTMerch)
                                 {
                                     orderVM.Orders.MerchType = SD.Role_KTMerch;
@@ -657,8 +660,15 @@ namespace KTSite.Areas.UserRole.Controllers
                                     orderVM.Orders.MerchType = SD.Role_ExMerch;
                                     orderVM.Orders.MerchId = pr.MerchId;
                                 }
-
-                                orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                                if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
+                                {
+                                    orderVM.Orders.Cost = Convert.ToDouble(String.Format("{0:0.00}", ((pr.SellersCost + SD.FBMP_FEE) * orderVM.Orders.Quantity)));
+                                }
+                                else
+                                {
+                                    orderVM.Orders.Cost = Convert.ToDouble(String.Format("{0:0.00}", (pr.SellersCost * orderVM.Orders.Quantity)));
+                                }
+                                //orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                             }
                             string validDate;
                             if (orderDetails[2].Length < 10)
@@ -710,15 +720,16 @@ namespace KTSite.Areas.UserRole.Controllers
                                 continue;
                             }
                             if (isStoreAuthenticated(orderVM) && orderVM.Orders.ProductId > 0 &&
-                                IsProdavailable(orderVM.Orders.ProductId) &&
+                                  !(!pr.AvailableForSellers || pr.OOSForSellers) &&
+                                    //IsProdavailable(orderVM.Orders.ProductId) &&
                                 orderVM.Orders.UsDate <= DateTime.Now && Enumerable.Range(1, 100).Contains(orderVM.Orders.Quantity) &&
                                 orderVM.Orders.CustName.Length > 0 && orderVM.Orders.CustStreet1.Length > 0 &&
                                 Enumerable.Range(5, 10).Contains(orderVM.Orders.CustZipCode.Length) &&
                                 orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2 &&
                                 ((uNameId == SD.Kfir_Buyer) || (orderVM.Orders.MerchId != SD.Kfir_Merch)))
                             {
-                                orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                                orderVM.Orders.UserNameToShow = _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;
+                                orderVM.Orders.ProductName = pr.ProductName;//returnProductName(orderVM.Orders.ProductId);
+                                orderVM.Orders.UserNameToShow = uNameToShow;// _unitOfWork.ApplicationUser.Get(returnUserNameId()).Name;////****
                                 orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
@@ -1135,21 +1146,24 @@ namespace KTSite.Areas.UserRole.Controllers
                     excep = "File must be of type xlsx (Excel file)";
                     return Json(new { excep, success });
                 }
+                if (fVM.storeId == 0)
+                {
+                    success = 0;
+                    excep = "Please choose a store for these orders";
+                    return Json(new { excep, success });
+                }
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 using (var stream = new MemoryStream())
                 {
                     fVM.CSVFile.CopyTo(stream);
                     stream.Position = 0;
-                    //long fromOrderId = 0;
                     //bool insufficientFunds = false;
-                    DataTable dt = new DataTable();
-                    DataTable dtEx = new DataTable();
-                    DataTable dtKT = new DataTable();
+                    Dictionary<int, int> dicInvent = new Dictionary<int, int>();
+                    Dictionary<string, double> dicEx = new Dictionary<string, double>();
+                    Dictionary<string, double> dicKT = new Dictionary<string, double>();
                     double warehouseCharge = 0;
                     double userCharge = 0;
-                    dt.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
-                    dtEx.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
-                    dtKT.Columns.AddRange(new DataColumn[2] { new DataColumn("key"), new DataColumn("Value") });
+
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
                         using (var dbContextTransaction = _db.Database.BeginTransaction())
@@ -1228,19 +1242,56 @@ namespace KTSite.Areas.UserRole.Controllers
                                             }
                                             //_db.Orders.Add(ord);
                                             _db.Orders.AddRange(ord);
-                                            updateInventoryShops(orderVM.Orders.ProductId, orderVM.Orders.Quantity, ref dt);
-                                            WarehouseBalanceShops(orderVM.Orders.Quantity, pr.ShippingCharge,pr.MerchType,pr.MerchId,pr.SellersCost,pr.OwnByWarehouse,
-                                                pr.Cost, ref warehouseCharge, ref dtEx, ref dtKT);
-                                            //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                                            if (UNameId == SD.FBMP_USER_HAY || UNameId == SD.FBMP_USER_BENNY)
+                                            try
                                             {
-                                                SellerBalanceShops(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE), ref userCharge);
+                                                if(!dicInvent.ContainsKey(pr.Id))
+                                                {
+                                                    dicInvent.Add(pr.Id, orderVM.Orders.Quantity);
+                                                }
+                                                else
+                                                {
+                                                    dicInvent[pr.Id] = dicInvent[pr.Id] + orderVM.Orders.Quantity;
+                                                }
                                             }
-                                            else
+                                            catch
                                             {
-                                                SellerBalanceShops(orderVM.Orders.Cost, ref userCharge);
+                                                success = 0;
+                                                excep = "Line " + countRec + " Error Occured on InvUpdate, product  " + pr.ProductName + " customer: " + ord.CustName + " pr.Id=" + pr.Id
+                                                    + " quantity: " + orderVM.Orders.Quantity;
+                                                dbContextTransaction.Rollback();
+                                                return Json(new { excep, success });
                                             }
-                                            _db.SaveChanges();
+                                            try
+                                            {
+                                                WarehouseBalanceShops(orderVM.Orders.Quantity, pr.ShippingCharge, pr.MerchType, pr.MerchId, pr.SellersCost, pr.OwnByWarehouse,
+                                                    pr.Cost, ref warehouseCharge, ref dicEx, ref dicKT);
+                                            }
+                                            catch
+                                            {
+                                                success = 0;
+                                                excep = "Line " + countRec + " Error Occured on wareBShop product  " + pr.ProductName + " customer: " + ord.CustName;
+                                                dbContextTransaction.Rollback();
+                                                return Json(new { excep, success });
+                                            }
+                                            try
+                                            {
+                                                if (UNameId == SD.FBMP_USER_HAY || UNameId == SD.FBMP_USER_BENNY)
+                                                {
+                                                    SellerBalanceShops(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE), ref userCharge);
+                                                }
+                                                else
+                                                {
+                                                    SellerBalanceShops(orderVM.Orders.Cost, ref userCharge);
+                                                }
+                                                _db.SaveChanges();
+                                            } //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                            catch
+                                            {
+                                                success = 0;
+                                                excep = "Line " + countRec + " Error Occured on sellerBShop product  " + pr.ProductName + " customer: " + ord.CustName;
+                                                dbContextTransaction.Rollback();
+                                                return Json(new { excep, success });
+                                            }
                                         }
                                         else
                                         {
@@ -1266,13 +1317,18 @@ namespace KTSite.Areas.UserRole.Controllers
                                 catch (Exception ex)
                                 {
                                     dbContextTransaction.Rollback();
+                                    success = 0;
+                                    excep = "Error on line " + countRec+ " transaction aborted";
                                     existFail = true;
+                                    return Json(new { excep, success });
+                                    
                                 }
                             }
                             if (existFail)
                             {
                                 success = 0;
                                 excep = "Unknwon Error Occured, Transction aborted.";
+
                             }
                             else
                             {
@@ -1286,9 +1342,20 @@ namespace KTSite.Areas.UserRole.Controllers
 
                                     return Json(new { excep, success });
                                 }
+
                                 dbContextTransaction.Commit();
                                 //update db with balance and inventory
-                                updateDBWithBalanceAndInv(dt,dtEx,dtKT, warehouseCharge, userCharge);
+                                try
+                                {
+                                    updateDBWithBalanceAndInv(dicInvent, dicEx, dicKT, warehouseCharge, userCharge);
+                                }
+                                catch
+                                {
+                                    success = 0;
+                                    excep = "Error during updateDBWithBalanceAndInv";
+                                    existFail = true;
+                                    return Json(new { excep, success });
+                                }
                                 ExcelUploadsForShops exUp = new ExcelUploadsForShops();
                                 long toOrd = _db.Orders.Max(o => o.Id);
                                 long fromOrd = 0;
@@ -1343,38 +1410,38 @@ namespace KTSite.Areas.UserRole.Controllers
 
             }
         }
-        public void updateDBWithBalanceAndInv(DataTable dt, DataTable dtEx, DataTable dtKT, double warehouseCharge, double userCharge)
+        public void updateDBWithBalanceAndInv(Dictionary<int, int> dicInv, Dictionary<string, double> dicEx, Dictionary<string, double> dicKT, double warehouseCharge, double userCharge)
         {
             //update Inventory
             IEnumerable<Product> prodList  = _unitOfWork.Product.GetAll().Where(a=> (a.ReStock || a.InventoryCount > 0));
-            foreach (DataRow row in dt.Rows)
+           foreach(KeyValuePair<int,int> invRec in dicInv)
             {
-                int prodId = Int32.Parse(row["key"].ToString());
+                int prodId = invRec.Key;
                 Product prod = prodList.Where(a => a.Id == prodId).FirstOrDefault();
-                prod.InventoryCount = prod.InventoryCount - Int32.Parse(row["value"].ToString());
+                prod.InventoryCount = prod.InventoryCount - invRec.Value;
             }
-            _unitOfWork.Save();
+            //_unitOfWork.Save();
 
             //update ExMerch
             IEnumerable<PaymentBalanceMerch> paymentList = _unitOfWork.PaymentBalanceMerch.GetAll();
-            foreach (DataRow row in dtEx.Rows)
+           foreach(KeyValuePair<string, double> ex in dicEx)
             {
-                string merchId = row["key"].ToString();
+                string merchId = ex.Key;
                 PaymentBalanceMerch paymentMerch = paymentList.Where(a => a.UserNameId == merchId).FirstOrDefault();
-                paymentMerch.Balance = paymentMerch.Balance + double.Parse(row["value"].ToString());
+                paymentMerch.Balance = paymentMerch.Balance + ex.Value;
             }
             //update KTMerch
-            foreach (DataRow row in dtKT.Rows)
+            foreach (KeyValuePair<string, double> ex in dicKT)
             {
-                string merchId = row["key"].ToString();
+                string merchId = ex.Key;
                 PaymentBalanceMerch paymentMerch = paymentList.Where(a => a.UserNameId == merchId).FirstOrDefault();
-                paymentMerch.Balance = paymentMerch.Balance + double.Parse(row["value"].ToString());
+                paymentMerch.Balance = paymentMerch.Balance + ex.Value;
             }
-            _unitOfWork.Save();
+            //_unitOfWork.Save();
             //update warehouse balance
             PaymentBalance warehouseRec = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
             warehouseRec.Balance = warehouseRec.Balance - warehouseCharge;
-            _unitOfWork.Save();
+            //_unitOfWork.Save();
 
             //update user balance
             string userNameId = returnUserNameId();
@@ -1385,7 +1452,7 @@ namespace KTSite.Areas.UserRole.Controllers
         public void updateInventoryShops(int productId, int quantity, ref DataTable dt)
         {
 
-            DataRow[] drows =  dt.Select("key=" + productId);
+            DataRow[] drows =  dt.Select("key=" + productId.ToString());
             if(drows.Length == 0)
             {
                 DataRow dr2 = dt.NewRow();
@@ -1405,7 +1472,7 @@ namespace KTSite.Areas.UserRole.Controllers
             sellerCharge = sellerCharge + sellerCost;
         }
         public void WarehouseBalanceShops(int quantity, double ShippingCharge, string MerchType, string MerchId,double SellersCost, bool OwnByWarehouse, double Cost,
-            ref double warehouseCharge,ref DataTable dtEx, ref DataTable dtKT)
+            ref double warehouseCharge,ref Dictionary<string,double> dicEx, ref Dictionary<string, double> dicKT)
         {
             if (MerchType == SD.Role_KTMerch)
             {
@@ -1421,36 +1488,51 @@ namespace KTSite.Areas.UserRole.Controllers
                     totalProfit = totalProfit - (addToMinimum * quantity);
                     totalProfit = Math.Round(totalProfit, 2);
                 }
-
+                if (!dicKT.ContainsKey(MerchId))
+                {
+                    dicKT.Add(MerchId, totalProfit);
+                }
+                else
+                {
+                    dicKT[MerchId] = dicKT[MerchId] + totalProfit;
+                }
                 //KTMerchPaymentBalance.Balance = KTMerchPaymentBalance.Balance + totalProfit;
-                DataRow[] drowsKT = dtKT.Select("key='" + MerchId+"'");
-                if (drowsKT.Length == 0)
-                {
-                    DataRow drKT2 = dtKT.NewRow();
-                    drKT2[0] = MerchId.ToString();
-                    drKT2[1] = totalProfit.ToString();
-                    dtKT.Rows.Add(drKT2);
-                }
-                else if (drowsKT.Length == 1)
-                {
-                    drowsKT[0]["value"] = Double.Parse(drowsKT[0]["value"].ToString()) + totalProfit;
-                }
+                //DataRow[] drowsKT = dtKT.Select("key='" + MerchId+"'");
+                //if (drowsKT.Length == 0)
+                //{
+                //    DataRow drKT2 = dtKT.NewRow();
+                //    drKT2[0] = MerchId.ToString();
+                //    drKT2[1] = totalProfit.ToString();
+                //    dtKT.Rows.Add(drKT2);
+                //}
+                //else if (drowsKT.Length == 1)
+                //{
+                //    drowsKT[0]["value"] = Double.Parse(drowsKT[0]["value"].ToString()) + totalProfit;
+                //}
             }
             else if (MerchType == SD.Role_ExMerch)
             {
+                if (!dicEx.ContainsKey(MerchId))
+                {
+                    dicEx.Add(MerchId, (SellersCost * quantity * (1 - SD.FeesOfEXMerch)));
+                }
+                else
+                {
+                    dicEx[MerchId] = dicEx[MerchId] + (SellersCost * quantity * (1 - SD.FeesOfEXMerch));
+                }
                 //payMerch - add 
-                DataRow[] drowsEx = dtEx.Select("key='" + MerchId+"'");
-                if (drowsEx.Length == 0)
-                {
-                    DataRow drEx2 = dtEx.NewRow();
-                    drEx2[0] = MerchId.ToString();
-                    drEx2[1] = (SellersCost * quantity * (1 - SD.FeesOfEXMerch)).ToString();
-                    dtEx.Rows.Add(drEx2);
-                }
-                else if (drowsEx.Length == 1)
-                {
-                    drowsEx[0]["value"] = Double.Parse(drowsEx[0]["value"].ToString()) + (SellersCost * quantity * (1 - SD.FeesOfEXMerch));
-                }
+                //DataRow[] drowsEx = dtEx.Select("key='" + MerchId+"'");
+                //if (drowsEx.Length == 0)
+                //{
+                //    DataRow drEx2 = dtEx.NewRow();
+                //    drEx2[0] = MerchId.ToString();
+                //    drEx2[1] = (SellersCost * quantity * (1 - SD.FeesOfEXMerch)).ToString();
+                //    dtEx.Rows.Add(drEx2);
+                //}
+                //else if (drowsEx.Length == 1)
+                //{
+                //    drowsEx[0]["value"] = Double.Parse(drowsEx[0]["value"].ToString()) + (SellersCost * quantity * (1 - SD.FeesOfEXMerch));
+                //}
             }
             else if (OwnByWarehouse)
             {
