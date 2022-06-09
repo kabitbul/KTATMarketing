@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Utility;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using KTSite.Models;
 
 namespace KTSite.Areas.UserRole.Controllers
 {
@@ -24,7 +27,25 @@ namespace KTSite.Areas.UserRole.Controllers
             //{
             //    ContextCondition = ctx => ctx.GetOverriddenUserAgent() != null && ctx.GetOverriddenUserAgent().Contains("iPhone")
             //};
-                return View();
-            }
+            return View();
+        }
+        public string authenticate(string authToken)
+        {
+            UsersForAPI usersForAPI = _unitOfWork.UsersForAPI.GetAll().Where(a => a.AuthToken == authToken).FirstOrDefault();
+            if (usersForAPI == null)
+                return "";
+            return usersForAPI.UserId ;
+        }
+        [HttpGet("KTATAPI/TestAPI")]
+        // [Authorize]
+        public IActionResult TestAPI(string authToken)
+        {
+            string userId = authenticate(authToken);
+            if (userId.Length > 0)
+                return Ok("Test API is succesfull for KT Online Marketing");
+            return Unauthorized();
+
+
+        }
     }
 }

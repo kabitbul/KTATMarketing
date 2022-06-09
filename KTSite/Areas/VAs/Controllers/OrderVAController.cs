@@ -744,6 +744,10 @@ namespace KTSite.Areas.VAs.Controllers
         public int getProductIdByName(string productName)
         {
             string prd = productName.Trim();
+            if (prd.Contains("@@"))
+            {
+                prd = prd.Substring(0, prd.IndexOf("@@"));
+            }
             return _unitOfWork.Product.GetAll().Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase))
                 .Select(a => a.Id).FirstOrDefault();
         }
@@ -965,6 +969,10 @@ namespace KTSite.Areas.VAs.Controllers
                                         skuNamefromExcel = reader.GetValue(3).ToString();
                                     }
                                     string prd = skuNamefromExcel.Trim();
+                                    if (prd.Contains("@@"))
+                                    {
+                                        prd = prd.Substring(0, prd.IndexOf("@@"));
+                                    }
                                     Product pr = prodList.Where(a => a.ProductName.Equals(prd, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                                     //int prodId = getProductIdByName(skuNamefromExcel);
                                     if (pr != null && pr.Id > 0)

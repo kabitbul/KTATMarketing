@@ -25,7 +25,7 @@ namespace KTSite.Models
         //[ForeignKey("StoreNameId")]
         //public UserStoreName UserStoreName { get; set; }
         [Required]
-        [Range(1,200)]
+        [Range(1,400)]
         public int Quantity { get; set; }
         [Required]
         public string CustName { get; set; }

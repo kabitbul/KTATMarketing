@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20210912070622_updategeneral.Designer.cs" />
     <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.cs" />
     <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.Designer.cs" />
+    <Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.cs" />
+    <Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

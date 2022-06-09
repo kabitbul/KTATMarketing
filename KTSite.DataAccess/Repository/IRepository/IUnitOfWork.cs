@@ -38,6 +38,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         ISP_Call SP_Call { get; }
         ILogsDataRepository logsData  { get; }
         IExcelUploadsForShopsRepository excelUploadsForShops { get; }
+        IUsersForAPIRepository UsersForAPI { get; }
 
         void Save();
     }

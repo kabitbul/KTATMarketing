@@ -1,0 +1,123 @@
+﻿
+@model KTSite.Models.UsersForAPIVM
+
+@{ Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Create User"; }
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.usersForAPI.Id != 0)
+        {
+            //edit
+            title = "Edit User";
+          <input type="hidden" asp-for="@Model.usersForAPI.Id" />
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-9 pt-4">
+            
+            <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="usersForAPI.UserId">User</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.usersForAPI.UserId, Model.AppUsersList, "Select a User",
+                                           new { @class = "form-control", id = "userDropdown" })
+                        <span asp-validation-for="usersForAPI.UserId" class="text-danger"></span>
+                    </div>
+                </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="usersForAPI.AuthToken">Token</label>
+                </div>
+                <div class="col-7">
+                    <input asp-for="usersForAPI.AuthToken" class="form-control" id="AuthToken"/>
+                    <span asp-validation-for="usersForAPI.AuthToken" class="text-danger"></span>
+                </div>
+                <div class="col-1">
+                <asp:Button class="btn btn-secondary" id="b1" Font-Size="X-Small" OnClick="Generate()" style="background-color: forestgreen;
+                     width: 130px;height: 38px;font-size: 15px;color: white;text-align: center">
+                        <i class="fas fa-key"></i> &nbsp;   Generate
+                    </asp:Button>
+               </div>
+            </div>
+            
+            <div class="col-8">
+                <input type="hidden" asp-for="usersForAPI.CreatedDate" class="form-control" value="@DateTime.Now"/>
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="usersForAPI.UserId" class="form-control" />
+            </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="usersForAPI.Name" class="form-control" />
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="usersForAPI.Active">Active</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="usersForAPI.Active" class="form-control" />
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.usersForAPI.Id != 0)
+                    {
+                      <partial name="_EditAndBackToListButton" model="Model.usersForAPI.Id" /> 
+                    }
+                    else
+                    {
+                     <partial name="_CreateAndBackToListButton" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+     <script type="text/javascript">
+         $(function () {
+            $("#userDropdown").chosen();
+        });
+        function Generate() {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < 25; i++ ) 
+            {
+                  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            document.getElementById('AuthToken').value = result;
+        }
+    </script>
+    <script language="javascript" type="text/javascript">
+        window.onload = function () {
+            }
+    </script>
+    @if (ViewBag.ShowMsg)
+    {
+@if (ViewBag.existUser)
+{
+<script>
+    swal("Error!", "User Already Exsists!", "error")
+        .then((value) => { })
+</script> }
+                    else if (ViewBag.failed)
+                    {
+<script>
+    swal("Error!", "Unknown Error!", "error")
+        .then((value) => { })
+</script> }
+                    else if (ViewBag.success)
+                    {
+<script>
+    swal("Success!", "User Added!", "success")
+        .then((value) => { window.location.href = '/Admin/UsersForAPI'; })
+</script>}}
+}
