@@ -8,7 +8,7 @@ namespace KTSite.Utility
         //"954af016-4664-4048-96ba-c7f02de9738e" userTesting id in test env
         public const string Kfir_Merch = "2f85dc2e-c6ab-4523-aa51-f4a5814e518d";//KfirLogicAdded
         public const string Kfir_Buyer = "76fbc16f-d46e-4cba-ad59-c00045ffa711";// KfirLogicAdded
-        public const int FBMP_FEE = 1;
+        public const int FBMP_FEE = 0;
         public const string FBMP_USER_KARIN = "0000000000";//"d7b9d539-d661-4101-acb5-5f9777c9cc77";// Karin prod
         public const string FBMP_USER_HAY = "9dbe2478-2b3c-49f5-a0a5-0e82b0eeaa2e";
         public const string FBMP_USER_BENNY = "01f1f5b8-b86b-4924-bab0-165353d06472";
