@@ -95,7 +95,7 @@ namespace KTSite.Areas.Identity.Pages.Account
                         values: new { area = "Identity", code },
                         protocol: Request.Scheme);
                 var body = $"Please reset password Here <a href={callbackUrl}>Reset Password Here!</a>";
-                SmtpMail oMail = new SmtpMail("TryIt");
+                SmtpMail oMail = new SmtpMail("ES-E1646458156-01299-DUE5E8D722BE8A43-4713144F8EV7976D");
                 // my Mail
                 oMail.From = new MailAddress("KT Marketing", "litaltabibi@yahoo.com");
                 //oMail.ReplyTo = "ktonlinemarketing1@gmail.com";
