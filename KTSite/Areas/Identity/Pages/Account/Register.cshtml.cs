@@ -59,6 +59,7 @@ namespace KTSite.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
+            [StringLength(35, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             public string Email { get; set; }
 
             [Required]
@@ -72,6 +73,7 @@ namespace KTSite.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
             [Required]
+            [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             public string Name { get; set; }
             public string StreetAddress { get; set; }
             public string City { get; set; }
