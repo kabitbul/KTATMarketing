@@ -110,8 +110,8 @@ namespace KTSite.Areas.VAs.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers &&(a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) &&
-                                                                         a.MerchId != SD.Kfir_Merch).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers &&(a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) /*&&
+                                                                         a.MerchId != SD.Kfir_Merch*/).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -141,8 +141,8 @@ namespace KTSite.Areas.VAs.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = _unitOfWork.Order.GetAll().Where(a => a.Id == id).FirstOrDefault(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved)&&
-                                                                 a.MerchId != SD.Kfir_Merch).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved)/*&&
+                                                                 a.MerchId != SD.Kfir_Merch*/).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -172,8 +172,8 @@ namespace KTSite.Areas.VAs.Controllers
             OrderVM orderVM = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) &&
-                                                                 a.MerchId != SD.Kfir_Merch).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) /*&&
+                                                                 a.MerchId != SD.Kfir_Merch*/).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -393,7 +393,7 @@ namespace KTSite.Areas.VAs.Controllers
                     orderVM.Orders.Cost = Convert.ToDouble(String.Format("{0:0.00}", (pr.Cost * orderVM.Orders.Quantity)));
                 }
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now && orderVM.Orders.MerchId != SD.Kfir_Merch)
+                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now/* && orderVM.Orders.MerchId != SD.Kfir_Merch*/)
                 {
                     using (var dbContextTransaction = _db.Database.BeginTransaction())
                     { 
@@ -431,8 +431,8 @@ namespace KTSite.Areas.VAs.Controllers
             OrderVM orderVM2 = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) &&
-                                                                 a.MerchId != SD.Kfir_Merch).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) /*&&
+                                                                 a.MerchId != SD.Kfir_Merch*/).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -458,7 +458,7 @@ namespace KTSite.Areas.VAs.Controllers
             if (ModelState.IsValid)
             {
                 orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now && orderVM.Orders.MerchId != SD.Kfir_Merch)
+                if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now/* && orderVM.Orders.MerchId != SD.Kfir_Merch*/)
                 {
                     Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
                     int oldQuantity = ord.Quantity;
@@ -522,8 +522,8 @@ namespace KTSite.Areas.VAs.Controllers
             OrderVM orderVM2 = new OrderVM()
             {
                 Orders = new Order(),
-                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) &&
-                                                                 a.MerchId != SD.Kfir_Merch).
+                ProductList = _unitOfWork.Product.GetAll().Where(a => a.AvailableForSellers && (a.AdminApproval == null || a.AdminApproval == SD.MerchProductStatusApproved) /*&&
+                                                                 a.MerchId != SD.Kfir_Merch*/).
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
                     Text = i.ProductName,
@@ -643,8 +643,8 @@ namespace KTSite.Areas.VAs.Controllers
                             orderVM.Orders.UsDate <= DateTime.Now && Enumerable.Range(1, 100).Contains(orderVM.Orders.Quantity) &&
                             orderVM.Orders.CustName.Length > 0 && orderVM.Orders.CustStreet1.Length > 0 &&
                             Enumerable.Range(5, 10).Contains(orderVM.Orders.CustZipCode.Length) &&
-                            orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2 &&
-                            orderVM.Orders.MerchId != SD.Kfir_Merch)
+                            orderVM.Orders.CustCity.Length > 1 && orderVM.Orders.CustState.Length == 2 /*&&
+                            orderVM.Orders.MerchId != SD.Kfir_Merch*/)
                         {
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                             orderVM.Orders.UserNameToShow = "Admin";
@@ -1016,8 +1016,8 @@ namespace KTSite.Areas.VAs.Controllers
 
                                         OrderVM orderVM = new OrderVM();
                                         orderVM.Orders = ord;
-                                        if ((orderVM.Orders.MerchId != SD.Kfir_Merch))
-                                        {
+                                        //if ((orderVM.Orders.MerchId != SD.Kfir_Merch))
+                                        //{
                                             orderVM.Orders.ProductName = pr.ProductName;
                                             orderVM.Orders.UserNameToShow = uNameToShow;
                                             orderVM.Orders.StoreName = storeName;
@@ -1028,14 +1028,14 @@ namespace KTSite.Areas.VAs.Controllers
                                             WarehouseBalanceShops(orderVM.Orders.Quantity, pr.ShippingCharge, pr.MerchType, pr.MerchId, pr.SellersCost, pr.OwnByWarehouse,
                                                 pr.Cost, ref warehouseCharge, ref dtEx, ref dtKT);
                                             _db.SaveChanges();
-                                        }
-                                        else
-                                        {
-                                            success = 0;
-                                            excep = "Line " + countRec + " Error Occured";
-                                            dbContextTransaction.Rollback();
-                                            return Json(new { excep, success });
-                                        }
+                                        //}
+                                        //else
+                                        //{
+                                        //    success = 0;
+                                        //    excep = "Line " + countRec + " Error Occured";
+                                        //    dbContextTransaction.Rollback();
+                                        //    return Json(new { excep, success });
+                                        //}
 
                                         proccessedOrders++;
                                         //_unitOfWork.Save();

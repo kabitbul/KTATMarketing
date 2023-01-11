@@ -29,8 +29,8 @@ namespace KTSite.Areas.UserRole.Controllers
             string uName = "";
             uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
-            var productsList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers && ((a.MerchId != SD.Kfir_Merch && uNameId != SD.Kfir_Buyer)||
-                                                                                               (uNameId == SD.Kfir_Buyer)))
+            var productsList = _unitOfWork.Product.GetAll().Where(a=>a.AvailableForSellers /*&& ((a.MerchId != SD.Kfir_Merch && uNameId != SD.Kfir_Buyer)||
+                                                                                               (uNameId == SD.Kfir_Buyer))*/)
             .OrderBy(a=>a.ProductName);
             
 
