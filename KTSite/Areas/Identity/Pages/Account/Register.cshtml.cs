@@ -189,7 +189,7 @@ namespace KTSite.Areas.Identity.Pages.Account
                             State = Input.State,
                             PostalCode = Input.PostalCode,
                             Role = Input.Role,
-                            EmailConfirmed = false
+                            EmailConfirmed = true
                         };
                     }
                     else
