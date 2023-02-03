@@ -28,8 +28,8 @@ namespace KTSite
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
+                    Configuration.GetConnectionString("DefaultConnection")));            
+services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //For confirmation during registration
             //services.AddIdentity<IdentityUser, IdentityRole>(

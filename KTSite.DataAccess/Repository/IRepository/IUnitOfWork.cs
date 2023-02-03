@@ -35,6 +35,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         IAdminVATaskRepository adminVATask { get; }
         IPaymentBalanceBackupRepository paymentBalanceBackup { get; }
         IPaymentMethodMerchRepository paymentMethodMerch { get; }
+        IBalanceUpdateRepository balanceUpdate { get; }
         ISP_Call SP_Call { get; }
         ILogsDataRepository logsData  { get; }
         IExcelUploadsForShopsRepository excelUploadsForShops { get; }

@@ -47,5 +47,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<LogsData> LogsDatas { get; set; }
         public DbSet<ExcelUploadsForShops> ExcelUploadsForShopss { get; set; }
         public DbSet<UsersForAPI> UsersForAPIs { get; set; }
+        public DbSet<BalanceUpdate> BalanceUpdates { get; set; }
     }
 }

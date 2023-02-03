@@ -35,6 +35,8 @@ namespace KTSite.Utility
         public const string MerchProductStatusRejected = "Rejected";
         public const string ReturningItemAdd = "Add";
         public const string ReturningItemRemove = "Remove";
+        public const string BalanceUpdateAdd = "Add";
+        public const string BalanceUpdateDeduct = "Deduct";
         public const string ReturningItemDefective = "Defective";
         public const double shipping_cost = 4.0;//back to 4 when rate is back to normal
         public const double shipping_cost_warehouse_items = 4;
@@ -96,6 +98,11 @@ namespace KTSite.Utility
         {
         new SelectListItem() {Text=PaymentPayoneer, Value=PaymentPayoneer},
         new SelectListItem() { Text=PaymentPaypal, Value=PaymentPaypal}
+        };
+        public static List<SelectListItem> AddOrDeduct = new List<SelectListItem>()
+        {
+        new SelectListItem() {Text=BalanceUpdateAdd, Value=BalanceUpdateAdd},
+        new SelectListItem() { Text=BalanceUpdateDeduct, Value=BalanceUpdateDeduct}
         };
         public static List<SelectListItem> States = new List<SelectListItem>()
         {

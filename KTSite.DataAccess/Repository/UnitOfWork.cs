@@ -1,14 +1,17 @@
 ﻿using KTSite.DataAccess.Data;
 using KTSite.DataAccess.Repository.IRepository;
+using Microsoft.Extensions.Configuration;
 
 namespace KTSite.DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _db;
-        public UnitOfWork(ApplicationDbContext db)
+        private  IConfiguration _configuration;
+        public UnitOfWork(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
+            _configuration = configuration;
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
             ApplicationUser = new ApplicationUserRepository(_db);
@@ -37,6 +40,7 @@ namespace KTSite.DataAccess.Repository
             adminVATask = new AdminVATaskRepository(_db);
             paymentBalanceBackup = new PaymentBalanceBackupRepository(_db);
             paymentMethodMerch = new PaymentMethodMerchRepository(_db);
+            balanceUpdate = new BalanceUpdateRepository(_configuration);
             SP_Call = new SP_Call(_db);
             logsData = new LogsDataRepository(_db);
             excelUploadsForShops = new ExcelUploadsForShopsRepository(_db);
@@ -70,6 +74,7 @@ namespace KTSite.DataAccess.Repository
         public IAdminVATaskRepository adminVATask { get; private set; }
         public IPaymentBalanceBackupRepository paymentBalanceBackup { get; private set; }
         public IPaymentMethodMerchRepository paymentMethodMerch { get; private set; }
+        public IBalanceUpdateRepository balanceUpdate { get; private set; }
         public ISP_Call SP_Call { get; private set; }
         public ILogsDataRepository logsData { get; private set; }
         public IExcelUploadsForShopsRepository excelUploadsForShops { get; private set; }
