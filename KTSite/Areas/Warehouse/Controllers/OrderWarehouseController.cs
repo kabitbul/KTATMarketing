@@ -511,7 +511,7 @@ namespace KTSite.Areas.Warehouse.Controllers
                             string custZip = columns[58].Replace("\"", "").Replace("=", "");
                                 Order order =
                                         OrdersInProgress.Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName &&
-                                                                    a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5)).FirstOrDefault();
+                                                                    a.CustZipCode.Trim().Substring(0, 5) == custZip.Substring(0, 5)).FirstOrDefault();
                                //_unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusInProgress)
                                  //                        .Where(a => a.CustName.Replace(",", "").Replace("\"", "") == custName)
                                    //                      .Where(a => a.CustZipCode.Substring(0, 5) == custZip.Substring(0, 5))//compare first 5

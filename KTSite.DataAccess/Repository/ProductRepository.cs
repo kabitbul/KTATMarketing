@@ -52,6 +52,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.WarehouseChinaCost = product.WarehouseChinaCost;
                 objFromDb.AdminApproval = product.AdminApproval;
                 objFromDb.RejectReason = product.RejectReason;
+                objFromDb.PlatformsPrice = product.PlatformsPrice;
                 if(product.MerchType == SD.Role_ExMerch)
                 {
                     objFromDb.InventoryCount = product.InventoryCount;

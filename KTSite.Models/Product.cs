@@ -48,6 +48,7 @@ namespace KTSite.Models
         public string AdminApproval { get; set; }
         [MaxLength(100)]
         public string RejectReason { get; set; }
+         public double PlatformsPrice { get; set; }
         [NotMapped]
         public double WarehouseProfit { get; set; }
         [NotMapped]

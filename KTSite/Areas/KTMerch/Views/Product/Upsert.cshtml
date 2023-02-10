@@ -167,6 +167,9 @@
                   <input type="hidden" asp-for="Product.AdminApproval" class="form-control" value=@KTSite.Utility.SD.MerchProductStatusPending />
                 </div>
                 <div class="col-8">
+                    <input type="hidden" asp-for="Product.PlatformsPrice" class="form-control" value=0.0 />
+                </div>
+                <div class="col-8">
                        <input type="hidden" asp-for="Product.OOSForSellers" class="form-control" value="false" />
                 </div>
                                       <div class="col-8">
@@ -174,6 +177,9 @@
                                         </div> }
                                     else
                                     {
+                                   <div class="col-8">
+               <input type="hidden" asp-for="Product.PlatformsPrice" class="form-control"  />
+        </div>
                         <div class="col-8">
                             <input type="hidden" asp-for="Product.AdminApproval" class="form-control" />
                         </div>
