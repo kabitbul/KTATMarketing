@@ -198,8 +198,33 @@ namespace KTSite.Areas.Admin.Controllers
                         complaintsVM.complaints.CustName = ord.CustName;
                         complaintsVM.complaints.MerchType = ord.MerchType;
                         complaintsVM.complaints.MerchId = ord.MerchId;
+                       //added charge of warehouse on 18/03/2023 
+                       if(complaintsVM.complaints.TicketResolution == SD.Refund)
+                       {
+                        double shipCharge = 
+                       _unitOfWork.Product.GetAll().Where(a=>a.Id == ord.ProductId).
+                       Select(a=> a.ShippingCharge).FirstOrDefault();
+                       shipCharge = shipCharge * ord.Quantity;
+                        PaymentBalance pb = _unitOfWork.PaymentBalance.GetAll()
+                          .Where(a=> a.IsWarehouseBalance).FirstOrDefault();
+                       pb.Balance = pb.Balance + shipCharge;
+                        Refund refund= new Refund();
+                          refund.OrderId = ord.Id;
+                         /******/ refund.RefundedBy = 
+                     _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Name).FirstOrDefault();
+                       _unitOfWork.Save();
+                        refund.RefundDate = DateTime.Now;
+                        refund.RefundQuantity = ord.Quantity;
+                        refund.Cost = shipCharge;
+                        refund.Quantity = ord.Quantity;
+                        refund.StoreNameId = ord.StoreNameId;
+                        refund.UserNameId = ord.UserNameId;
+                        refund.AmountRefunded = shipCharge;
+                        _unitOfWork.Refund.Add(refund);
+                      }//END added charge of warehouse on 18/03/2023
                     }
                     _unitOfWork.Complaints.Add(complaintsVM.complaints);
+                   
                 }
                 else
                 {
