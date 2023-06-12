@@ -11,7 +11,7 @@ namespace KTSite.Utility
         public const int FBMP_FEE = 0;
         public const string FBMP_USER_KARIN = "0000000000";//"d7b9d539-d661-4101-acb5-5f9777c9cc77";// Karin prod
         public const string FBMP_USER_HAY = "9dbe2478-2b3c-49f5-a0a5-0e82b0eeaa2e";
-        public const string FBMP_USER_BENNY = "01f1f5b8-b86b-4924-bab0-165353d06472";
+        public const string FBMP_USER_BENNY = "00000";//"01f1f5b8-b86b-4924-bab0-165353d06472";
         //public const string FBMP_USER_KARIN = "6189ff89-8a05-4385-8f2d-27c4b4d3d65d";// newuser test
         public const string Role_Admin = "Admin";
         public const string Role_Warehouse = "Warehouse";
