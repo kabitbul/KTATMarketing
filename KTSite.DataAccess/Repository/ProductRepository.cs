@@ -3,10 +3,8 @@ using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using KTSite.Utility;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace KTSite.DataAccess.Repository
 {
@@ -44,6 +42,7 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.ProductDesc = product.ProductDesc;
                 objFromDb.OOSForSellers = product.OOSForSellers;
                 objFromDb.MadeIn = product.MadeIn;
+                objFromDb.IsFBA = product.IsFBA;
                 objFromDb.ImageUrl = product.ImageUrl;
                 objFromDb.ProductASIN = product.ProductASIN;
                 objFromDb.ProductURL = product.ProductURL;

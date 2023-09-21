@@ -38,6 +38,8 @@ namespace KTSite.Models
         [Required]
         public bool OOSForSellers { get; set; }
         public string MadeIn { get; set; }
+        [DefaultValue(false)]
+        public bool IsFBA { get; set; }
         public double BestOffer { get; set; }
         public double MinimumPrice { get; set; }
         [MaxLength(50)]

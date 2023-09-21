@@ -14,6 +14,7 @@ namespace KTSite.Models
         public IEnumerable<SelectListItem> StoresList { get; set; }
         public IEnumerable<SelectListItem> StatesList{ get; set; }
         public IEnumerable<SelectListItem> StatusList { get; set; }
+        public IEnumerable<SelectListItem> ToWarehouseStatusList { get; set; }
         public string AllOrder { get; set; }
     }
 }

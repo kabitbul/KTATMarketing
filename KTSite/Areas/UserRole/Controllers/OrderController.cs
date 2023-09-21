@@ -408,6 +408,21 @@ namespace KTSite.Areas.UserRole.Controllers
                         }
                         using (var dbContextTransaction = _db.Database.BeginTransaction())
                         {
+                            bool toTexas = true;
+                            //if (orderVM.Orders.ProductId == 84 ||//Chest Sling Bag Black
+                            //    orderVM.Orders.ProductId == 127 ||//Ratchet Belt model 01 Black
+                            //    orderVM.Orders.ProductId == 8 ||//garlic press
+                            //    orderVM.Orders.ProductId == 3 ||//Plants 
+                            //    orderVM.Orders.ProductId == 1//Castor Serum by Shavit
+                            //   )
+                          // if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+                           //    {
+                           //      toTexas = true;
+                           //    }
+                         //    if(toTexas)
+                          //    {
+                                orderVM.Orders.ToWarehouseStatus = SD.toWarehouseStatusNotHandled;
+                           //   }
                             _unitOfWork.Order.Add(orderVM.Orders);
                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                             if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
@@ -419,8 +434,11 @@ namespace KTSite.Areas.UserRole.Controllers
                                 updateSellerBalance(orderVM.Orders.Cost);
                             }
                             //updateSellerBalance(orderVM.Orders.Cost);
-                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                            //_unitOfWork.Save();
+                            if(!toTexas)
+                            {
+                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                            }
+                             //_unitOfWork.Save();
                             _db.SaveChanges();
                             dbContextTransaction.Commit();
                         }
@@ -485,11 +503,20 @@ namespace KTSite.Areas.UserRole.Controllers
                         bool fail = false;
                         try
                         {
+                             bool toTexas = true;
+                                //if(oldProductId == 84 || oldProductId == 127 ||oldProductId== 8 ||
+                                //   oldProductId== 3 || oldProductId == 1)
+                          // if(SD.SKUIds.IndexOf(oldProductId) != -1)
+                            //    { 
+                             //     toTexas = true;
+                             //    }
                             //changed to cancel
                             if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(oldProductId, oldQuantity * (-1));
+                                if(!toTexas){ 
                                 updateWarehouseBalance(oldQuantity * (-1), oldProductId);
+                                }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(oldCost * (-1) - (SD.FBMP_FEE * oldQuantity));
@@ -507,7 +534,9 @@ namespace KTSite.Areas.UserRole.Controllers
                             else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                if(!toTexas){ 
+                                  updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                 }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
@@ -525,7 +554,9 @@ namespace KTSite.Areas.UserRole.Controllers
                                 if (oldQuantity != orderVM.Orders.Quantity)
                                 {
                                     updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                    updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
+                                    if(!toTexas){ 
+                                     updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
+                                      }
                                     if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                     {
                                         orderVM.Orders.Cost = orderVM.Orders.Cost + (SD.FBMP_FEE * (orderVM.Orders.Quantity - oldQuantity));
@@ -735,9 +766,25 @@ namespace KTSite.Areas.UserRole.Controllers
                                 {
                                     orderVM.Orders.Cost = orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE);
                                 }
+                                bool toTexas = true;
+                                //if (orderVM.Orders.ProductId == 84 ||//Chest Sling Bag Black
+                                //    orderVM.Orders.ProductId == 127 ||//Ratchet Belt model 01 Black
+                                //    orderVM.Orders.ProductId == 8 ||//garlic press
+                                //    orderVM.Orders.ProductId == 3 ||//Plants 
+                                //    orderVM.Orders.ProductId == 1//Castor Serum by Shavit
+                                //   )
+                               // if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+                                  // {
+                                  //   toTexas = true;
+                                  //  }
+                                //    if (toTexas){
+                                    orderVM.Orders.ToWarehouseStatus = SD.toWarehouseStatusNotHandled;
+                                //   }
                                 _unitOfWork.Order.Add(orderVM.Orders);
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                if (!toTexas){
+                                   updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                 }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));

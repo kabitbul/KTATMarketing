@@ -42,6 +42,10 @@ namespace KTSite.DataAccess.Repository
                 objFromDb.UserNameToShow = order.UserNameToShow;
                 objFromDb.StoreName = order.StoreName;
                 objFromDb.TrackingUpdated = order.TrackingUpdated;
+                objFromDb.ToWarehouseStatus = order.ToWarehouseStatus;
+                objFromDb.ExtensiveOrderId = order.ExtensiveOrderId;
+                objFromDb.ExtensiveReferenceId = order.ExtensiveReferenceId;
+                objFromDb.OrdCharge = order.OrdCharge;
             }
         }
         public IEnumerable<Order> GetAllOrders()

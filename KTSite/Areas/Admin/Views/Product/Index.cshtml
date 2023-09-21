@@ -37,7 +37,7 @@
                 <th>OOS For Sellers</th>
                 <th>Available For Sellers</th>
                 <th>Category</th>
-                <th>Made In</th>
+                <th>FBA</th>
                 <th></th>
             </tr>
         </thead>
@@ -100,7 +100,14 @@ else
 <td>No</td>
  }
     <td>@ViewBag.getCategoryName(product.CategoryId)</td>
-    <td>@product.MadeIn</td>
+   @if (@product.IsFBA)
+     {
+       <td>Yes</td>
+     }
+     else
+     {
+      <td>No</td>
+     }
     <td>
         <div class="text-center">
             <a href="/Admin/Product/Upsert/@product.Id" class="btn btn-success text-white" style="cursor:pointer" data-toggle="tooltip" data-placement="top" title="Edit Product">

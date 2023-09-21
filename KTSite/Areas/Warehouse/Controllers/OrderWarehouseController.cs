@@ -121,8 +121,12 @@ namespace KTSite.Areas.Warehouse.Controllers
         {
             string fileName =
                     DateTime.Now.DayOfWeek + "_HH" + DateTime.Now.Hour + "_MI" + DateTime.Now.Minute + ".csv";
-            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().Where(a => a.OrderStatus == SD.OrderStatusAccepted &&
-                     a.MerchType != SD.Role_ExMerch).
+            IEnumerable<Order> orderList = _unitOfWork.Order.GetAll().
+             Where(a => a.OrderStatus == SD.OrderStatusAccepted &&
+                     a.MerchType != SD.Role_ExMerch && /*SD.SKUIds.IndexOf(a.ProductId)*/0 == -1 
+                     //a.ProductId != 127 && a.ProductId != 84 && a.ProductId != 8 &&
+                 //a.ProductId != 3 && a.ProductId != 1
+                 ).
                 //OrderBy(a => getProductName(a.ProductId)).ThenByDescending(a=>a.Quantity).Take(300);
                 OrderBy(a => a.ProductId).ThenByDescending(a => a.Quantity).Take(300);
             ViewBag.errSaveInProgress = false;
@@ -355,7 +359,10 @@ namespace KTSite.Areas.Warehouse.Controllers
             string sortColumnName = Request.Form["columns[" + Request.Form["order[0][column]"] + "][name]"].FirstOrDefault();
             string sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
             List<Order> orderList = new List<Order>();
-            orderList = _unitOfWork.Order.GetAll().Where(a=> a.MerchType != SD.Role_ExMerch).ToList();
+            orderList = _unitOfWork.Order.GetAll().Where(a=> a.MerchType != SD.Role_ExMerch &&
+                //a.ProductId != 127 && a.ProductId != 84 && a.ProductId != 8 &&
+                 //a.ProductId != 3 && a.ProductId != 1
+                 /*SD.SKUIds.IndexOf(a.ProductId)*/0 == -1).ToList();
             int totalRows = orderList.Count;
             foreach (Order order in orderList)
             {

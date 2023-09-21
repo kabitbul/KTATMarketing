@@ -12,93 +12,161 @@
             <div class="col-12 border-bottom">
                 <h2 class="text-primary">@title</h2>
             </div>
-            <div class="col-8 pt-4">
-                <div class="form-group row">
+
+                <div class="col-8 pt-4">
+                @if (ViewBag.toTexas == 1)
+                {
+                    <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Orders.ToWarehouseStatus">To Warehouse Status</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.Orders.ToWarehouseStatus, Model.ToWarehouseStatusList,
+                                                     new { @class = "form-control" })
+                            <span asp-validation-for="Orders.ToWarehouseStatus" class="text-danger"></span>
+                    </div>
+                </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.TrackingNumber">Tracking Number</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.TrackingNumber" class="form-control" />
+                            <span asp-validation-for="Orders.TrackingNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.ProductId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.StoreNameId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.Quantity" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustName" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustStreet1" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustStreet2" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustCity" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustState" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustZipCode" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.CustPhone" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                    <input type="hidden" asp-for="Orders.ExtensiveOrderId" class="form-control" />
+                </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.ExtensiveReferenceId" class="form-control" />
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.OrdCharge" class="form-control" />
+                    </div>
+                }
+                else/////////////////////////////////////////////////
+                {
+                  <div class="form-group row">
                     <div class="col-4">
                         <label asp-for="Orders.OrderStatus">Order Status</label>
                     </div>
-                    <div class="col-8">
+                    
+                           <div class="col-8">
                         @Html.DropDownListFor(m => m.Orders.OrderStatus, Model.StatusList,
                                                      new { @class = "form-control" })
                         <span asp-validation-for="Orders.OrderStatus" class="text-danger"></span>
-                    </div>
+                    </div>  
                 </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.ProductId">Product</label>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.ProductId">Product</label>
+                        </div>
+                        <div class="col-8">
+                            @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
+                        new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(m => m.Orders.ProductId, Model.ProductList, "Select a Product",
-                                                     new { @class = "form-control", @disabled = "disabled" })
-                        <span asp-validation-for="Orders.ProductId" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.StoreNameId">My Store</label>
+                        </div>
+                        <div class="col-8">
+                            @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
+                        new { @class = "form-control", @disabled = "disabled" })
+                            <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.StoreNameId">My Store</label>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.Quantity"></label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.Quantity" class="form-control" />
+                            <span asp-validation-for="Orders.Quantity" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(m => m.Orders.StoreNameId, Model.StoresList,
-                                                     new { @class = "form-control", @disabled = "disabled" })
-                        <span asp-validation-for="Orders.StoreNameId" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.CustName">Customer Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.CustName" class="form-control" />
+                            <span asp-validation-for="Orders.CustName" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.Quantity"></label>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.CustStreet1">Street Address</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.CustStreet1" class="form-control" />
+                            <span asp-validation-for="Orders.CustStreet1" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <input asp-for="Orders.Quantity" class="form-control" />
-                        <span asp-validation-for="Orders.Quantity" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.CustStreet2">Street Address (Optional)</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.CustStreet2" class="form-control" />
+                            <span asp-validation-for="Orders.CustStreet2" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.CustName">Customer Name</label>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.CustCity">City</label>
+                        </div>
+                        <div class="col-8">
+                            <input asp-for="Orders.CustCity" class="form-control" />
+                            <span asp-validation-for="Orders.CustCity" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <input asp-for="Orders.CustName" class="form-control" />
-                        <span asp-validation-for="Orders.CustName" class="text-danger"></span>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.CustState">State</label>
+                        </div>
+                        <div class="col-8">
+                            @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
+                        new { @class = "form-control" })
+                            <span asp-validation-for="Orders.CustState" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.CustStreet1">Street Address</label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Orders.CustStreet1" class="form-control" />
-                        <span asp-validation-for="Orders.CustStreet1" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.CustStreet2">Street Address (Optional)</label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Orders.CustStreet2" class="form-control" />
-                        <span asp-validation-for="Orders.CustStreet2" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.CustCity">City</label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Orders.CustCity" class="form-control" />
-                        <span asp-validation-for="Orders.CustCity" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Orders.CustState">State</label>
-                    </div>
-                    <div class="col-8">
-                        @Html.DropDownListFor(m => m.Orders.CustState, Model.StatesList, "Choose State",
-                                                     new { @class = "form-control" })
-                        <span asp-validation-for="Orders.CustState" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group row">
+                                    <div class="form-group row">
                     <div class="col-4">
                         <label asp-for="Orders.CustZipCode">Zip Code</label>
                     </div>
@@ -116,14 +184,22 @@
                         <span asp-validation-for="Orders.CustPhone" class="text-danger"></span>
                     </div>
                 </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="Orders.ToWarehouseStatus" class="form-control" />
+                    </div>
+                }
+                //////////////////////////////////////////////////////
                 <div class="col-8">
-                    <input type="hidden" asp-for="Orders.UserNameId" class="form-control" value="@ViewBag.uNameId" />
+                    <input type="hidden" asp-for="Orders.UserNameId" class="form-control"/>
                 </div>
                 <div class="col-8">
-                    <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" value=@KTSite.Utility.SD.OrderStatusAccepted />
+                    <input type="hidden" asp-for="Orders.UserNameToShow" class="form-control" />
                 </div>
                 <div class="col-8">
-                    <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" value=true />
+                    <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.IsAdmin" class="form-control" />
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.Id" class="form-control" />
@@ -146,7 +222,14 @@
                 <div class="col-8">
                     <input type="hidden" asp-for="Orders.MerchType" class="form-control" />
                 </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.ExtensiveOrderId" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="Orders.ExtensiveReferenceId" class="form-control" />
+                </div>
             </div>
+            
             <div class="col-8 pt-4">
                 <div class="form-group row">
                     <div class="col-8 offset-4">

@@ -25,6 +25,9 @@ namespace KTSite.Utility
         public const string OrderStatusCancelled = "Cancelled";
         public const string OrderStatusFullRefund = "Full Refund";
         public const string OrderStatusPartialRefund = "Partial Refund";
+        public const string toWarehouseStatusNotHandled = "NotHandled";
+        public const string toWarehouseStatusOrderCopied = "OrderCopied";
+        public const string toWarehouseStatusOrderCompleted = "OrderCompleted";
         public const string PaymentPayoneer = "Payoneer";
         public const string PaymentPaypal = "Paypal";
         public const string PaymentStatusPending = "Pending";
@@ -94,6 +97,11 @@ namespace KTSite.Utility
         new SelectListItem() {Text=OrderStatusAccepted, Value=OrderStatusAccepted},
         new SelectListItem() { Text=OrderStatusCancelled, Value=OrderStatusCancelled}
         };
+public static List<SelectListItem> WarehouseStatusNotHandledOrCopied = new List<SelectListItem>()
+        {
+        new SelectListItem() {Text=toWarehouseStatusNotHandled, Value=toWarehouseStatusNotHandled},
+        new SelectListItem() { Text=toWarehouseStatusOrderCopied, Value=toWarehouseStatusOrderCopied}
+        };
         public static List<SelectListItem> paymentType = new List<SelectListItem>()
         {
         new SelectListItem() {Text=PaymentPayoneer, Value=PaymentPayoneer},
@@ -158,8 +166,29 @@ namespace KTSite.Utility
         new SelectListItem() { Text="WI-Wisconsin", Value="WI"},
         new SelectListItem() { Text="WY-Wyoming", Value="WY"}
     };
+     public static List<int> SKUIds = new List<int>() 
+       {1,3,6,7,8,10,11,15,18,20,21,23,24,25,27,28,30,32,38,40,41,52,54,65,66,72,78,83,84,93,94,96,
+        100,126,127,129,130,131,133,146,155,156,158,167,170,173,199,
+        219,222,226,228,229,230,236,237,241,242,243,245,246,247,248,267,272,274,282,283,299,
+        303,304,305,321,326,332,335
+       };
     }
 }
+//1,3,6,7,8,10,11,15,18,20,21,23,24,25,27,28,30,32,38,40,41,52,54,65,66,72,78,83,84,93,94,96,
+//100,126,127,129,130,131,133,146,155,156,158,167,170,173,199
+//219,222,226,228,229,230,236,237,241,242,243,245,246,247,248,267,272,274,282,283,299,
+//219,222,226,228,229,230,236,237,241,242,243,245,246,247,248,267,272,274,282,283,299,
+//303,304,305,321,326,332,335
+
+
+//***237**//is in the file in stock in texas
+//1,3,6,8,7,10,11,15,18,20,21,23,24,25,27,28,30,32,38,40,41,52,54,65,66,72,78,83,84,93,94,96,
+//100,126,127,129,130,131,133,146,155,156,158,167,170,173,199
+//219,222,226,228,229,230,236,237,241,242,243,245,246,247,248,267,272,274,282,283,299,
+//219,222,226,228,229,230,236,237,241,242,243,245,246,247,248,267,272,274,282,283,299,
+//303,304,305,321,326,332,335
+
+
 //user admin1
 //mail admin1@gmail.com
 //Admin1!

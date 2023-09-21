@@ -41,11 +41,11 @@ if (ViewBag.ComplaintsPending > 1)
         <h2 class="text-primary">Orders List </h2>
     </div>
     </div>
-    <div class="row">
+    @*<div class="row">
             <div class="col-12 text-right">
                 <a class="btn btn-primary" asp-action="AddOrdersShopsFB" style="background-color:blueviolet"><i class="fas fa-plus"></i> &nbsp; Add Orders FB Shops</a>
             </div>
-        </div>
+        </div>*@
         <br/>
     <div class="col-12 text-right">
         <a class="btn btn-primary" asp-action="AddOrdersExtension" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Admin Orders from Extension</a>
@@ -59,6 +59,7 @@ if (ViewBag.ComplaintsPending > 1)
 
 <br />
 <div class="col-12 text-right">
+    possible values for new Warehouse status column : "NotHandled" , "OrderCopied", "OrderCompleted"
     <button class="btn btn-primary" onclick="TrackUpdate()" style="background-color:darkorange"><i class="fas fa-thumbs-up"></i>&nbsp; Updated In Store</button>
 </div>
 @*<div id="AllOrders">
@@ -93,7 +94,10 @@ if (ViewBag.ComplaintsPending > 1)
         <thead class="thead-dark">
             <tr class="table-info">
                 <th>Order Id</th>
+                <th>Ext Ord Id</th>
+                <th>Ref number</th>
                 <th>Order Status</th>
+                <th>New Warehouse Status</th>
                 <th>Product</th>
                 <th>US Date</th>
                 <th>User</th>
@@ -108,7 +112,10 @@ if (ViewBag.ComplaintsPending > 1)
         </thead>
         <tr>
             <td>Order Id</td>
+            <td>Ext Ord Id</td>
+            <td>Ref number</td>
             <td>Order Status</td>
+            <td>New Warehouse Status</td>
             <td>Product</td>
             <td>US Date</td>
             <td>User</td>
@@ -134,6 +141,8 @@ if (ViewBag.ComplaintsPending > 1)
                 },
                 "columns": [
                     { "data": "id", "name": "Id" },
+                    { "data": "extensiveOrderId", "name": "extensiveOrderId" },
+                    { "data": "extensiveReferenceId", "name": "extensiveReferenceId" },
                     {
                         "data": "orderStatus", "name": "OrderStatus",
                         "render": function (data) {
@@ -145,6 +154,7 @@ if (ViewBag.ComplaintsPending > 1)
                             }
                         }
                     },
+                    { "data": "toWarehouseStatus", "name": "toWarehouseStatus" },
                     { "data": "productName", "name": "ProductName" },
                     { "data": "stringDate", "name": "StringDate" },
                     { "data": "userNameToShow", "name": "UserNameToShow" },
@@ -191,7 +201,7 @@ if (ViewBag.ComplaintsPending > 1)
                             "merchType": "merchType"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Accepted' && data.isAdmin) {
+                            if (data.orderStatus == 'Accepted' /*&& data.isAdmin*/) {
                                 return `
                                                     <div class="text-center">
                                                         <a href="/VAs/OrderVA/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer">

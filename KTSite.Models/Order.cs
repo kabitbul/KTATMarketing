@@ -41,6 +41,7 @@ namespace KTSite.Models
         public string CustPhone { get; set; }
 
         public double Cost { get; set; }
+        public double OrdCharge { get; set; }
 
         public string Carrier { get; set; }
         public string TrackingNumber { get; set; }
@@ -66,6 +67,10 @@ namespace KTSite.Models
         public string MerchId { get; set; }
         [MaxLength(20)]
         public string MerchType { get; set; }//KT/External
+        [MaxLength(20)]// possible values: not handled;copied to warehouse;Tracking uploaded
+        public string ToWarehouseStatus { get; set; }// possible values: not handled;copied to warehouse
+        public int ExtensiveOrderId { get; set; }
+        public string ExtensiveReferenceId { get; set; }
         [NotMapped]
         [DefaultValue(false)]
         public bool isChecked { get; set; }

@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using KTSite.DataAccess.Data;
 using System.IO;
 using ExcelDataReader;
-using System.Drawing;
 using System.Data;
 
 namespace KTSite.Areas.VAs.Controllers
@@ -31,6 +30,7 @@ namespace KTSite.Areas.VAs.Controllers
         }
         public IActionResult Index()
         {
+           Console.WriteLine("******************");
             ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
             ViewBag.TaskFromAdmin = _unitOfWork.adminVATask.GetAll().Where(q => !q.TaskCompleted).
                     Join(_unitOfWork.ApplicationUser.GetAll().
@@ -148,19 +148,32 @@ namespace KTSite.Areas.VAs.Controllers
                     Text = i.ProductName,
                     Value = i.Id.ToString()
                 }),
-                StoresList = _unitOfWork.UserStoreName.GetAll().Where(q => q.IsAdminStore == true).Select(i => new SelectListItem
+                StoresList = _unitOfWork.UserStoreName.GetAll().
+                           //Where(q => q.IsAdminStore == true).
+                           Select(i => new SelectListItem
                 {
                     Text = i.StoreName,
                     Value = i.Id.ToString()
                 }),
                 StatesList = SD.States,
-                StatusList = SD.StatusAcceptOrCancel
+                StatusList = SD.StatusAcceptOrCancel,
+                ToWarehouseStatusList = SD.WarehouseStatusNotHandledOrCopied
             };
             ViewBag.UNameId = uNameId;
             ViewBag.sysDate = DateTime.Now;
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
             ViewBag.failed = false;
+            //if(orderVM.Orders.ProductId == 127 || orderVM.Orders.ProductId == 84 || 
+            //   orderVM.Orders.ProductId == 8 || orderVM.Orders.ProductId == 3 ||
+            //   orderVM.Orders.ProductId == 1)
+        //  if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+       //      {
+              ViewBag.toTexas = 1;
+       //      }
+        //     else{
+        //        ViewBag.toTexas = 0;
+        //    }
             return View(orderVM);
         }
         public IActionResult AddOrdersExtension()
@@ -241,6 +254,8 @@ namespace KTSite.Areas.VAs.Controllers
             {
                 orderList = orderList.Where(x => x.FullAddress.ToLower().Contains(searchValue.ToLower()) ||
                                             x.Id.ToString().Contains(searchValue.ToLower()) ||
+                                            x.ExtensiveOrderId.ToString().Contains(searchValue.ToLower()) ||
+                                            (!string.IsNullOrEmpty(x.ExtensiveReferenceId) && x.ExtensiveReferenceId.ToString().ToLower().Contains(searchValue.ToLower()))||                                            
                                             x.OrderStatus.ToLower().Contains(searchValue.ToLower()) ||
                                             x.ProductName.ToLower().Contains(searchValue.ToLower()) ||
                                             x.StringDate.ToLower().Contains(searchValue.ToLower()) ||
@@ -248,6 +263,7 @@ namespace KTSite.Areas.VAs.Controllers
                                             x.StoreName.ToLower().Contains(searchValue.ToLower()) ||
                                             x.Quantity.ToString().Contains(searchValue.ToLower()) ||
                                             x.Cost.ToString().Contains(searchValue.ToLower()) ||
+                                            (!string.IsNullOrEmpty(x.ToWarehouseStatus) && x.ToWarehouseStatus.ToString().ToLower().Contains(searchValue.ToLower()))||//texas
                                             (!string.IsNullOrEmpty(x.TrackingNumber) && x.TrackingNumber.ToString().Contains(searchValue.ToLower()))||
                                             (!string.IsNullOrEmpty(x.MerchType) && x.MerchType.ToString().Contains(searchValue.ToLower()))
                 ).ToList<Order>();
@@ -259,6 +275,14 @@ namespace KTSite.Areas.VAs.Controllers
                 if (sortColumnName.ToLower() == "id")
                 {
                     orderList = orderList.OrderByDescending(x => x.Id).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "extensiveorderid")
+                {
+                    orderList = orderList.OrderByDescending(x => x.ExtensiveOrderId).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "extensivereferenceid")
+                {
+                    orderList = orderList.OrderByDescending(x => x.ExtensiveReferenceId).ToList<Order>();
                 }
                 else if (sortColumnName.ToLower() == "orderstatus")
                 {
@@ -275,6 +299,10 @@ namespace KTSite.Areas.VAs.Controllers
                 else if (sortColumnName.ToLower() == "usernametoshow")
                 {
                     orderList = orderList.OrderByDescending(x => x.UserNameToShow).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "towarehousestatus")
+                {
+                    orderList = orderList.OrderByDescending(x => x.ToWarehouseStatus).ToList<Order>();
                 }
                 else if (sortColumnName.ToLower() == "storename")
                 {
@@ -307,6 +335,14 @@ namespace KTSite.Areas.VAs.Controllers
                 {
                     orderList = orderList.OrderBy(x => x.Id).ToList<Order>();
                 }
+                if (sortColumnName.ToLower() == "extensiveorderid")
+                {
+                    orderList = orderList.OrderBy(x => x.ExtensiveOrderId).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "extensivereferenceid")
+                {
+                    orderList = orderList.OrderBy(x => x.ExtensiveReferenceId).ToList<Order>();
+                }
                 else if (sortColumnName.ToLower() == "orderstatus")
                 {
                     orderList = orderList.OrderBy(x => x.OrderStatus).ToList<Order>();
@@ -322,6 +358,10 @@ namespace KTSite.Areas.VAs.Controllers
                 else if (sortColumnName.ToLower() == "usernametoshow")
                 {
                     orderList = orderList.OrderBy(x => x.UserNameToShow).ToList<Order>();
+                }
+                else if (sortColumnName.ToLower() == "towarehousestatus")
+                {
+                    orderList = orderList.OrderBy(x => x.ToWarehouseStatus).ToList<Order>();
                 }
                 else if (sortColumnName.ToLower() == "storename")
                 {
@@ -356,6 +396,13 @@ namespace KTSite.Areas.VAs.Controllers
                 order.AllowReturn = allowRetrun(order.Id.ToString());
                 order.isChecked = false;
             }
+            JsonResult js = Json(new
+            {
+                data = orderList,
+                draw = Request.Form["draw"],
+                recordsTotal = totalRows,
+                recordsFiltered = totalRowsAfterFiltering
+            });
             return Json(new
             {
                 data = orderList,
@@ -404,9 +451,43 @@ namespace KTSite.Areas.VAs.Controllers
                         orderVM.Orders.UserNameToShow = "Admin";
                         orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                         orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
-                        _unitOfWork.Order.Add(orderVM.Orders);
-                        updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                        updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                        //status ACCEPTED when products are in Texas- start
+                           bool toTexas = true;
+                        //if (orderVM.Orders.ProductId == 84 ||//Chest Sling Bag Black
+                        //    orderVM.Orders.ProductId == 127 ||//Ratchet Belt model 01 Black
+                        //    orderVM.Orders.ProductId == 8 ||//garlic press
+                        //    orderVM.Orders.ProductId == 3 ||//Plants 
+                        //    orderVM.Orders.ProductId == 1//Castor Serum by Shavit
+                        //   )
+                        //  if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+                         //  {
+                         //    toTexas = true;
+                         //   }
+                           // if(toTexas)
+                           // {
+                          //if store is not CJ and not AUTODS then its ebay
+                             if(orderVM.Orders.StoreName != "CJ" && 
+                                 orderVM.Orders.StoreName != "AutoDS" && 
+                                 orderVM.Orders.StoreName != "Amazon Tomer")
+                              { 
+                             orderVM.Orders.OrderStatus = SD.OrderStatusDone;
+                             orderVM.Orders.TrackingNumber = "1111111111111111111111";
+                             _unitOfWork.Order.Add(orderVM.Orders);
+                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                              }
+                                else
+                                 {
+                                  orderVM.Orders.ToWarehouseStatus = SD.toWarehouseStatusNotHandled;
+                                 _unitOfWork.Order.Add(orderVM.Orders);
+                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                                 }
+//}
+//                            else
+//                          {
+//                          _unitOfWork.Order.Add(orderVM.Orders);
+//                          updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+//                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+//                          }
                     }
                     catch
                     {
@@ -457,7 +538,7 @@ namespace KTSite.Areas.VAs.Controllers
             ViewBag.success = false;
             if (ModelState.IsValid)
             {
-                orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                //orderVM.Orders.Cost = returnCost(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                 if (isStoreAuthenticated(orderVM) && orderVM.Orders.UsDate <= DateTime.Now/* && orderVM.Orders.MerchId != SD.Kfir_Merch*/)
                 {
                     Order ord = _unitOfWork.Order.Get(orderVM.Orders.Id);
@@ -494,7 +575,13 @@ namespace KTSite.Areas.VAs.Controllers
                                 }
                             }
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
-                            orderVM.Orders.UserNameToShow = "Admin";
+                            if(orderVM.Orders.TrackingNumber != null)
+                             {
+                              orderVM.Orders.OrderStatus = SD.OrderStatusDone;
+                              orderVM.Orders.ToWarehouseStatus = SD.toWarehouseStatusOrderCompleted;
+                             }
+                           // orderVM.Orders.UserNameToShow = getUserNameToShow(orderVM.Orders.IsAdmin,
+                           //    orderVM.Orders.UserNameId);//texas
                             orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
                             orderVM.Orders.CustName = orderVM.Orders.CustName.Trim();
                             _unitOfWork.Order.update(orderVM.Orders);
@@ -539,6 +626,22 @@ namespace KTSite.Areas.VAs.Controllers
             };
             return View(orderVM2);
         }
+/// <summary>
+/// Texas
+/// </summary>
+/// <param name="isAdmin"></param>
+/// <returns></returns>
+public string getUserNameToShow(bool isAdmin, string userNameId)
+{
+   if(isAdmin)
+   {
+     return "Admin";
+   }
+   else
+   {
+     return _unitOfWork.ApplicationUser.Get(userNameId).Name;
+   }
+}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddOrdersExtension(OrderVM orderVM)
@@ -649,9 +752,32 @@ namespace KTSite.Areas.VAs.Controllers
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
                             orderVM.Orders.UserNameToShow = "Admin";
                             orderVM.Orders.StoreName = returnStoreName(orderVM.Orders.StoreNameId);
-                            _unitOfWork.Order.Add(orderVM.Orders);
-                            updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                            updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                            //*********
+                            //status ACCEPTED when products are in Texas- start
+                           bool toTexas = true;
+                        //if (orderVM.Orders.ProductId == 84 ||//Chest Sling Bag Black
+                        //    orderVM.Orders.ProductId == 127 ||//Ratchet Belt model 01 Black
+                        //    orderVM.Orders.ProductId == 8 ||//garlic press
+                        //    orderVM.Orders.ProductId == 3 ||//Plants 
+                        //    orderVM.Orders.ProductId == 1//Castor Serum by Shavit
+                         // if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+                         //  {
+                         //    toTexas = true;
+                         //   }
+                         //   if(toTexas)
+                         //   {
+                             orderVM.Orders.OrderStatus = SD.OrderStatusDone;
+                             orderVM.Orders.TrackingNumber = "1111111111111111111111";
+                             _unitOfWork.Order.Add(orderVM.Orders);
+                             updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                        //    }
+                          //  else
+                          //{
+                          //_unitOfWork.Order.Add(orderVM.Orders);
+                          //updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
+                          //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                          //}
+                           //**********
                                 //_unitOfWork.Save();
                                 _db.SaveChanges();
                                 dbContextTransaction.Commit();
@@ -728,7 +854,14 @@ namespace KTSite.Areas.VAs.Controllers
             bool isAdmin = _unitOfWork.UserStoreName.GetAll().Where
                 (a => a.Id == orderVM.Orders.StoreNameId).
                 Select(a => a.IsAdminStore).FirstOrDefault();
-            if (isAdmin)
+            bool toTexas = true; 
+            //if(orderVM.Orders.ProductId == 127 || orderVM.Orders.ProductId == 84 || orderVM.Orders.ProductId == 8 ||
+            //   orderVM.Orders.ProductId == 3 || orderVM.Orders.ProductId == 1)
+             //if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
+             //{
+            //  toTexas  = true;
+           // }
+            if (isAdmin || toTexas)
             {
                 return true;
             }
@@ -843,6 +976,8 @@ namespace KTSite.Areas.VAs.Controllers
             orderVM.Orders.OrderStatus = SD.OrderStatusAccepted;
             orderVM.Orders.MerchType = "";
             orderVM.Orders.MerchId = "";
+            orderVM.Orders.TrackingNumber = null;//texas
+          
         }
         public void updateInventory(int productId, int quantity)
         {
