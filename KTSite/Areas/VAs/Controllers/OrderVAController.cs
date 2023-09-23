@@ -30,7 +30,7 @@ namespace KTSite.Areas.VAs.Controllers
         }
         public IActionResult Index()
         {
-           Console.WriteLine("******************");
+           
             ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
             ViewBag.TaskFromAdmin = _unitOfWork.adminVATask.GetAll().Where(q => !q.TaskCompleted).
                     Join(_unitOfWork.ApplicationUser.GetAll().
