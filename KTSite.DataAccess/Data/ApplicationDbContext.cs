@@ -48,5 +48,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<ExcelUploadsForShops> ExcelUploadsForShopss { get; set; }
         public DbSet<UsersForAPI> UsersForAPIs { get; set; }
         public DbSet<BalanceUpdate> BalanceUpdates { get; set; }
+        public DbSet<InventoryOnTexas> InventoriesOnTexas { get; set; }
     }
 }

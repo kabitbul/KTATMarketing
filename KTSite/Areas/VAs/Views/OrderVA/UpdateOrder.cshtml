@@ -35,8 +35,15 @@
                             <span asp-validation-for="Orders.TrackingNumber" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-8">
-                        <input type="hidden" asp-for="Orders.OrderStatus" class="form-control" />
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Orders.OrderStatus">Order Status</label>
+                        </div>
+                        <div class="col-8">
+                            @Html.DropDownListFor(m => m.Orders.OrderStatus, Model.StatusList,
+                        new { @class = "form-control" })
+                            <span asp-validation-for="Orders.OrderStatus" class="text-danger"></span>
+                        </div>
                     </div>
                     <div class="col-8">
                         <input type="hidden" asp-for="Orders.ProductId" class="form-control" />

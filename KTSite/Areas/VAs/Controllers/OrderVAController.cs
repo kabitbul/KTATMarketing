@@ -554,7 +554,7 @@ namespace KTSite.Areas.VAs.Controllers
                             if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(oldProductId, oldQuantity * (-1));
-                                updateWarehouseBalance(oldQuantity * (-1), oldProductId);
+                                //updateWarehouseBalance(oldQuantity * (-1), oldProductId);
                                 // if it's a cancellation - we dont want any change but the cancellation it self
                                 orderVM.Orders = _unitOfWork.Order.Get(orderVM.Orders.Id);
                                 orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
@@ -563,7 +563,7 @@ namespace KTSite.Areas.VAs.Controllers
                             else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                             }
                             //status didnt change
                             else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
@@ -571,7 +571,7 @@ namespace KTSite.Areas.VAs.Controllers
                                 if (oldQuantity != orderVM.Orders.Quantity)
                                 {
                                     updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                    updateWarehouseBalance(orderVM.Orders.Quantity - oldQuantity, orderVM.Orders.ProductId);
+                                    //updateWarehouseBalance(orderVM.Orders.Quantity - oldQuantity, orderVM.Orders.ProductId);
                                 }
                             }
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);

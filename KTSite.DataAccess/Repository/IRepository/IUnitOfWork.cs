@@ -40,6 +40,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         ILogsDataRepository logsData  { get; }
         IExcelUploadsForShopsRepository excelUploadsForShops { get; }
         IUsersForAPIRepository UsersForAPI { get; }
+        IInventoryOnTexasRepository inventoryOnTexas { get; }
 
         void Save();
     }
