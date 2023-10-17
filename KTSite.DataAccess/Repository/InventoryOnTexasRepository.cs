@@ -24,7 +24,21 @@ namespace KTSite.DataAccess.Repository
         }
         public List<InventoryOnTexasSumList> GetInventoryOnTexasSum()
         {
-        var sql =  
+        var sql =
+               //                "SELECT SKU, SUM(AvailableQty) totalInventory " +
+               //"                FROM InventoriesOnTexas t ," +
+               //"                     (SELECT day(DateCreated) dayC, " +
+               //"                             month(DateCreated) monthC," +
+               //"                             YEAR(DateCreated) yearC," +
+               //"                             DATEPART(hour, DateCreated) hourC" +
+               //"                         FROM InventoriesOnTexas " +
+               //"                         WHERE Id = (SELECT MAX(Id) " +
+               //"                                     FROM InventoriesOnTexas)) t1" +
+               //"                 WHERE PalletId  > 0 AND" +
+               //"                       day(t.DateCreated) = t1.dayC AND " +
+               //"                       month(t.DateCreated) = t1.monthC AND YEAR(t.DateCreated) = t1.yearC AND" +
+               //"                       DATEPART(hour, t.DateCreated) = t1.hourC" +
+               //"                 GROUP BY SKU";
                "SELECT SKU, SUM(AvailableQty) totalInventory "+
                "FROM InventoriesOnTexas WHERE PalletId  > 0 "+
                "GROUP BY SKU";
