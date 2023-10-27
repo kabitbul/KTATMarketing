@@ -193,8 +193,10 @@
                 });
         }
                     $.fn.dataTable.ext.search.push(
+                        
                 function (settings, data, dataIndex) {
                     var status = data[5];
+                    
                     if (($('#Approved').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusApproved.ToString()') ||
                         ($('#Pending').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusPending.ToString()')||
                         ($('#Rejected').prop("checked") == true && status == '@KTSite.Utility.SD.PaymentStatusRejected.ToString()'))

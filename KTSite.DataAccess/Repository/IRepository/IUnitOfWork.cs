@@ -41,7 +41,9 @@ namespace KTSite.DataAccess.Repository.IRepository
         IExcelUploadsForShopsRepository excelUploadsForShops { get; }
         IUsersForAPIRepository UsersForAPI { get; }
         IInventoryOnTexasRepository inventoryOnTexas { get; }
-
+        IAsinToSkuRepository asinToSku { get; }
+        IAmazonOrdersRepository amazonOrders { get; }
+        IAmazonInventoryRepository amazonInventories { get; }
         void Save();
     }
 }

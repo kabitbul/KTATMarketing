@@ -23,6 +23,10 @@
     <Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.Designer.cs" />
     <Compile Remove="Migrations\20230202154832_addBalanceUpdate.cs" />
     <Compile Remove="Migrations\20230202154832_addBalanceUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.cs" />
+    <Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.Designer.cs" />
+    <Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.cs" />
+    <Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

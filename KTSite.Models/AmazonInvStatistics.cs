@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace KTSite.Models
+{
+    public class AmazonInvStatistics
+    {
+        public int Id { get; set; }
+        public string ImageUrl { get; set; }
+        public string sku { get; set; }
+        public string Asin { get; set; }
+        public string MarketPlace { get; set; }
+        public int AmzAvailQty { get; set; }
+        public int AmzInboundQty { get; set; }
+        public int warehouseAvailQty { get; set; }
+        public int warehouseOnTheWayQty { get; set; }
+        public int avg3days { get; set; }
+        public int avg7days { get; set; }
+        public int avgMonth { get; set; }
+        public int avg3daysEbay { get; set; }
+        public int daysToOOS { get; set; }
+        public bool needToOrderFromChina { get; set; }
+         public bool needToOSendFromWarehouse { get; set; }
+        public bool restockUS { get; set; }
+        public bool restockCA { get; set; }
+    }
+}

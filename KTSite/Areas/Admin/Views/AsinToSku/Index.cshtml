@@ -1,0 +1,43 @@
+﻿@model IEnumerable<AsinToSku>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-primary">Asin To Sku </h2>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-6 text-right">
+        <a class="btn btn-primary" asp-action="AddAsinToSku" style="background-color:forestgreen"><i class="fas fa-plus"></i> &nbsp; Add Asin-Sku</a>
+    </div>
+</div>
+<br />
+<div class="p-5 border rounded" style="width:50%">
+    <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+        <thead class="thead-dark">
+            <tr class="table-info">
+                <th>Asin</th>
+                <th>SKU</th>
+            </tr>
+        </thead>
+        @foreach (AsinToSku ask in Model)
+        {
+            <tr>
+
+                <td>@ask.Asin</td>
+                <td>@ask.Sku</td>
+            </tr>
+        }
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#tblData').DataTable({ "order": [[0, "asc"]], "pageLength": 100 });
+        });</script>
+    }

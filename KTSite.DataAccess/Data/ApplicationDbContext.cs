@@ -49,5 +49,8 @@ namespace KTSite.DataAccess.Data
         public DbSet<UsersForAPI> UsersForAPIs { get; set; }
         public DbSet<BalanceUpdate> BalanceUpdates { get; set; }
         public DbSet<InventoryOnTexas> InventoriesOnTexas { get; set; }
+        public DbSet<AsinToSku> AsinToSku { get; set; }
+        public DbSet<AmazonOrders> AmazonOrders { get; set; }
+        public DbSet<AmazonInventory> AmazonInventories { get; set; }
     }
 }

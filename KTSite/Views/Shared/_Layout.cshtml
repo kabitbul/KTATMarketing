@@ -41,9 +41,22 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.IsInRole(SD.Role_Admin))
                         {
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Home</a>
-            </li>
+            @*<li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">Amazon</a>
+            </li>*@
+             <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Amazon
+                   </a>
+                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                     <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">US Inventory</a>
+                     <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="CAInv">CA Inventory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
+                  </div>
+             </li>
+
+
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Users

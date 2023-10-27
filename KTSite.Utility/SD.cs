@@ -6,6 +6,10 @@ namespace KTSite.Utility
     public static class SD
     { //"bbdf3f79-0414-45bb-88a1-a5a57af0cc4b"; ktktkt merch id in test env
         //"954af016-4664-4048-96ba-c7f02de9738e" userTesting id in test env
+        //AMAZON
+        public const int amzWarehouseShipDays =  21;
+        public const int amzChinaShipDays =  100;
+        //AMAZON END
         public const string Kfir_Merch = "2f85dc2e-c6ab-4523-aa51-f4a5814e518d";//KfirLogicAdded
         public const string Kfir_Buyer = "76fbc16f-d46e-4cba-ad59-c00045ffa711";// KfirLogicAdded
         public const int FBMP_FEE = 0;

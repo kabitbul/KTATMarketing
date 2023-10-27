@@ -46,6 +46,9 @@ namespace KTSite.DataAccess.Repository
             excelUploadsForShops = new ExcelUploadsForShopsRepository(_db);
             UsersForAPI = new UsersForAPIRepository(_db);
             inventoryOnTexas = new InventoryOnTexasRepository(_configuration);
+            asinToSku = new AsinToSkuRepository(_configuration);
+            amazonOrders = new AmazonOrdersRepository(_configuration);
+            amazonInventories = new AmazonInventoryRepository(_configuration);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
@@ -81,6 +84,9 @@ namespace KTSite.DataAccess.Repository
         public IExcelUploadsForShopsRepository excelUploadsForShops { get; private set; }
         public IUsersForAPIRepository UsersForAPI { get; private set; }
         public IInventoryOnTexasRepository inventoryOnTexas { get; private set; }
+        public IAsinToSkuRepository asinToSku { get; private set; }
+        public IAmazonOrdersRepository amazonOrders { get; private set; }
+        public IAmazonInventoryRepository amazonInventories { get; private set; }
 
         public void Dispose()
         {

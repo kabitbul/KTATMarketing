@@ -4,14 +4,16 @@ using KTSite.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KTSite.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231019075351_addmaxLengthToAmazonOrdId2")]
+    partial class addmaxLengthToAmazonOrdId2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,43 +46,6 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("adminVaTasks");
-                });
-
-            modelBuilder.Entity("KTSite.Models.AmazonInventory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Asin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
-
-                    b.Property<int>("AvailableQty")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InboundReceivingQty")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InboundShippedQty")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MarketPlace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
-
-                    b.Property<int>("ReservedQty")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AmazonInventories");
                 });
 
             modelBuilder.Entity("KTSite.Models.AmazonOrders", b =>
@@ -155,14 +120,7 @@ namespace KTSite.DataAccess.Migrations
 
                     b.Property<string>("Asin")
                         .IsRequired()
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
-
-                    b.Property<bool>("RestockCA")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("RestockUS")
-                        .HasColumnType("bit");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sku")
                         .HasColumnType("nvarchar(max)");
