@@ -52,5 +52,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<AsinToSku> AsinToSku { get; set; }
         public DbSet<AmazonOrders> AmazonOrders { get; set; }
         public DbSet<AmazonInventory> AmazonInventories { get; set; }
+        public DbSet<FBAFromWarehouse> FBAFromWarehouses { get; set; }
     }
 }

@@ -121,7 +121,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult UpdateOrder(int id)
         {
-            string uNameId = "";
+                string uNameId = "";
             string uName = "";
             uNameId = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.Id)).FirstOrDefault();
             uName = (_unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).Select(q => q.UserName)).FirstOrDefault();
@@ -153,7 +153,7 @@ namespace KTSite.Areas.Admin.Controllers
             //   orderVM.Orders.ProductId == 1)
            // if(SD.SKUIds.IndexOf(orderVM.Orders.ProductId) != -1)
            //  {
-                ViewBag.toTexas = 1;
+                ViewBag.toTexas = 0;
          //    }
           //   else
           //   {
@@ -528,10 +528,18 @@ namespace KTSite.Areas.Admin.Controllers
                         {
                                 updateInventory(oldProductId, oldQuantity * (-1));
                             
-                            updateWarehouseBalance(oldQuantity*(-1), oldProductId);
+                           updateWarehouseBalance(oldQuantity*(-1), oldProductId);
                             // if it's a cancellation - we dont want any change but the cancellation it self
                                 orderVM.Orders = _unitOfWork.Order.Get(orderVM.Orders.Id);
                                 orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
+                               //if its a user, add balance back
+                                if(!orderVM.Orders.IsAdmin)
+                                  {
+                                    PaymentBalance userBalance = _unitOfWork.PaymentBalance.GetAll().
+                                            Where(a => a.UserNameId == orderVM.Orders.UserNameId).FirstOrDefault();
+                                    userBalance.Balance = userBalance.Balance + 
+                                                          orderVM.Orders.Cost;
+                                  }
                         }
                         //change from cancel
                         else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
@@ -541,7 +549,14 @@ namespace KTSite.Areas.Admin.Controllers
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
                           
                             updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                        }    
+                            if(!orderVM.Orders.IsAdmin)
+                                  {
+                                    PaymentBalance userBalance = _unitOfWork.PaymentBalance.GetAll().
+                                            Where(a => a.UserNameId == orderVM.Orders.UserNameId).FirstOrDefault();
+                                    userBalance.Balance = userBalance.Balance - 
+                                                          orderVM.Orders.Cost;
+                                  }                       
+ }    
                         //status didnt change
                         else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
                         {
@@ -935,12 +950,12 @@ namespace KTSite.Areas.Admin.Controllers
         public void updateWarehouseBalance(int quantity, int productId)
         {
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+            //PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
             if(product.MerchType == SD.Role_KTMerch)
             {
                 //pay warehouse
                 //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+              //  warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
                 //pay merch --product cost minus shipping minus feeprecent SD.FeesOfKTMerch
                 PaymentBalanceMerch KTMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 double totalProfit = 0.0;
@@ -955,16 +970,16 @@ namespace KTSite.Areas.Admin.Controllers
                 PaymentBalanceMerch EXMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 EXMerchPaymentBalance.Balance = EXMerchPaymentBalance.Balance + (product.SellersCost * quantity * (1 - SD.FeesOfEXMerch)); 
             }
-             else if (product.OwnByWarehouse)
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
-            }
-            else
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
-            }
+            // else if (product.OwnByWarehouse)
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
+            //}
+            //else
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+            //}
         }
         
         #region API CALLS

@@ -26,10 +26,20 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.Asin, a.Sku, a.RestockUS, a.RestockCA " + 
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA " + 
                 " FROM AsinToSku a";
 
             List<AsinToSku> lst = _db.Query<AsinToSku>(sql).ToList();
+            return lst;
+        }
+        public AsinToSku GetById(int id)
+        {
+         
+            var sql =
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA " + 
+                " FROM AsinToSku a WHERE a.Id = " + id;
+
+            AsinToSku lst = _db.Query<AsinToSku>(sql).Single();
             return lst;
         }
         public int updateRestockStatus(string sql)
@@ -43,12 +53,28 @@ namespace KTSite.DataAccess.Repository
                 return 0;
             }
         }
-public bool InsertAsinToSku(string asin, string sku)
+        public int updateById(int id , string asin, string sku, string chinaName)
+        {
+            try
+            {
+                var sql =  " UPDATE AsinToSku " +
+  "                               SET Asin = '"+asin+"' , Sku = '"+sku+"', " +
+"                                     ChinaName = '"+chinaName+"' " +
+  "                               WHERE Id = " + id; 
+                return _db.Execute(sql);
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+public bool InsertAsinToSku(string asin, string sku, string chinaName)
         {
           try
             {
               var sql =  
-                "INSERT INTO AsinToSku VALUES(+'"+asin+"' , '"+sku+"',1,1) ";
+                "INSERT INTO AsinToSku (Asin, Sku, ChinaName, RestockCA,RestockUS)VALUES" +
+              "('"+asin+"' , '"+sku+"', '"+chinaName+"',1,1) ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

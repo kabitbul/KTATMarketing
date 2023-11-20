@@ -116,7 +116,7 @@ namespace KTSite.Areas.Admin.Controllers
              //if number of items that expected to be sold is less then
             // our total inventory in watrhouse + amazon + on the way
              if((SD.amzChinaShipDays*dailySales) >= (obj.warehouseOnTheWayQty +
-                                                     obj.warehouseAvailQty +
+                                                    (obj.warehouseAvailQty < 0 ? 0 : obj.warehouseAvailQty)  +
                                                      obj.AmzAvailQty + 
                                                       obj.AmzInboundQty))
               return true;

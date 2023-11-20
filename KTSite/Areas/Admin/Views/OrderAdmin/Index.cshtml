@@ -178,7 +178,7 @@
                             "merchType": "merchType"
                         },
                         "render": function (data) {
-                            if (data.orderStatus == 'Accepted' /*&& data.isAdmin*/) {
+                            if (data.orderStatus == 'Accepted' || data.orderStatus == 'In Progress') {
                                 return `
                                 <div class="text-center">
                                     <a href="/Admin/OrderAdmin/UpdateOrder/${data.id}" class="btn btn-success text-white" style="cursor:pointer" data-toggle="tooltip" data-placement="top" title="Edit Order">

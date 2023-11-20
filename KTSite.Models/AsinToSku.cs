@@ -18,6 +18,7 @@ namespace KTSite.Models
         [MaxLength(15)]
         public string Asin { get; set; }
         public string Sku { get; set; }
+        public string ChinaName { get; set; }
         [DefaultValue(true)]
          public bool RestockUS { get; set; }
          [DefaultValue(true)]

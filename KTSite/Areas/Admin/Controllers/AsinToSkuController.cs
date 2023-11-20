@@ -29,9 +29,11 @@ namespace KTSite.Areas.Admin.Controllers
           
             return View(lst);
         }
-        public IActionResult AddAsinToSku()
+   public IActionResult Upsert(int id)
         {
-          AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
+            ViewBag.ShowMsg = false;
+            ViewBag.success = true;
+            AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
             {
                 AsinToSku = new AsinToSku(),
                 ProductList = _unitOfWork.Product.GetAll().
@@ -41,16 +43,37 @@ namespace KTSite.Areas.Admin.Controllers
                     Value = i.ProductName
                 })
             };
-            ViewBag.ShowMsg = false;
-            ViewBag.failed = false;
-            ViewBag.success = true;
+            if(id == 0)//create
+            {
+                return View(asinToSkuVM);
+            }
+            asinToSkuVM.AsinToSku = _unitOfWork.asinToSku.GetById(id);
+            if (asinToSkuVM.AsinToSku == null)
+            {
+                return NotFound();
+            }
             return View(asinToSkuVM);
         }
-        
-         
-       [HttpPost]
+        //public IActionResult AddAsinToSku()
+        //{
+        //  AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
+        //    {
+        //        AsinToSku = new AsinToSku(),
+        //        ProductList = _unitOfWork.Product.GetAll().
+        //        OrderBy(a => a.ProductName).Select(i => new SelectListItem
+        //        {
+        //            Text = i.ProductName,
+        //            Value = i.ProductName
+        //        })
+        //    };
+        //    ViewBag.ShowMsg = false;
+        //    ViewBag.failed = false;
+        //    ViewBag.success = true;
+        //    return View(asinToSkuVM);
+        //}
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddAsinToSku(AsinToSkuVM asinToSkuVM)
+        public IActionResult Upsert(AsinToSkuVM asinToSkuVM)
         {
             AsinToSkuVM asinToSkuVM2 = new AsinToSkuVM()
             {
@@ -65,8 +88,11 @@ namespace KTSite.Areas.Admin.Controllers
                          
             if (ModelState.IsValid)
             {
-               bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
-                                                      asinToSkuVM.AsinToSku.Sku);
+               if( asinToSkuVM.AsinToSku.Id == 0)
+                { 
+                   bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
+                                                      asinToSkuVM.AsinToSku.Sku,
+                                                      asinToSkuVM.AsinToSku.ChinaName);
                if(res)
                 { 
                   ViewBag.success = true;    
@@ -79,6 +105,26 @@ namespace KTSite.Areas.Admin.Controllers
                   ViewBag.failed = true;
                   ViewBag.ShowMsg = true;
                 }
+               }
+              else
+              {
+                 int res = _unitOfWork.asinToSku.updateById(asinToSkuVM.AsinToSku.Id,
+                                                             asinToSkuVM.AsinToSku.Asin,
+                                                             asinToSkuVM.AsinToSku.Sku,
+                                                             asinToSkuVM.AsinToSku.ChinaName);
+               if(res == 1)
+                { 
+                  ViewBag.success = true;    
+                  ViewBag.failed = false;
+                  ViewBag.ShowMsg = true;
+                }
+                else
+                {
+                  ViewBag.success = false;    
+                  ViewBag.failed = true;
+                  ViewBag.ShowMsg = true;
+                } 
+               }
              }
              else
              {
@@ -89,6 +135,49 @@ namespace KTSite.Areas.Admin.Controllers
            
             return View(asinToSkuVM2);
         }
+         
+       //[HttpPost]
+       // [ValidateAntiForgeryToken]
+       // public IActionResult AddAsinToSku(AsinToSkuVM asinToSkuVM)
+       // {
+       //     AsinToSkuVM asinToSkuVM2 = new AsinToSkuVM()
+       //     {
+       //         AsinToSku = new AsinToSku(),
+       //         ProductList =  _unitOfWork.Product.GetAll().
+       //         OrderBy(a => a.ProductName).Select(i => new SelectListItem
+       //         {
+       //             Text = i.ProductName,
+       //             Value = i.ProductName
+       //         })
+       //     };
+                         
+       //     if (ModelState.IsValid)
+       //     {
+       //        bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
+       //                                               asinToSkuVM.AsinToSku.Sku,
+       //                                               asinToSkuVM.AsinToSku.ChinaName);
+       //        if(res)
+       //         { 
+       //           ViewBag.success = true;    
+       //           ViewBag.failed = false;
+       //           ViewBag.ShowMsg = true;
+       //         }
+       //         else
+       //         {
+       //           ViewBag.success = false;    
+       //           ViewBag.failed = true;
+       //           ViewBag.ShowMsg = true;
+       //         }
+       //      }
+       //      else
+       //      {
+       //       ViewBag.success = false;    
+       //         ViewBag.failed = true;
+       //        ViewBag.ShowMsg = false;
+       //     }
+           
+       //     return View(asinToSkuVM2);
+       // }
        
         #region API CALLS
         [HttpGet]
