@@ -468,7 +468,8 @@ namespace KTSite.Areas.VAs.Controllers
                           //if store is not CJ and not AUTODS then its ebay
                              if(orderVM.Orders.StoreName != "CJ" && 
                                  orderVM.Orders.StoreName != "AutoDS" && 
-                                 orderVM.Orders.StoreName != "Amazon Tomer")
+                                 orderVM.Orders.StoreName != "Amazon Tomer" &&
+                                 orderVM.Orders.StoreName != "General Adjustments")
                               { 
                              orderVM.Orders.OrderStatus = SD.OrderStatusDone;
                              orderVM.Orders.TrackingNumber = "1111111111111111111111";
@@ -486,7 +487,7 @@ namespace KTSite.Areas.VAs.Controllers
 //                          {
 //                          _unitOfWork.Order.Add(orderVM.Orders);
 //                          updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-//                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
 //                          }
                     }
                     catch
@@ -554,7 +555,7 @@ namespace KTSite.Areas.VAs.Controllers
                             if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(oldProductId, oldQuantity * (-1));
-                                //updateWarehouseBalance(oldQuantity * (-1), oldProductId);
+                                updateWarehouseBalance(oldQuantity * (-1), oldProductId);
                                 // if it's a cancellation - we dont want any change but the cancellation it self
                                 orderVM.Orders = _unitOfWork.Order.Get(orderVM.Orders.Id);
                                 orderVM.Orders.OrderStatus = SD.OrderStatusCancelled;
@@ -563,7 +564,7 @@ namespace KTSite.Areas.VAs.Controllers
                             else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                                updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                             }
                             //status didnt change
                             else if (orderVM.Orders.OrderStatus == oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled)
@@ -571,7 +572,7 @@ namespace KTSite.Areas.VAs.Controllers
                                 if (oldQuantity != orderVM.Orders.Quantity)
                                 {
                                     updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                    //updateWarehouseBalance(orderVM.Orders.Quantity - oldQuantity, orderVM.Orders.ProductId);
+                                    updateWarehouseBalance(orderVM.Orders.Quantity - oldQuantity, orderVM.Orders.ProductId);
                                 }
                             }
                             orderVM.Orders.ProductName = returnProductName(orderVM.Orders.ProductId);
@@ -775,7 +776,7 @@ public string getUserNameToShow(bool isAdmin, string userNameId)
                           //{
                           //_unitOfWork.Order.Add(orderVM.Orders);
                           //updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                          //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                           //}
                            //**********
                                 //_unitOfWork.Save();
@@ -988,12 +989,12 @@ public string getUserNameToShow(bool isAdmin, string userNameId)
         public void updateWarehouseBalance(int quantity, int productId)
         {
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+           // PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
             if (product.MerchType == SD.Role_KTMerch)
             {
                 //pay warehouse
                 //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+                //warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
                 //pay merch --product cost minus shipping minus feeprecent SD.FeesOfKTMerch
                 PaymentBalanceMerch KTMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 double totalProfit = 0.0;
@@ -1008,16 +1009,16 @@ public string getUserNameToShow(bool isAdmin, string userNameId)
                 PaymentBalanceMerch EXMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 EXMerchPaymentBalance.Balance = EXMerchPaymentBalance.Balance + (product.SellersCost * quantity * (1 - SD.FeesOfEXMerch));
             }
-            else if (product.OwnByWarehouse)
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
-            }
-            else
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
-            }
+            //else if (product.OwnByWarehouse)
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
+            //}
+            //else
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+            //}
         }
 
         #region API CALLS

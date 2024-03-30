@@ -446,7 +446,8 @@ namespace KTSite.Areas.Admin.Controllers
                           //if store is not CJ and not AUTODS then its ebay
                              if(orderVM.Orders.StoreName != "CJ" && 
                                  orderVM.Orders.StoreName != "AutoDS" &&
-                                 orderVM.Orders.StoreName != "Amazon Tomer")
+                                 orderVM.Orders.StoreName != "Amazon Tomer" &&
+                                 orderVM.Orders.StoreName != "General Adjustments")
                               { 
                              orderVM.Orders.OrderStatus = SD.OrderStatusDone;
                              orderVM.Orders.TrackingNumber = "1111111111111111111111";
@@ -464,7 +465,7 @@ namespace KTSite.Areas.Admin.Controllers
                           //{
                           //_unitOfWork.Order.Add(orderVM.Orders);
                           //updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                          //updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                           //}
                     }
                     catch
@@ -540,6 +541,7 @@ namespace KTSite.Areas.Admin.Controllers
                                     userBalance.Balance = userBalance.Balance + 
                                                           orderVM.Orders.Cost;
                                   }
+                              // if its ktMerch - 
                         }
                         //change from cancel
                         else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
@@ -742,7 +744,7 @@ namespace KTSite.Areas.Admin.Controllers
                        //   {
                        //   _unitOfWork.Order.Add(orderVM.Orders);
                        //   updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                       //   updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
+                          updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
                        //   }                       
                             _unitOfWork.Save();
                             processedLines++;

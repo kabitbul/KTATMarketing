@@ -434,10 +434,10 @@ namespace KTSite.Areas.UserRole.Controllers
                                 updateSellerBalance(orderVM.Orders.Cost);
                             }
                             //updateSellerBalance(orderVM.Orders.Cost);
-                            if(!toTexas)
-                            {
+                           // if(!toTexas)
+                           // {
                              updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                            }
+                           // }
                              //_unitOfWork.Save();
                             _db.SaveChanges();
                             dbContextTransaction.Commit();
@@ -514,9 +514,9 @@ namespace KTSite.Areas.UserRole.Controllers
                             if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(oldProductId, oldQuantity * (-1));
-                                if(!toTexas){ 
+                              //  if(!toTexas){ 
                                 updateWarehouseBalance(oldQuantity * (-1), oldProductId);
-                                }
+                               // }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(oldCost * (-1) - (SD.FBMP_FEE * oldQuantity));
@@ -534,9 +534,9 @@ namespace KTSite.Areas.UserRole.Controllers
                             else if (orderVM.Orders.OrderStatus != oldStatus && orderVM.Orders.OrderStatus != SD.OrderStatusCancelled && oldStatus == SD.OrderStatusCancelled)
                             {
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                if(!toTexas){ 
+                              // if(!toTexas){ 
                                   updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                                 }
+                                // }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
@@ -554,9 +554,9 @@ namespace KTSite.Areas.UserRole.Controllers
                                 if (oldQuantity != orderVM.Orders.Quantity)
                                 {
                                     updateInventory(orderVM.Orders.ProductId, (orderVM.Orders.Quantity - oldQuantity));
-                                    if(!toTexas){ 
+                              //      if(!toTexas){ 
                                      updateWarehouseBalance((orderVM.Orders.Quantity - oldQuantity), orderVM.Orders.ProductId);
-                                      }
+                                //      }
                                     if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                     {
                                         orderVM.Orders.Cost = orderVM.Orders.Cost + (SD.FBMP_FEE * (orderVM.Orders.Quantity - oldQuantity));
@@ -782,9 +782,9 @@ namespace KTSite.Areas.UserRole.Controllers
                                 //   }
                                 _unitOfWork.Order.Add(orderVM.Orders);
                                 updateInventory(orderVM.Orders.ProductId, orderVM.Orders.Quantity);
-                                if (!toTexas){
+                            //    if (!toTexas){
                                    updateWarehouseBalance(orderVM.Orders.Quantity, orderVM.Orders.ProductId);
-                                 }
+                              //   }
                                 if (uNameId == SD.FBMP_USER_HAY || uNameId == SD.FBMP_USER_BENNY)
                                 {
                                     updateSellerBalance(orderVM.Orders.Cost + (orderVM.Orders.Quantity * SD.FBMP_FEE));
@@ -1123,12 +1123,12 @@ namespace KTSite.Areas.UserRole.Controllers
         public void updateWarehouseBalance(int quantity, int productId)
         {
             Product product = _unitOfWork.Product.GetAll().Where(a => a.Id == productId).FirstOrDefault();
-            PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
+          //  PaymentBalance warehousePaymentBalance = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).FirstOrDefault();
             if (product.MerchType == SD.Role_KTMerch)
             {
                 //pay warehouse
                 //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
                 //pay merch --product cost minus shipping minus feeprecent SD.FeesOfKTMerch
                 PaymentBalanceMerch KTMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 double totalProfit = 0.0;
@@ -1150,16 +1150,16 @@ namespace KTSite.Areas.UserRole.Controllers
                 PaymentBalanceMerch EXMerchPaymentBalance = _unitOfWork.PaymentBalanceMerch.GetAll().Where(a => a.UserNameId == product.MerchId).FirstOrDefault();
                 EXMerchPaymentBalance.Balance = EXMerchPaymentBalance.Balance + (product.SellersCost * quantity * (1 - SD.FeesOfEXMerch));
             }
-            else if (product.OwnByWarehouse)
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
-            }
-            else
-            {
-                //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
-                warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
-            }
+            //else if (product.OwnByWarehouse)
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost_warehouse_items+product.Cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge + product.Cost));
+            //}
+            //else
+            //{
+            //    //paymentBalance.Balance = paymentBalance.Balance - (quantity * (SD.shipping_cost));
+            //    warehousePaymentBalance.Balance = warehousePaymentBalance.Balance - (quantity * (product.ShippingCharge));
+            //}
         }
         [HttpPost]
         public IActionResult TrackUpdate(int[] Ids)

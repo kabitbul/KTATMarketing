@@ -53,5 +53,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<AmazonOrders> AmazonOrders { get; set; }
         public DbSet<AmazonInventory> AmazonInventories { get; set; }
         public DbSet<FBAFromWarehouse> FBAFromWarehouses { get; set; }
+        public DbSet<ProductOLD> ProductOLD { get; set; }
     }
 }
