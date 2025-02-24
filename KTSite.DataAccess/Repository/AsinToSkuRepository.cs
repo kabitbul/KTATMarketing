@@ -26,7 +26,7 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA " + 
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl" + 
                 " FROM AsinToSku a";
 
             List<AsinToSku> lst = _db.Query<AsinToSku>(sql).ToList();
@@ -36,7 +36,7 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA " + 
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl" + 
                 " FROM AsinToSku a WHERE a.Id = " + id;
 
             AsinToSku lst = _db.Query<AsinToSku>(sql).Single();
@@ -53,13 +53,14 @@ namespace KTSite.DataAccess.Repository
                 return 0;
             }
         }
-        public int updateById(int id , string asin, string sku, string chinaName)
+        public int updateById(int id , string asin, string sku, string chinaName, string imageUrl)
         {
             try
             {
                 var sql =  " UPDATE AsinToSku " +
   "                               SET Asin = '"+asin+"' , Sku = '"+sku+"', " +
-"                                     ChinaName = '"+chinaName+"' " +
+"                                     ChinaName = '"+chinaName+"', " +
+"                                     ImageUrl = '"+imageUrl+"' " +
   "                               WHERE Id = " + id; 
                 return _db.Execute(sql);
             }
@@ -68,13 +69,13 @@ namespace KTSite.DataAccess.Repository
                 return 0;
             }
         }
-public bool InsertAsinToSku(string asin, string sku, string chinaName)
+public bool InsertAsinToSku(string asin, string sku, string chinaName, string imageUrl)
         {
           try
             {
               var sql =  
-                "INSERT INTO AsinToSku (Asin, Sku, ChinaName, RestockCA,RestockUS)VALUES" +
-              "('"+asin+"' , '"+sku+"', '"+chinaName+"',1,1) ";
+                "INSERT INTO AsinToSku (Asin, Sku, ChinaName, RestockCA,RestockUS,ImageUrl)VALUES" +
+              "('"+asin+"' , '"+sku+"', '"+chinaName+"',1,1, '"+imageUrl+"') ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

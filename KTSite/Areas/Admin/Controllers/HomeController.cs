@@ -27,57 +27,58 @@ namespace KTSite.Areas.Admin.Controllers
         {
             if(User.IsInRole(SD.Role_Admin))
             {
-                IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible).OrderByDescending(a => a.DateMsg);
-                ViewBag.NotificationList = NotList;
-                if (NotList != null && NotList.Count() > 0)
-                {
-                    ViewBag.NotificationEmpty = false;
-                }
-                else
-                {
-                    ViewBag.NotificationEmpty = true;
+               return Redirect("Admin/AmazonInventory");
+            //    IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible).OrderByDescending(a => a.DateMsg);
+            //    ViewBag.NotificationList = NotList;
+            //    if (NotList != null && NotList.Count() > 0)
+            //    {
+            //        ViewBag.NotificationEmpty = false;
+            //    }
+            //    else
+            //    {
+            //        ViewBag.NotificationEmpty = true;
 
-                }
-                ViewBag.Name = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
-                    Select(q => q.Name).FirstOrDefault();
-                //ViewBag.OrdersFromChina =_unitOfWork.ChinaOrder.GetAll().
-                //    Where(a => a.DateOrdered.Date <= (DateTime.Now.AddDays(-45).Date)
-                //  && a.QuantityReceived == 0).Count();
-                ViewBag.WarehouseBalanceLow = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
-                    Select(a => a.Balance).FirstOrDefault();
-                ViewBag.CountPendingPayments = _unitOfWork.PaymentHistory.GetAll().
-                    Where(a => a.Status == SD.PaymentStatusPending).Count();
-                ViewBag.TaskFromVA = _unitOfWork.adminVATask.GetAll().Where(q=>!q.TaskCompleted).
-                    Join(_unitOfWork.ApplicationUser.GetAll().
-                Where(a => a.Role == SD.Role_VAs),
-                                             adminVATask => adminVATask.UserNameId,
-                                             applicationUser => applicationUser.Id,
-                                             (adminVATask, applicationUser) => new
-                                             {
-                                                 adminVATask
-                                             }).Select(a => a.adminVATask).Count();
-                ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
-                ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
-                ViewBag.PendingApprovalProducts = _unitOfWork.Product.GetAll().Where(a => a.AdminApproval == SD.MerchProductStatusPending).Count();
-                var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0 && a.MerchId == null);
-                double totalInventoryValue = 0; 
-                foreach(Product prod in product)
-                {
-                    if (!prod.OwnByWarehouse && prod.Id != 60 && prod.Id != 61)// Daniel Items (Dropshipping)
-                    {
-                        totalInventoryValue = totalInventoryValue + ((prod.InventoryCount + prod.OnTheWayInventory) * prod.Cost);
-                    }
-                }
-                ViewBag.totalInventoryValue = totalInventoryValue;
-                ViewBag.CountArrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().
-                    Where(a => !a.UpdatedByAdmin && a.Quantity != 0).Count();
-                //stack chart user\admin
-                List<DataPoint> dataPointsUser = new List<DataPoint>();
-                List<DataPoint> dataPointsAdmin = new List<DataPoint>();
-                getStackGraphData2(dataPointsUser, dataPointsAdmin);
-                ViewBag.DataPointsUser = JsonConvert.SerializeObject(dataPointsUser);
-                ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(dataPointsAdmin);
-                return View();
+            //    }
+            //    ViewBag.Name = _unitOfWork.ApplicationUser.GetAll().Where(q => q.UserName == User.Identity.Name).
+            //        Select(q => q.Name).FirstOrDefault();
+            //    //ViewBag.OrdersFromChina =_unitOfWork.ChinaOrder.GetAll().
+            //    //    Where(a => a.DateOrdered.Date <= (DateTime.Now.AddDays(-45).Date)
+            //    //  && a.QuantityReceived == 0).Count();
+            //    ViewBag.WarehouseBalanceLow = _unitOfWork.PaymentBalance.GetAll().Where(a => a.IsWarehouseBalance).
+            //        Select(a => a.Balance).FirstOrDefault();
+            //    ViewBag.CountPendingPayments = _unitOfWork.PaymentHistory.GetAll().
+            //        Where(a => a.Status == SD.PaymentStatusPending).Count();
+            //    ViewBag.TaskFromVA = _unitOfWork.adminVATask.GetAll().Where(q=>!q.TaskCompleted).
+            //        Join(_unitOfWork.ApplicationUser.GetAll().
+            //    Where(a => a.Role == SD.Role_VAs),
+            //                                 adminVATask => adminVATask.UserNameId,
+            //                                 applicationUser => applicationUser.Id,
+            //                                 (adminVATask, applicationUser) => new
+            //                                 {
+            //                                     adminVATask
+            //                                 }).Select(a => a.adminVATask).Count();
+            //    ViewBag.ComplaintsPending = _unitOfWork.Complaints.GetAll().Where(a => !a.WarehouseResponsibility && !a.Solved).Count();
+            //    ViewBag.ReturnLabelRefund = _unitOfWork.ReturnLabel.GetAll().Where(a => a.ReturnDelivered && !returnIsRefunded(a.OrderId)).Count();
+            //    ViewBag.PendingApprovalProducts = _unitOfWork.Product.GetAll().Where(a => a.AdminApproval == SD.MerchProductStatusPending).Count();
+            //    var product = _unitOfWork.Product.GetAll().Where(a => (a.InventoryCount + a.OnTheWayInventory) > 0 && a.MerchId == null);
+            //    double totalInventoryValue = 0; 
+            //    foreach(Product prod in product)
+            //    {
+            //        if (!prod.OwnByWarehouse && prod.Id != 60 && prod.Id != 61)// Daniel Items (Dropshipping)
+            //        {
+            //            totalInventoryValue = totalInventoryValue + ((prod.InventoryCount + prod.OnTheWayInventory) * prod.Cost);
+            //        }
+            //    }
+            //    ViewBag.totalInventoryValue = totalInventoryValue;
+            //    ViewBag.CountArrivingFromChina = _unitOfWork.ArrivingFromChina.GetAll().
+            //        Where(a => !a.UpdatedByAdmin && a.Quantity != 0).Count();
+            //    //stack chart user\admin
+            //    List<DataPoint> dataPointsUser = new List<DataPoint>();
+            //    List<DataPoint> dataPointsAdmin = new List<DataPoint>();
+            //    getStackGraphData2(dataPointsUser, dataPointsAdmin);
+            //    ViewBag.DataPointsUser = JsonConvert.SerializeObject(dataPointsUser);
+            //    ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(dataPointsAdmin);
+            //    return View();
             }
             else if (User.IsInRole(SD.Role_Users))
             {

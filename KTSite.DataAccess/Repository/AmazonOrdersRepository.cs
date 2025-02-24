@@ -41,20 +41,20 @@ namespace KTSite.DataAccess.Repository
             List<SkuQtyForAverage> ordList = _db.Query<SkuQtyForAverage>(sql).ToList();
             return ordList;
         } 
-        public List<SkuQtyForAverage> GetAllWebsiteOrdersForAvg()
-        {
-         string startDate = DateTime.Now.AddDays(-4).Date.ToString("yyyy-MM-dd HH:mm:ss");
+//        public List<SkuQtyForAverage> GetAllWebsiteOrdersForAvg()
+//        {
+//         string startDate = DateTime.Now.AddDays(-4).Date.ToString("yyyy-MM-dd HH:mm:ss");
                           
-       string endDate = DateTime.Now.Date.ToString("yyyy-MM-dd HH:mm:ss");
-            var sql =
-                "SELECT o.ProductName Sku, o.Quantity Qty,o.UsDate PurchaseDate"+
-"                FROM Orders o " +
-"                WHERE o.UsDate >=  '"+startDate+"' AND" +
-"                      o.UsDate <= '"+endDate+"' AND " +
-"                      o.OrderStatus <> 'Cancelled'";
+//       string endDate = DateTime.Now.Date.ToString("yyyy-MM-dd HH:mm:ss");
+//            var sql =
+//                "SELECT o.ProductName Sku, o.Quantity Qty,o.UsDate PurchaseDate"+
+//"                FROM Orders o " +
+//"                WHERE o.UsDate >=  '"+startDate+"' AND" +
+//"                      o.UsDate <= '"+endDate+"' AND " +
+//"                      o.OrderStatus <> 'Cancelled'";
 
-            List<SkuQtyForAverage> ordList = _db.Query<SkuQtyForAverage>(sql).ToList();
-            return ordList;
-        } 
+//            List<SkuQtyForAverage> ordList = _db.Query<SkuQtyForAverage>(sql).ToList();
+//            return ordList;
+//        } 
     }
 }

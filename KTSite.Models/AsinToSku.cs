@@ -24,6 +24,7 @@ namespace KTSite.Models
          [DefaultValue(true)]
          public bool RestockCA { get; set; }
          // public IEnumerable<SelectListItem> SkuList{ get; set; } 
+         public string ImageUrl { get; set; }
         
     }
 }

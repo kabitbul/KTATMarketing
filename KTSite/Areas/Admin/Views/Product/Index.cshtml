@@ -45,9 +45,9 @@
         {
 <tr>
         <td>@product.Id</td>
-    @if (product.ImageUrl != null)
-    {
-<td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
+        @if(product.ImageUrl != null){
+           <td><img src=@product.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
+        }else{<td></td>}
  }
 else
 {

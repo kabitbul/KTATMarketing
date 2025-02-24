@@ -27,8 +27,8 @@ namespace KTSite.Areas.Admin.Controllers
                   _unitOfWork.amazonInventories.GetInventoryStat("US");
           List<SkuQtyForAverage> skuQtyForAverage = 
            _unitOfWork.amazonOrders.GetAllOrdersForAvg("US");
-         List<SkuQtyForAverage> websiteOrdersForAverage = 
-           _unitOfWork.amazonOrders.GetAllWebsiteOrdersForAvg();
+         //List<SkuQtyForAverage> websiteOrdersForAverage = 
+           //_unitOfWork.amazonOrders.GetAllWebsiteOrdersForAvg();
           List<AsinToSku> lst = _unitOfWork.asinToSku.GetList();
            int count = 1;
             foreach(AmazonInvStatistics obj in invList)
@@ -38,24 +38,24 @@ namespace KTSite.Areas.Admin.Controllers
                obj.avg3days = getAvg(3,obj.sku,skuQtyForAverage, false); 
                obj.avg7days = getAvg(7,obj.sku,skuQtyForAverage, false);
                obj.avgMonth = getAvg(30,obj.sku,skuQtyForAverage, false);
-               obj.avg3daysEbay = getAvg(3,obj.sku,websiteOrdersForAverage,true); 
-               if((obj.avg3days + obj.avg3daysEbay) == 0)
+               //obj.avg3daysEbay = getAvg(3,obj.sku,websiteOrdersForAverage,true); 
+               if(obj.avg3days == 0)
                { 
                 obj.daysToOOS = 10000;
                 obj.needToOrderFromChina = false;
-                obj.needToOSendFromWarehouse = false;
+                //obj.needToOSendFromWarehouse = false;
                }
                else{ 
                    if(obj.avg3days == 0)
                       obj.daysToOOS = 10000;
                    else
                     obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty) /(obj.avg3days);
-                   obj.needToOrderFromChina = needToOrderFromChina(obj,(obj.avg3days + obj.avg3daysEbay));
-                   obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
-                                                                      (obj.avg3days));
+                   obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days);
+                  // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
+                                                            //          (obj.avg3days));
                  }
-                obj.restockUS = lst.Where(a=> a.Asin == obj.Asin).Select(a=> a.RestockUS)
-                                .FirstOrDefault();
+              //  obj.restockUS = lst.Where(a=> a.Asin == obj.Asin).Select(a=> a.RestockUS)
+              //                  .FirstOrDefault();
             }
             return View(invList);
         }
@@ -65,8 +65,8 @@ namespace KTSite.Areas.Admin.Controllers
                   _unitOfWork.amazonInventories.GetInventoryStat("CA");
           List<SkuQtyForAverage> skuQtyForAverage = 
            _unitOfWork.amazonOrders.GetAllOrdersForAvg("CA");
-         List<SkuQtyForAverage> websiteOrdersForAverage = 
-           _unitOfWork.amazonOrders.GetAllWebsiteOrdersForAvg();
+         //List<SkuQtyForAverage> websiteOrdersForAverage = 
+          // _unitOfWork.amazonOrders.GetAllWebsiteOrdersForAvg();
           List<AsinToSku> lst = _unitOfWork.asinToSku.GetList();
            int count = 1;
             foreach(AmazonInvStatistics obj in invList)
@@ -115,23 +115,20 @@ namespace KTSite.Areas.Admin.Controllers
           {
              //if number of items that expected to be sold is less then
             // our total inventory in watrhouse + amazon + on the way
-             if((SD.amzChinaShipDays*dailySales) >= (obj.warehouseOnTheWayQty +
-                                                    (obj.warehouseAvailQty < 0 ? 0 : obj.warehouseAvailQty)  +
-                                                     obj.AmzAvailQty + 
-                                                      obj.AmzInboundQty))
+             if((SD.amzChinaShipDays*dailySales) >= (obj.AmzAvailQty + obj.AmzInboundQty))
               return true;
             return false;
           }
-          public bool needToSendFromWarehouse(AmazonInvStatistics obj,double dailySales)
-          {
-             //if number of items that expected to be sold is less then
-            // our total inventory in watrhouse + amazon + on the way
-             if((SD.amzWarehouseShipDays*dailySales) >= (obj.AmzAvailQty +
-                                                         obj.AmzInboundQty))
+          //public bool needToSendFromWarehouse(AmazonInvStatistics obj,double dailySales)
+          //{
+          //   //if number of items that expected to be sold is less then
+          //  // our total inventory in watrhouse + amazon + on the way
+          //   if((SD.amzWarehouseShipDays*dailySales) >= (obj.AmzAvailQty +
+          //                                               obj.AmzInboundQty))
             
-              return true;
-            return false;
-          }
+          //    return true;
+          //  return false;
+          //}
        [HttpPost]
         public IActionResult UpdateInvUS( string model, string  arrId, string checkedVal)
         {

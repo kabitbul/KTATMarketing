@@ -30,18 +30,15 @@
             <thead class="thead-dark">
                 <tr class="table-info">
                     <th>Image</th>
+                    <th>ASIN</th>
                     <th>SKU</th>
                     <th>Amzn Available Qty</th>
                     <th>Amzn Inbound Qty</th>
-                    <th>warehouse stock</th>
-                    <th>warehouse onTheWay stock</th>
-                    <th>Website 3 days avg</th>
                     <th>3 days avg</th>
                     <th>week avg</th>
                     <th>month avg</th>
                     <th>Days To OOS</th>
                     <th>Order From China</th>
-                    <th>Send From Warehouse</th>
                     <th>Restock</th>
                     <th>Restock</th>
                     
@@ -59,12 +56,10 @@
                     {
                         <td></td>
                     }
+                    <td>@inv.Asin</td>
                     <td>@inv.sku</td>
                     <td>@inv.AmzAvailQty</td>
                     <td>@inv.AmzInboundQty</td>
-                    <td>@inv.warehouseAvailQty</td>
-                    <td>@inv.warehouseOnTheWayQty</td>
-                    <td>@inv.avg3daysEbay</td>
                     <td>@inv.avg3days</td>
                     <td>@inv.avg7days</td>
                     <td>@inv.avgMonth</td>
@@ -77,14 +72,6 @@
                          {
                             <td>No</td>
                          }
-                        @if (inv.needToOSendFromWarehouse)
-                        {
-                            <td>Yes</td>
-                        }
-                        else
-                        {
-                            <td>No</td>
-                        }
                         @if (inv.restockUS)
                         {
                             <td>Restock</td>
@@ -108,7 +95,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[10, "asc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[8, "asc"]], "pageLength": 100 });
         });</script>
 @*-----------------------------------------------------*@
         <script type="text/javascript">
@@ -167,7 +154,7 @@
 
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
-                    var restock = data[13];
+                    var restock = data[10];
                     if (($('#Approved').prop("checked") == true && restock == "Restock") ||
                         ($('#Approved').prop("checked") == false && restock == "Dont Restock")||
                         ($('#ShowAll').prop("checked") == true)) {

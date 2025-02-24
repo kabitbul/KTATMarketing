@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MailKit.Search;
+using System.IO;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -19,9 +20,11 @@ namespace KTSite.Areas.Admin.Controllers
     public class AsinToSkuController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _hostEnvironment;
         public AsinToSkuController(IUnitOfWork unitOfWork , IWebHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _hostEnvironment = hostEnvironment;
         }
         public IActionResult Index()
         {
@@ -90,9 +93,43 @@ namespace KTSite.Areas.Admin.Controllers
             {
                if( asinToSkuVM.AsinToSku.Id == 0)
                 { 
+string webRootPath = _hostEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+                if (files.Count > 0)
+                {
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(webRootPath, @"Images\Products");
+                    var extention = Path.GetExtension(files[0].FileName);
+                    if (asinToSkuVM.AsinToSku.ImageUrl != null)
+                    {
+                        //this is an edit and we need to remove old image
+                        var imagePath = Path.Combine(webRootPath, asinToSkuVM.AsinToSku.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+                    }
+                    using(var filesStreams = new FileStream(Path.Combine(uploads,fileName+extention),FileMode.Create))
+                    {
+                        files[0].CopyTo(filesStreams);
+                    }
+                    asinToSkuVM.AsinToSku.ImageUrl = @"\Images\Products\" + fileName + extention;
+                }
+                else
+                {
+                    //update when they do not change the image
+                    if( asinToSkuVM.AsinToSku.Id != 0)
+                    {
+                        Product objFromDb = _unitOfWork.Product.Get(asinToSkuVM.AsinToSku.Id);
+                        asinToSkuVM.AsinToSku.ImageUrl = objFromDb.ImageUrl;
+                    }
+                }///end image url
+
+
                    bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
                                                       asinToSkuVM.AsinToSku.Sku,
-                                                      asinToSkuVM.AsinToSku.ChinaName);
+                                                      asinToSkuVM.AsinToSku.ChinaName,
+                                                      asinToSkuVM.AsinToSku.ImageUrl);
                if(res)
                 { 
                   ViewBag.success = true;    
@@ -108,10 +145,42 @@ namespace KTSite.Areas.Admin.Controllers
                }
               else
               {
+               string webRootPath = _hostEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+                if (files.Count > 0)
+                {
+                    string fileName = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(webRootPath, @"Images\Products");
+                    var extention = Path.GetExtension(files[0].FileName);
+                    if (asinToSkuVM.AsinToSku.ImageUrl != null)
+                    {
+                        //this is an edit and we need to remove old image
+                        var imagePath = Path.Combine(webRootPath, asinToSkuVM.AsinToSku.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
+                    }
+                    using(var filesStreams = new FileStream(Path.Combine(uploads,fileName+extention),FileMode.Create))
+                    {
+                        files[0].CopyTo(filesStreams);
+                    }
+                    asinToSkuVM.AsinToSku.ImageUrl = @"\Images\Products\" + fileName + extention;
+                }
+                else
+                {
+                    //update when they do not change the image
+                    if( asinToSkuVM.AsinToSku.Id != 0)
+                    {
+                        AsinToSku objFromDb = _unitOfWork.asinToSku.GetById(asinToSkuVM.AsinToSku.Id);
+                        asinToSkuVM.AsinToSku.ImageUrl = objFromDb.ImageUrl;
+                    }
+                }///end image url
                  int res = _unitOfWork.asinToSku.updateById(asinToSkuVM.AsinToSku.Id,
                                                              asinToSkuVM.AsinToSku.Asin,
                                                              asinToSkuVM.AsinToSku.Sku,
-                                                             asinToSkuVM.AsinToSku.ChinaName);
+                                                             asinToSkuVM.AsinToSku.ChinaName,
+                                                              asinToSkuVM.AsinToSku.ImageUrl);
                if(res == 1)
                 { 
                   ViewBag.success = true;    
