@@ -1,0 +1,105 @@
+﻿
+@model KTSite.Models.InventoryOrdersToAmzCAVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Update China Order To Canada";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div class="row p-3 border">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.ProductAsin" class="form-control" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="inventoryOrdersToAmzCA.ProductAsin">Product</label>
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.inventoryOrdersToAmzCA.ProductAsin, Model.ProductList, "Select Product",
+                                 new { @class = "form-control", @disabled = "disabled" })
+                        <span asp-validation-for="inventoryOrdersToAmzCA.ProductAsin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.Id" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.ProductAsin" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.ProductSku" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.Quantity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.DateOrdered" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmzCA.DateReceived" class="form-control" value="@DateTime.Now" />
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="inventoryOrdersToAmzCA.Quantity">Quantity</label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="inventoryOrdersToAmzCA.Quantity" class="form-control" disabled="true" />
+                        <span asp-validation-for="inventoryOrdersToAmzCA.Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="inventoryOrdersToAmzCA.InboundUpdated">Received All</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="checkbox" asp-for="inventoryOrdersToAmzCA.InboundUpdated" class="form-control" disabled="@ViewBag.Received" />
+                    </div>
+                </div>
+            </div>
+                <div class="col-8 pt-4">
+                    <div class="form-group row">
+                        <div class="col-8 offset-4">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary form-control">Update</button>
+                                </div>
+                                <div class="col">
+                                    <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    @if (ViewBag.ShowMsg == 1)
+    {
+        @if (ViewBag.QuantityZero)
+        {
+            <script>
+                swal("Error!", "Quantity Received Can't Be 0 Or Less!", "error")
+                    .then((value) => { })
+            </script>
+        }
+        else if (ViewBag.success)
+        {
+            <script>
+                swal("Success!", "Order Updated!", "success")
+                    .then((value) => { window.location.href = '/Admin/InventoryOrdersToAmzCA'; })
+            </script>
+          }
+        }
+
+    }

@@ -1,5 +1,6 @@
 ﻿using KTSite.DataAccess.Data;
 using KTSite.DataAccess.Repository.IRepository;
+using KTSite.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace KTSite.DataAccess.Repository
@@ -49,6 +50,8 @@ namespace KTSite.DataAccess.Repository
             asinToSku = new AsinToSkuRepository(_configuration);
             amazonOrders = new AmazonOrdersRepository(_configuration);
             amazonInventories = new AmazonInventoryRepository(_configuration);
+            inventoryOrdersToAmazon = new InventoryOrdersToAmazonRepository(_configuration);
+            inventoryOrdersToAmzCA = new InventoryOrdersToAmzCARepository(_configuration);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
@@ -87,7 +90,8 @@ namespace KTSite.DataAccess.Repository
         public IAsinToSkuRepository asinToSku { get; private set; }
         public IAmazonOrdersRepository amazonOrders { get; private set; }
         public IAmazonInventoryRepository amazonInventories { get; private set; }
-
+        public IInventoryOrdersToAmazonRepository inventoryOrdersToAmazon { get; private set; }
+        public IInventoryOrdersToAmzCARepository inventoryOrdersToAmzCA { get; private set; }
         public void Dispose()
         {
             _db.Dispose();

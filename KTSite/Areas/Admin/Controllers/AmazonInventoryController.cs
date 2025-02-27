@@ -49,8 +49,11 @@ namespace KTSite.Areas.Admin.Controllers
                    if(obj.avg3days == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty) /(obj.avg3days);
-                   obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days);
+                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg3days);
+                    
+                    
+                    
+                         obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days,obj.onTheWay);
                   // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
                                                             //          (obj.avg3days));
                  }
@@ -83,8 +86,9 @@ namespace KTSite.Areas.Admin.Controllers
                 obj.needToOrderFromChina = false;
                }
                else{ 
-                   obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty) /(obj.avg3days);
-                   obj.needToOrderFromChina = needToOrderFromChina(obj,(obj.avg3days ));
+                   obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg3days);
+                   
+                     obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days,obj.onTheWay );
                  }
                 obj.restockCA = lst.Where(a=> a.Asin == obj.Asin).Select(a=> a.RestockCA)
                                 .FirstOrDefault();
@@ -111,12 +115,18 @@ namespace KTSite.Areas.Admin.Controllers
                  ).Sum(a => a.Qty);
          return (int)Math.Floor(totalQty/days);
         }
-         public bool needToOrderFromChina(AmazonInvStatistics obj,double dailySales)
+         public bool needToOrderFromChina(AmazonInvStatistics obj,double dailySales, int onTheWay)
           {
              //if number of items that expected to be sold is less then
             // our total inventory in watrhouse + amazon + on the way
-             if((SD.amzChinaShipDays*dailySales) >= (obj.AmzAvailQty + obj.AmzInboundQty))
-              return true;
+             if((SD.amzChinaShipDays*dailySales) >= (obj.AmzAvailQty + obj.AmzInboundQty+ onTheWay))
+             {
+//need to order - but if there is already a line with this asin on china order - and the inboundUpdated is false
+             // bool inboundUpd = _unitOfWork.inventoryOrdersToAmazon.getInboundUpdated(obj.Asin);
+             //  if (!inboundUpd)
+               //   return false;
+               return true;
+             }
             return false;
           }
           //public bool needToSendFromWarehouse(AmazonInvStatistics obj,double dailySales)

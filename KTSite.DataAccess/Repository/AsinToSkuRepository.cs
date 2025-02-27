@@ -42,6 +42,19 @@ namespace KTSite.DataAccess.Repository
             AsinToSku lst = _db.Query<AsinToSku>(sql).Single();
             return lst;
         }
+        public string GetSkuByAsin(string asin)
+        {
+         
+            var sql =
+                "SELECT a.Sku" + 
+                " FROM AsinToSku a WHERE a.Asin = '" + asin + "'";
+
+            string sku = _db.Query<string>(sql).Single();
+            if (sku != null)
+                 return sku;
+            return null;
+        }
+
         public int updateRestockStatus(string sql)
         {
             try
@@ -78,6 +91,19 @@ public bool InsertAsinToSku(string asin, string sku, string chinaName, string im
               "('"+asin+"' , '"+sku+"', '"+chinaName+"',1,1, '"+imageUrl+"') ";
                  var id = _db.Query<int>(sql);
               return true ;
+             }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+public bool DeleteById(int id)
+        {
+          try
+            {
+              var sql =  "DELETE From AsinToSku WHERE Id = @id";
+              int effectedRows = _db.Execute(sql, new{id});
+              return effectedRows >0 ;
              }
             catch (Exception ex)
             {

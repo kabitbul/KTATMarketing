@@ -4,14 +4,16 @@ using KTSite.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KTSite.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225192647_addInventoryOrdersToAmazon")]
+    partial class addInventoryOrdersToAmazon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -523,38 +525,6 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InventoryOrdersToAmazons");
-                });
-
-            modelBuilder.Entity("KTSite.Models.InventoryOrdersToAmzCA", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateOrdered")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateReceived")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("InboundUpdated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ProductAsin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductSku")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InventoryOrdersToAmzCA");
                 });
 
             modelBuilder.Entity("KTSite.Models.LogsData", b =>

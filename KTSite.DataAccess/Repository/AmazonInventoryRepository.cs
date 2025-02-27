@@ -26,11 +26,12 @@ namespace KTSite.DataAccess.Repository
         public List<AmazonInvStatistics> GetInventoryStat(string marketPlace)
         {
    var sql =
-     "SELECT sk.ImageUrl, sk.Sku, sk.Asin," +
-"            inv.AvailableQty AmzAvailQty, " +
-"            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, " +
-"            sk.RestockUS restockUS, sk.RestockCA restockCA " +
-"     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin" +
+"SELECT sk.ImageUrl, sk.Sku, sk.Asin, "+
+"            inv.AvailableQty AmzAvailQty, "+
+"            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
+"            sk.RestockUS restockUS, sk.RestockCA restockCA, "+
+"			COALESCE((select sum(Quantity) from InventoryOrdersToAmazons ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
+"     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin "+
 "     WHERE inv.MarketPlace = '"+marketPlace+"'";
 
             return _db.Query<AmazonInvStatistics>(sql).ToList();

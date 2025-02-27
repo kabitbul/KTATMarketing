@@ -48,6 +48,10 @@
                        data-toggle="tooltip" data-placement="top" title="Edit Asin">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <a onclick="Delete('/Admin/AsinToSku/Delete/@ask.Id')" class="btn btn-danger text-white" style="cursor:pointer"
+                       data-toggle="tooltip" data-placement="top" title="Delete Asin">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>
@@ -60,4 +64,34 @@
         $(document).ready(function () {
             $('#tblData').DataTable({ "order": [[1, "asc"]], "pageLength": 100 });
         });</script>
+        <script>
+        function Delete(url) {
+            swal({
+                title: "Are you sure you want to delete?",
+                text: "You will not be able to restore the data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                // Refresh the page after a short delay to allow the toastr message to display
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 1000);
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            })
+        }
+        </script>
     }

@@ -249,11 +249,16 @@ string webRootPath = _hostEnvironment.WebRootPath;
        // }
        
         #region API CALLS
-        [HttpGet]
-        public IActionResult GetAll()
+[HttpDelete]
+        public IActionResult Delete(int id)
         {
-            var allObj = _unitOfWork.Product.GetAll();
-            return Json(new { data = allObj });
+            bool effected =  _unitOfWork.asinToSku.DeleteById(id);
+            if(!effected)
+            {
+                return Json(new { success = false, message = "Error While Deleting" });
+            }
+            _unitOfWork.Save();
+            return Json(new { success = true, message = "Delete Successfull" });
         }
 
         #endregion

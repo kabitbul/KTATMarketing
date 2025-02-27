@@ -3,6 +3,7 @@ using KTSite.DataAccess.Repository.IRepository;
 using KTSite.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace KTSite.DataAccess.Repository
     public class ChinaOrderRepository : Repository<ChinaOrder> , IChinaOrderRepository
     {
         private readonly ApplicationDbContext _db;
+        
         public ChinaOrderRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;

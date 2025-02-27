@@ -26,5 +26,6 @@ namespace KTSite.Models
          public bool needToOSendFromWarehouse { get; set; }
         public bool restockUS { get; set; }
         public bool restockCA { get; set; }
+        public int onTheWay { get; set; }
     }
 }

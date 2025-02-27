@@ -32,13 +32,13 @@
                     <th>Image</th>
                     <th>ASIN</th>
                     <th>SKU</th>
-                    <th>Amzn Available Qty</th>
-                    <th>Amzn Inbound Qty</th>
-                    <th>3 days avg</th>
-                    <th>week avg</th>
-                    <th>month avg</th>
+                    <th>Available Qty</th>
+                    <th>Inbound Qty</th>
+                    <th>OnTheWay</th>
+                    <th>3daysAvg</th>
+                    <th>weekAvg</th>
+                    <th>monthAvg</th>
                     <th>Days To OOS</th>
-                    <th>Order From China</th>
                     <th>Restock</th>
                     <th>Restock</th>
                     
@@ -60,18 +60,11 @@
                     <td>@inv.sku</td>
                     <td>@inv.AmzAvailQty</td>
                     <td>@inv.AmzInboundQty</td>
+                    <td>@inv.onTheWay</td>
                     <td>@inv.avg3days</td>
                     <td>@inv.avg7days</td>
                     <td>@inv.avgMonth</td>
                     <td style="color: @(inv.daysToOOS < 100 ? "red" : "black");font-weight: @(inv.daysToOOS < 100 ? "bold" : "normal")">@inv.daysToOOS</td>
-                        @if (inv.needToOrderFromChina)
-                         {
-                             <td>Yes</td>
-                         }
-                         else
-                         {
-                            <td>No</td>
-                         }
                         @if (inv.restockUS)
                         {
                             <td>Restock</td>
@@ -95,7 +88,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[8, "asc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[9, "asc"]], "pageLength": 100 });
         });</script>
 @*-----------------------------------------------------*@
         <script type="text/javascript">
