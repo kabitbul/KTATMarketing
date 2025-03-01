@@ -25,7 +25,7 @@
                 <tr class="table-info">
                     <th>Id</th>
                     <th>ProductAsin</th>
-                    <th>ProductAsin</th>
+                    <th>China name</th>
                     <th>Quantity</th>
                     <th>Date Ordered</th>
                     <th>Date Received</th>
@@ -38,7 +38,7 @@
         <tr>
                     <td>@inventoryOrdersToAmazon.Id</td>
                     <td>@inventoryOrdersToAmazon.ProductAsin</td>
-                    <td>@inventoryOrdersToAmazon.ProductSku</td>
+                    <td>@inventoryOrdersToAmazon.ProductChina</td>
                     <td>@inventoryOrdersToAmazon.Quantity</td>
                     <td>@inventoryOrdersToAmazon.DateOrdered.ToString("dd/MM/yyyy")</td>
                     @if (@inventoryOrdersToAmazon.DateReceived != null)
@@ -80,12 +80,12 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[4, "desc"]] });
+            $('#tblData').DataTable({ "order": [[4, "desc"]], "pageLength": 100 });
         });</script>
     <script>
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                var receviedAll = data[5];
+                var receviedAll = data[6];
                 if ($('#pos').prop("checked") == true && receviedAll == "No") {
                     return true;
                 } else if ($('#pos').prop("checked") == false) {

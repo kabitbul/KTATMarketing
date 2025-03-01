@@ -93,7 +93,8 @@
     <script>
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
-                var receviedAll = data[7];
+                var receviedAll = data[5];
+               
                 if ($('#pos').prop("checked") == true && receviedAll == "No") {
                     return true;
                 } else if ($('#pos').prop("checked") == false) {

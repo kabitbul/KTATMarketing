@@ -32,7 +32,7 @@ namespace KTSite.Areas.Admin.Controllers
                     ProductList = _unitOfWork.asinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
-                        Text = i.Asin + " - " + i.Sku,
+                        Text = i.Asin + " - " + i.ChinaName,
                         Value = i.Asin
                     })
                 };
@@ -51,7 +51,7 @@ namespace KTSite.Areas.Admin.Controllers
                     ProductList = _unitOfWork.asinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
-                        Text = i.Asin + " - " + i.Sku,
+                        Text = i.Asin + " - " + i.ChinaName,
                         Value = i.Asin
                     })
                 };
@@ -80,7 +80,7 @@ namespace KTSite.Areas.Admin.Controllers
                 ProductList = _unitOfWork.asinToSku.GetList().
                     Select(i => new SelectListItem
                     {
-                        Text = i.Asin + " - " + i.Sku,
+                        Text = i.Asin + " - " + i.ChinaName,
                         Value = i.Asin
                     })
             };
@@ -121,7 +121,7 @@ namespace KTSite.Areas.Admin.Controllers
                 ProductList = _unitOfWork.asinToSku.GetList().
                     Select(i => new SelectListItem
                     {
-                        Text = i.Asin + " - " + i.Sku,
+                        Text = i.Asin + " - " + i.ChinaName,
                         Value = i.Asin
                     })
             };

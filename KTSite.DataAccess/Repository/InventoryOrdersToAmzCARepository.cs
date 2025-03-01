@@ -26,7 +26,9 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.ProductAsin, a.ProductSku, a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
+                "SELECT a.Id, a.ProductAsin, a.ProductSku, " +
+  "                (SELECT ats.ChinaName FROM AsinToSku ats WHERE ats.Asin = a.ProductAsin) ProductChina," +
+  "                a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
                 " FROM  InventoryOrdersToAmzCA a";
 
             List<InventoryOrdersToAmzCA> lst = _db.Query<InventoryOrdersToAmzCA>(sql).ToList();

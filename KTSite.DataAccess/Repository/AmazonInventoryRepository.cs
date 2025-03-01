@@ -26,7 +26,7 @@ namespace KTSite.DataAccess.Repository
         public List<AmazonInvStatistics> GetInventoryStat(string marketPlace)
         {
    var sql =
-"SELECT sk.ImageUrl, sk.Sku, sk.Asin, "+
+"SELECT sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName,"+
 "            inv.AvailableQty AmzAvailQty, "+
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
 "            sk.RestockUS restockUS, sk.RestockCA restockCA, "+

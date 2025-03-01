@@ -12,6 +12,7 @@ namespace KTSite.Models
         public string ImageUrl { get; set; }
         public string sku { get; set; }
         public string Asin { get; set; }
+        public string ChinaName{ get; set; }
         public string MarketPlace { get; set; }
         public int AmzAvailQty { get; set; }
         public int AmzInboundQty { get; set; }
