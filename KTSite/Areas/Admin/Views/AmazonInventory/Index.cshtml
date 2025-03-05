@@ -10,22 +10,11 @@
     </div>
 </div>
     <br />
-    <div class="row">
-                <div class="col-12 text-right">
-                    <button class="btn btn-primary" onclick="ApproveStatus()" style="background-color:forestgreen">
-                        <i class="fas fa-thumbs-up"></i>&nbsp; Approve Restock
-                    </button>
-                </div>
-            </div>
     <div class="p-4 border rounded">
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="Approved" checked />
-                    <label class="custom-control-label" for="Approved">Show Restock </label>
+                    <input type="checkbox" class="custom-control-input" id="Approved" onchange="toggleShowRestock()" />
+                    <label class="custom-control-label" for="Approved">Show Restock Asins only </label>
                 </div>
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="checkbox" class="custom-control-input" id="ShowAll" />
-                <label class="custom-control-label" for="ShowAll">Show All </label>
-            </div>
             <table id="tblData" class="table table-striped table-bordered" style="width:100%">
             <thead class="thead-dark">
                 <tr class="table-info">
@@ -38,16 +27,16 @@
                     <th>3daysAvg</th>
                     <th>weekAvg</th>
                     <th>monthAvg</th>
-                    <th>Days To OOS</th>
+                    <th>Days To OOS</th> 
                     <th>Restock</th>
-                    <th>Restock</th>
-                    
+                    <th>Restock Not Decided</th>
 
                     
 </thead>
-            @foreach (AmazonInvStatistics inv in Model)
+        @foreach (AmazonInvStatistics inv in Model) 
             {
-                    <tr style="background-color: @(inv.needToOrderFromChina ? "#ffc8c9" : (inv.needToOSendFromWarehouse ? "#FFCD91" : "white"))">
+                                <tr style="background-color: 
+            @(inv.restockNotDecided ? "#FFFFE0" : (inv.needToOrderFromChina ? "#ffc8c9" : "white"))">
                     @if (inv.ImageUrl != null)
                     {
                         <td><img src=@inv.ImageUrl.ToString() alt="Product Image" style="height:70px; width: 70px" /></td>
@@ -65,18 +54,16 @@
                     <td>@inv.avg7days</td>
                     <td>@inv.avgMonth</td>
                     <td style="color: @(inv.daysToOOS < 100 ? "red" : "black");font-weight: @(inv.daysToOOS < 100 ? "bold" : "normal")">@inv.daysToOOS</td>
-                        @if (inv.restockUS)
-                        {
-                            <td>Restock</td>
-                        }
-                        else
-                        {
-                            <td>Dont Restock</td>
-                        }
                         <td>
                             <div class="text-center">
                                 <input type="hidden" asp-for="@inv.Id" />
-                                <input type="checkbox" asp-for="@inv.restockUS" />
+                        <input type="checkbox" asp-for="@inv.restockUS" onchange="updateRestockUS(@inv.Id,this.checked)" />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-center">
+                                <input type="hidden" asp-for="@inv.Id" />
+                                <input type="checkbox" asp-for="@inv.restockNotDecided" onchange="updateRestockND(@inv.Id,this.checked)"/>
                             </div>
                         </td>
                         
@@ -91,76 +78,112 @@
             $('#tblData').DataTable({ "order": [[9, "asc"]], "pageLength": 100 });
         });</script>
 @*-----------------------------------------------------*@
-        <script type="text/javascript">
-            
-            function ApproveStatus() 
-            {
-                var i = 0;
-                const arrId = [];
-                const checkedVal = [];
-                 var allCB = document.querySelectorAll("input[type='checkbox']");
-                
-                for (i = 0; i < allCB.length; i++) 
-                {
-                    if (allCB[i].id == "inv_restockUS")
-                    {
-                        arrId.push(allCB[i].previousElementSibling.value);
-                        checkedVal.push(allCB[i].checked);
-                    }
+<script>
+    function toggleShowRestock() {
+        let checkbox = document.getElementById("Approved"); // Get checkbox
+        let showRestock = checkbox.checked; // Get checked status
+        // Get current URL parameters
+        let url = new URL(window.location.href);
+        let params = url.searchParams;
+
+        // Update the "showRestock" parameter
+           params.set("showRestock", showRestock ? "true" : "false");
+
+        // Reload the page with the new parameter
+        window.location.href = url.toString();
+    }
+        window.onload = function () {
+            let urlParams = new URLSearchParams(window.location.search);
+            let showRestock = urlParams.get("showRestock");
+
+            // If "showRestock" is not in the URL, or explicitly set to "true", check the checkbox
+            if (showRestock === null || showRestock === "true") {
+                document.getElementById("Approved").checked = true;
+                // Update URL to reflect the default checked state
+                if (showRestock === null) {
+                    let url = new URL(window.location.href);
+                    url.searchParams.set("showRestock", "true");
+                    window.history.replaceState({}, "", url.toString());
                 }
+            } else {
+                document.getElementById("Approved").checked = false;
+            }
+        };
+</script>
+    <script>
+        function updateRestockND(id, isChecked) {
                 var pdata = new FormData();
                 var data = @Html.Raw(Json.Serialize(Model)); // Serialize the model to JSON
                 pdata.append("model", JSON.stringify(data));
-                pdata.append("arrId", arrId);
-                pdata.append("checkedVal", checkedVal);
-                                
-                swal({
-                    title: "Are you sure?",
-                    text: "Once Updated, you will not be able to Undo this",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            $.ajax({
-                                url: "AmazonInventory/UpdateInvUS",
-                                type: "POST",
-                                data: pdata,
-                                processData: false,
-                                contentType: false,
-                                success: function (data) {
-                                    location.reload();
-                                    setTimeout(function () {
-                                        location.reload()
-                                    }, 100);
-                                }
-                            });
-                            setTimeout(function () {
-                                location.reload()
-                            }, 100);
-                        } else {
-                            swal("Nothing Changed!");
-                        }
-                    });
-            }
-
-            $.fn.dataTable.ext.search.push(
-                function (settings, data, dataIndex) {
-                    var restock = data[10];
-                    if (($('#Approved').prop("checked") == true && restock == "Restock") ||
-                        ($('#Approved').prop("checked") == false && restock == "Dont Restock")||
-                        ($('#ShowAll').prop("checked") == true)) {
-                         return true;
+                pdata.append("id", id);
+                pdata.append("restockNotDecided", isChecked);
+            swal({
+                title: "Are you sure?",
+                text: "Once Updated, you will not be able to Undo this",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "AmazonInventory/UpdateRestockND",
+                            type: "POST",
+                            data: pdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                location.reload();
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 100);
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 100);
+                    } else {
+                        swal("Nothing Changed!");
                     }
-                    
-                        else { return false; }
-                }
-            );
-            $('input:checkbox').on('change', function () {
-                var table = $('#tblData').DataTable();
-                table.draw();
-            });
-            
-        </script>
+                });
+        }
+    </script>
+    <script>
+        function updateRestockUS(id, isChecked) {
+            var pdata = new FormData();
+            var data = @Html.Raw(Json.Serialize(Model)); // Serialize the model to JSON
+            pdata.append("model", JSON.stringify(data));
+            pdata.append("id", id);
+            pdata.append("restock", isChecked);
+            swal({
+                title: "Are you sure?",
+                text: "Once Updated, you will not be able to Undo this",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: "AmazonInventory/UpdateRestockUS",
+                            type: "POST",
+                            data: pdata,
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                location.reload();
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 100);
+                            }
+                        });
+                        setTimeout(function () {
+                            location.reload()
+                        }, 100);
+                    } else {
+                        swal("Nothing Changed!");
+                    }
+                });
+        }
+    </script> 
     }

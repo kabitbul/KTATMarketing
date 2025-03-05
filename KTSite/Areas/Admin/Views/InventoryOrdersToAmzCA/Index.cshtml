@@ -87,7 +87,6 @@
         $.fn.dataTable.ext.search.push(
             function (settings, data, dataIndex) {
                 var receviedAll = data[6];
-                 window.alert(receviedAll);
                 if ($('#pos').prop("checked") == true && receviedAll == "No") {
                     return true;
                 } else if ($('#pos').prop("checked") == false) {

@@ -129,7 +129,7 @@ namespace KTSite.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 
-               int res =     _unitOfWork.inventoryOrdersToAmazon.updateById(inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.Id,
+               int res =     _unitOfWork.inventoryOrdersToAmzCA.updateById (inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.Id,
                                                                      inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.Quantity,
                                                                       inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.DateOrdered,
                                                                         inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.InboundUpdated); 

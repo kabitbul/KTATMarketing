@@ -51,7 +51,7 @@ namespace KTSite.Areas.Admin.Controllers
                 return View(asinToSkuVM);
             }
             asinToSkuVM.AsinToSku = _unitOfWork.asinToSku.GetById(id);
-            if (asinToSkuVM.AsinToSku == null)
+                if (asinToSkuVM.AsinToSku == null)
             {
                 return NotFound();
             }
@@ -180,7 +180,9 @@ string webRootPath = _hostEnvironment.WebRootPath;
                                                              asinToSkuVM.AsinToSku.Asin,
                                                              asinToSkuVM.AsinToSku.Sku,
                                                              asinToSkuVM.AsinToSku.ChinaName,
-                                                              asinToSkuVM.AsinToSku.ImageUrl);
+                                                             asinToSkuVM.AsinToSku.ImageUrl,
+                                                             asinToSkuVM.AsinToSku.RestockNOTDECIDED,
+                                                             asinToSkuVM.AsinToSku.IsCanadaAsin);
                if(res == 1)
                 { 
                   ViewBag.success = true;    

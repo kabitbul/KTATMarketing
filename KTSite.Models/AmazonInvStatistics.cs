@@ -28,5 +28,8 @@ namespace KTSite.Models
         public bool restockUS { get; set; }
         public bool restockCA { get; set; }
         public int onTheWay { get; set; }
+        public bool restockNotDecided{ get; set; }
+        public bool restockNotDecidedCA{ get; set; }
+
     }
 }

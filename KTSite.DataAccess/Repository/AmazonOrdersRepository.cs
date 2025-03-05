@@ -31,7 +31,7 @@ namespace KTSite.DataAccess.Repository
                               TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
                           .Date.ToString("yyyy-MM-dd HH:mm:ss");
             var sql =
-                "SELECT sk.Sku, o.Qty,o.PurchaseDate "+
+                "SELECT sk.Asin, o.Qty,o.PurchaseDate "+
 "                FROM AmazonOrders o , AsinToSku sk " +
 "                WHERE MarketPlace = '"+marketPlace+"' AND " +
 "                      o.Asin = sk.Asin AND "+

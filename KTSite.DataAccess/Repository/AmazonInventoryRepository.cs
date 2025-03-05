@@ -23,17 +23,44 @@ namespace KTSite.DataAccess.Repository
         {
             _db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
-        public List<AmazonInvStatistics> GetInventoryStat(string marketPlace)
+        public List<AmazonInvStatistics> GetInventoryStat(string marketPlace,bool? showRestock)
         {
-   var sql =
-"SELECT sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName,"+
+            string sql;
+            bool shr;
+            if (showRestock == null || showRestock == true)
+                 shr = true;
+            else
+             shr = false;
+           if (marketPlace == "US")
+            { 
+    sql =
+"SELECT sk.Id,sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName,"+
 "            inv.AvailableQty AmzAvailQty, "+
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
-"            sk.RestockUS restockUS, sk.RestockCA restockCA, "+
+"            sk.RestockUS restockUS, sk.RestockCA restockCA,sk.RestockNOTDECIDED, "+
 "			COALESCE((select sum(Quantity) from InventoryOrdersToAmazons ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
 "     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin "+
 "     WHERE inv.MarketPlace = '"+marketPlace+"'";
-
+      if(shr)
+       { 
+     sql = sql + " AND RestockUS = 1 ";
+        }    
+}
+else{//CA
+sql =
+"SELECT sk.Id,sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName,"+
+"            inv.AvailableQty AmzAvailQty, "+
+"            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
+"            sk.RestockUS restockUS, sk.RestockCA restockCA, sk.RestockNOTDECIDEDCA, "+
+"			COALESCE((select sum(Quantity) from InventoryOrdersToAmzCA ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
+"     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin "+
+"     WHERE inv.MarketPlace = '"+marketPlace+"' and sk.IsCanadaAsin = 1";
+if(shr)
+       { 
+     sql = sql + " AND RestockCA = 1 ";
+        }
+            }
+     
             return _db.Query<AmazonInvStatistics>(sql).ToList();
         }
     }

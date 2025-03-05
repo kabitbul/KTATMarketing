@@ -5,6 +5,6 @@ namespace KTSite.DataAccess.Repository.IRepository
 {
     public interface IAmazonInventoryRepository
     {
-       public List<AmazonInvStatistics> GetInventoryStat(string marketPlace);
+       public List<AmazonInvStatistics> GetInventoryStat(string marketPlace, bool? showRestock);
     }
 }

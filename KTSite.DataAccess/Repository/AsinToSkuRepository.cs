@@ -26,7 +26,8 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl" + 
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl," +
+"                       a.RestockNOTDECIDED,a.IsCanadaAsin " + 
                 " FROM AsinToSku a";
 
             List<AsinToSku> lst = _db.Query<AsinToSku>(sql).ToList();
@@ -36,7 +37,8 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl" + 
+                "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl," +
+"                       a.RestockNOTDECIDED,a.IsCanadaAsin " + 
                 " FROM AsinToSku a WHERE a.Id = " + id;
 
             AsinToSku lst = _db.Query<AsinToSku>(sql).Single();
@@ -66,14 +68,17 @@ namespace KTSite.DataAccess.Repository
                 return 0;
             }
         }
-        public int updateById(int id , string asin, string sku, string chinaName, string imageUrl)
+        public int updateById(int id , string asin, string sku, string chinaName, string imageUrl,
+                              bool restockNOTDECIDED, bool IsCanadaAsin)
         {
             try
             {
                 var sql =  " UPDATE AsinToSku " +
   "                               SET Asin = '"+asin+"' , Sku = '"+sku+"', " +
 "                                     ChinaName = '"+chinaName+"', " +
-"                                     ImageUrl = '"+imageUrl+"' " +
+"                                     ImageUrl = '"+imageUrl+"' ," +
+"                                     RestockNOTDECIDED = "+ (restockNOTDECIDED ? 1 : 0)+", "+
+"                                     IsCanadaAsin = "+ (IsCanadaAsin ? 1 : 0) + " "+  
   "                               WHERE Id = " + id; 
                 return _db.Execute(sql);
             }

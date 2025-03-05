@@ -25,6 +25,12 @@ namespace KTSite.Models
          public bool RestockCA { get; set; }
          // public IEnumerable<SelectListItem> SkuList{ get; set; } 
          public string ImageUrl { get; set; }
+         [DefaultValue(false)]
+         public bool RestockNOTDECIDED { get; set; }
+         [DefaultValue(false)]
+         public bool RestockNOTDECIDEDCA { get; set; }
+         [DefaultValue(false)]
+         public bool IsCanadaAsin { get; set; }
         
     }
 }

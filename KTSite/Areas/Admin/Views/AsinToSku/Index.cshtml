@@ -25,6 +25,8 @@
                 <th>Asin</th>
                 <th>SKU</th>
                 <th>China Name</th>
+                <th>Restock Not Decided</th>
+                <th>In Canada FBA</th>
                 <th></th>
             </tr>
         </thead>
@@ -42,6 +44,22 @@
                 <td>@ask.Asin</td>
                 <td>@ask.Sku</td>
                 <td>@ask.ChinaName</td>
+                @if (ask.RestockNOTDECIDED)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+                @if (ask.IsCanadaAsin)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
                 <td>
                     <div class="text-center">
                         <a href="/Admin/AsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
@@ -54,6 +72,7 @@
                         </a>
                     </div>
                 </td>
+                
             </tr>
         }
     </table>
