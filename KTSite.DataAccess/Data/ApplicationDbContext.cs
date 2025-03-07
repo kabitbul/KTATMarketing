@@ -56,5 +56,9 @@ namespace KTSite.DataAccess.Data
         public DbSet<ProductOLD> ProductOLD { get; set; }
         public DbSet<InventoryOrdersToAmazon> InventoryOrdersToAmazons { get; set; }
         public DbSet<InventoryOrdersToAmzCA> InventoryOrdersToAmzCA { get; set; }
+        public DbSet<LitalAmazonOrders> LitalAmazonOrders { get; set; }
+        public DbSet<LitalInventoryOrdersToAmazon> LitalInventoryOrdersToAmazon { get; set; }
+        public DbSet<LitalAsinToSku> LitalAsinToSku { get; set; }
+        public DbSet<LitalAmazonInventory> LitalAmazonInventories { get; set; }
     }
 }

@@ -10,8 +10,8 @@ namespace KTSite.Utility
         public const int amzWarehouseShipDays =  21;
         public const int amzChinaShipDays =  100;
         //AMAZON END
-        public const string Kfir_Merch = "2f85dc2e-c6ab-4523-aa51-f4a5814e518d";//KfirLogicAdded
-        public const string Kfir_Buyer = "76fbc16f-d46e-4cba-ad59-c00045ffa711";// KfirLogicAdded
+        
+        
         public const int FBMP_FEE = 0;
         public const string FBMP_USER_KARIN = "0000000000";//"d7b9d539-d661-4101-acb5-5f9777c9cc77";// Karin prod
         public const string FBMP_USER_HAY = "9dbe2478-2b3c-49f5-a0a5-0e82b0eeaa2e";

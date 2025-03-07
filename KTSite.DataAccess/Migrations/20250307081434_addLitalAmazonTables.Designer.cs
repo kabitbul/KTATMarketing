@@ -4,14 +4,16 @@ using KTSite.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KTSite.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250307081434_addLitalAmazonTables")]
+    partial class addLitalAmazonTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -564,43 +566,6 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InventoryOrdersToAmzCA");
-                });
-
-            modelBuilder.Entity("KTSite.Models.LitalAmazonInventory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Asin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
-
-                    b.Property<int>("AvailableQty")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InboundReceivingQty")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InboundShippedQty")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MarketPlace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
-
-                    b.Property<int>("ReservedQty")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LitalAmazonInventories");
                 });
 
             modelBuilder.Entity("KTSite.Models.LitalAmazonOrders", b =>

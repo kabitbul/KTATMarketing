@@ -15,11 +15,11 @@ using System.Text.RegularExpressions;
 
 namespace KTSite.DataAccess.Repository
 {
-    public class AmazonOrdersRepository :  IAmazonOrdersRepository
+    public class LitalAmazonOrdersRepository :  ILitalAmazonOrdersRepository
     {
         //private readonly ApplicationDbContext _db;
         private IDbConnection _db;
-        public AmazonOrdersRepository(IConfiguration configuration)
+        public LitalAmazonOrdersRepository(IConfiguration configuration)
         {
             _db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
@@ -33,7 +33,7 @@ namespace KTSite.DataAccess.Repository
                           .Date.ToString("yyyy-MM-dd HH:mm:ss");
             var sql =
                 "SELECT sk.Asin, o.Qty,o.PurchaseDate "+
-"                FROM AmazonOrders o , AsinToSku sk " +
+"                FROM LitalAmazonOrders o , AsinToSku sk " +
 "                WHERE MarketPlace = '"+marketPlace+"' AND " +
 "                      o.Asin = sk.Asin AND "+
 "                      o.PurchaseDate >=  '"+startDate+"' AND" +
@@ -61,7 +61,7 @@ namespace KTSite.DataAccess.Repository
 "   LEFT JOIN ( SELECT MONTH(PurchaseDate) AS pmonth,  "+
 "                      YEAR(PurchaseDate) AS pyear, "+ 
 "                a.qty "+
-"    FROM AmazonOrders a "+
+"    FROM LitalAmazonOrders a "+
 "    WHERE purchaseDate >= DATEADD(YEAR, -1, DATEFROMPARTS(YEAR(GETDATE()), " +
 "                                   MONTH(GETDATE()) - 1, 1)) "+ 
 "          AND purchaseDate < DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) "+ 

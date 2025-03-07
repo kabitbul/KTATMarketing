@@ -17,18 +17,18 @@ namespace KTSite.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class AsinToSkuController : Controller
+    public class LitalAsinToSkuController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostEnvironment;
-        public AsinToSkuController(IUnitOfWork unitOfWork , IWebHostEnvironment hostEnvironment)
+        public LitalAsinToSkuController(IUnitOfWork unitOfWork , IWebHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _hostEnvironment = hostEnvironment;
         }
         public IActionResult Index()
         {
-          List<AsinToSku> lst = _unitOfWork.asinToSku.GetList();
+          List<LitalAsinToSku> lst = _unitOfWork.litalAsinToSku.GetList();
           
             return View(lst);
         }
@@ -36,9 +36,9 @@ namespace KTSite.Areas.Admin.Controllers
         {
             ViewBag.ShowMsg = false;
             ViewBag.success = true;
-            AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
+            LitalAsinToSkuVM asinToSkuVM = new LitalAsinToSkuVM()
             {
-                AsinToSku = new AsinToSku(),
+                AsinToSku = new LitalAsinToSku(),
                 ProductList = _unitOfWork.Product.GetAll().
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
@@ -50,37 +50,20 @@ namespace KTSite.Areas.Admin.Controllers
             {
                 return View(asinToSkuVM);
             }
-            asinToSkuVM.AsinToSku = _unitOfWork.asinToSku.GetById(id);
+            asinToSkuVM.AsinToSku = _unitOfWork.litalAsinToSku.GetById(id);
                 if (asinToSkuVM.AsinToSku == null)
             {
                 return NotFound();
             }
             return View(asinToSkuVM);
         }
-        //public IActionResult AddAsinToSku()
-        //{
-        //  AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
-        //    {
-        //        AsinToSku = new AsinToSku(),
-        //        ProductList = _unitOfWork.Product.GetAll().
-        //        OrderBy(a => a.ProductName).Select(i => new SelectListItem
-        //        {
-        //            Text = i.ProductName,
-        //            Value = i.ProductName
-        //        })
-        //    };
-        //    ViewBag.ShowMsg = false;
-        //    ViewBag.failed = false;
-        //    ViewBag.success = true;
-        //    return View(asinToSkuVM);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(AsinToSkuVM asinToSkuVM)
+        public IActionResult Upsert(LitalAsinToSkuVM asinToSkuVM)
         {
-            AsinToSkuVM asinToSkuVM2 = new AsinToSkuVM()
+            LitalAsinToSkuVM asinToSkuVM2 = new LitalAsinToSkuVM()
             {
-                AsinToSku = new AsinToSku(),
+                AsinToSku = new LitalAsinToSku(),
                 ProductList =  _unitOfWork.Product.GetAll().
                 OrderBy(a => a.ProductName).Select(i => new SelectListItem
                 {
@@ -126,10 +109,9 @@ string webRootPath = _hostEnvironment.WebRootPath;
                 }///end image url
 
 
-                   bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
-                                                      asinToSkuVM.AsinToSku.Sku,
-                                                      asinToSkuVM.AsinToSku.ChinaName,
-                                                      asinToSkuVM.AsinToSku.ImageUrl);
+                   bool res = _unitOfWork.litalAsinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
+                                                                         asinToSkuVM.AsinToSku.ChinaName,
+                                                                         asinToSkuVM.AsinToSku.ImageUrl);
                if(res)
                 { 
                   ViewBag.success = true;    
@@ -172,17 +154,15 @@ string webRootPath = _hostEnvironment.WebRootPath;
                     //update when they do not change the image
                     if( asinToSkuVM.AsinToSku.Id != 0)
                     {
-                        AsinToSku objFromDb = _unitOfWork.asinToSku.GetById(asinToSkuVM.AsinToSku.Id);
+                        LitalAsinToSku objFromDb = _unitOfWork.litalAsinToSku.GetById(asinToSkuVM.AsinToSku.Id);
                         asinToSkuVM.AsinToSku.ImageUrl = objFromDb.ImageUrl;
                     }
                 }///end image url
-                 int res = _unitOfWork.asinToSku.updateById(asinToSkuVM.AsinToSku.Id,
+                 int res = _unitOfWork.litalAsinToSku.updateById(asinToSkuVM.AsinToSku.Id,
                                                              asinToSkuVM.AsinToSku.Asin,
-                                                             asinToSkuVM.AsinToSku.Sku,
                                                              asinToSkuVM.AsinToSku.ChinaName,
                                                              asinToSkuVM.AsinToSku.ImageUrl,
-                                                             asinToSkuVM.AsinToSku.RestockNOTDECIDED,
-                                                             asinToSkuVM.AsinToSku.IsCanadaAsin);
+                                                             asinToSkuVM.AsinToSku.RestockNOTDECIDED);
                if(res == 1)
                 { 
                   ViewBag.success = true;    
@@ -210,75 +190,17 @@ string webRootPath = _hostEnvironment.WebRootPath;
         {
             //stack chart
             List<GraphData> graphData = new List<GraphData>();
-            AsinToSku asinToSku = _unitOfWork.asinToSku.GetById(Id);
+            LitalAsinToSku asinToSku = _unitOfWork.litalAsinToSku.GetById(Id);
                 if(asinToSku == null)
                   return View();
             
-            graphData = _unitOfWork.amazonOrders.GetGraphData("US",asinToSku.Asin);
+            graphData = _unitOfWork.litalAmazonOrders.GetGraphData("US",asinToSku.Asin);
             ViewBag.ProductName = asinToSku.ChinaName;
             
             ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
             
             return View();
         }
-         public IActionResult GraphCA(int Id)
-        {
-            //stack chart
-            List<GraphData> graphData = new List<GraphData>();
-            AsinToSku asinToSku = _unitOfWork.asinToSku.GetById(Id);
-                if(asinToSku == null)
-                  return View();
-            
-            graphData = _unitOfWork.amazonOrders.GetGraphData("CA",asinToSku.Asin);
-            ViewBag.ProductName = asinToSku.ChinaName;
-            
-            ViewBag.DataPointsUser = JsonConvert.SerializeObject(graphData);
-            ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(graphData);
-            return View();
-        }
-       //[HttpPost]
-       // [ValidateAntiForgeryToken]
-       // public IActionResult AddAsinToSku(AsinToSkuVM asinToSkuVM)
-       // {
-       //     AsinToSkuVM asinToSkuVM2 = new AsinToSkuVM()
-       //     {
-       //         AsinToSku = new AsinToSku(),
-       //         ProductList =  _unitOfWork.Product.GetAll().
-       //         OrderBy(a => a.ProductName).Select(i => new SelectListItem
-       //         {
-       //             Text = i.ProductName,
-       //             Value = i.ProductName
-       //         })
-       //     };
-                         
-       //     if (ModelState.IsValid)
-       //     {
-       //        bool res = _unitOfWork.asinToSku.InsertAsinToSku(asinToSkuVM.AsinToSku.Asin,
-       //                                               asinToSkuVM.AsinToSku.Sku,
-       //                                               asinToSkuVM.AsinToSku.ChinaName);
-       //        if(res)
-       //         { 
-       //           ViewBag.success = true;    
-       //           ViewBag.failed = false;
-       //           ViewBag.ShowMsg = true;
-       //         }
-       //         else
-       //         {
-       //           ViewBag.success = false;    
-       //           ViewBag.failed = true;
-       //           ViewBag.ShowMsg = true;
-       //         }
-       //      }
-       //      else
-       //      {
-       //       ViewBag.success = false;    
-       //         ViewBag.failed = true;
-       //        ViewBag.ShowMsg = false;
-       //     }
-           
-       //     return View(asinToSkuVM2);
-       // }
-       
         #region API CALLS
 [HttpDelete]
         public IActionResult Delete(int id)

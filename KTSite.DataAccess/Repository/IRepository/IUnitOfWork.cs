@@ -46,6 +46,10 @@ namespace KTSite.DataAccess.Repository.IRepository
         IAmazonInventoryRepository amazonInventories { get; }
         IInventoryOrdersToAmazonRepository inventoryOrdersToAmazon { get; }
         IInventoryOrdersToAmzCARepository inventoryOrdersToAmzCA { get; }
+        ILitalAmazonOrdersRepository litalAmazonOrders { get; }
+        ILitalAsinToSkuRepository litalAsinToSku { get; }
+        ILitalInventoryOrdersToAmazonRepository litalInventoryOrdersToAmazon { get; }
+        ILitalAmazonInventoryRepository litalAmazonInventories { get; }
         void Save();
     }
 }

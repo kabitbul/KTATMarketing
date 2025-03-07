@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AsinToSku>
+﻿@model IEnumerable<LitalAsinToSku>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -6,7 +6,7 @@
 <br />
 <div class="row">
     <div class="col-6">
-        <h2 class="text-primary">Asin To Sku </h2>
+        <h2 class="text-primary">Asin To Sku(KESEM) </h2>
     </div>
 </div>
 <br />
@@ -23,16 +23,13 @@
             <tr class="table-info">
                 <th>ImageUrl</th>
                 <th>Asin</th>
-                <th>SKU</th>
                 <th>China Name</th>
                 <th>Restock Not Decided</th>
-                <th>In Canada FBA</th>
-                <th>Graph US</th>
-                <th>Graph CA</th>
+                <th>Graph</th>
                 <th></th>
             </tr>
         </thead>
-        @foreach (AsinToSku ask in Model)
+        @foreach (LitalAsinToSku ask in Model)
         {
             <tr>
                 @if (ask.ImageUrl != null)
@@ -44,7 +41,6 @@
                     <td></td>
                 }
                 <td>@ask.Asin</td>
-                <td>@ask.Sku</td>
                 <td>@ask.ChinaName</td>
                 @if (ask.RestockNOTDECIDED)
                 {
@@ -54,46 +50,22 @@
                 {
                     <td>No</td>
                 }
-                @if (ask.IsCanadaAsin)
-                {
-                    <td>Yes</td>
-                }
-                else
-                {
-                    <td>No</td>
-                }
                 <td>
                     <div class="text-center">
-                        <a href="/Admin/AsinToSku/GraphUS/@ask.Id" class="btn btn-success text-white"
+                        <a href="/Admin/LitalAsinToSku/GraphUS/@ask.Id" class="btn btn-success text-white"
                        style="cursor:pointer;background-color: #17a2b8; border-color: #17a2b8;"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
                             <i class="fas fa-chart-bar" "></i>
                         </a>
                     </div>
                 </td>
-                
-                    @if(ask.IsCanadaAsin)
-                     {
-                    <td>
-                        <a href="/Admin/AsinToSku/GraphCA/@ask.Id" class="btn btn-success text-white"
-                   style="cursor:pointer;background-color: yellow; border-color: #yellow;"
-                   data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
-                    <i class="fas fa-chart-bar" style="color: #17a2b8;"></i>
-                        </a>
-                    </td>
-                     }
-                     else
-                     {
-                    <td></td>
-                     }
-                
                 <td>
                     <div class="text-center">
-                        <a href="/Admin/AsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
+                        <a href="/Admin/LitalAsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a onclick="Delete('/Admin/AsinToSku/Delete/@ask.Id')" class="btn btn-danger text-white" style="cursor:pointer"
+                        <a onclick="Delete('/Admin/LitalAsinToSku/Delete/@ask.Id')" class="btn btn-danger text-white" style="cursor:pointer"
                        data-toggle="tooltip" data-placement="top" title="Delete Asin">
                             <i class="fas fa-trash-alt"></i>
                         </a>

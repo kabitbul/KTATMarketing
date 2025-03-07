@@ -52,6 +52,10 @@ namespace KTSite.DataAccess.Repository
             amazonInventories = new AmazonInventoryRepository(_configuration);
             inventoryOrdersToAmazon = new InventoryOrdersToAmazonRepository(_configuration);
             inventoryOrdersToAmzCA = new InventoryOrdersToAmzCARepository(_configuration);
+            litalAsinToSku = new LitalAsinToSkuRepository(_configuration);
+            litalAmazonOrders = new LitalAmazonOrdersRepository(_configuration);
+            litalInventoryOrdersToAmazon = new LitalInventoryOrdersToAmazonRepository(_configuration);
+            litalAmazonInventories = new LitalAmazonInventoryRepository(_configuration);
         }
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
@@ -92,6 +96,10 @@ namespace KTSite.DataAccess.Repository
         public IAmazonInventoryRepository amazonInventories { get; private set; }
         public IInventoryOrdersToAmazonRepository inventoryOrdersToAmazon { get; private set; }
         public IInventoryOrdersToAmzCARepository inventoryOrdersToAmzCA { get; private set; }
+        public ILitalAsinToSkuRepository litalAsinToSku { get; private set; }
+        public ILitalAmazonOrdersRepository litalAmazonOrders { get; private set; }
+        public ILitalInventoryOrdersToAmazonRepository litalInventoryOrdersToAmazon { get; private set; }
+        public ILitalAmazonInventoryRepository litalAmazonInventories { get; private set; }
         public void Dispose()
         {
             _db.Dispose();

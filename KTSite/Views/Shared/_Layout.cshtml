@@ -49,17 +49,31 @@
             @*<li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">Amazon</a>
             </li>*@
- @*            <li class="nav-item dropdown">
+             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Amazon
+                  KT Amazon
                    </a>
                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                     <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">US Inventory</a>
-                     <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="CAInv">CA Inventory</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">US Inventory</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="AmazonInventory" asp-action="CAInv">CA Inventory</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmazon" asp-action="Index">China Orders - US</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>
+                     
                   </div>
-             </li>*@
-             <li class="nav-item">
+             </li>
+             <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Lital Amazon (KESEM)
+                   </a>
+                   <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="LitalAsinToSku" asp-action="Index">Asin By Sku</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="LitalAmazonInventory" asp-action="Index">US Inventory</a>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="LitalInventoryOrdersToAmazon" asp-action="Index">China Orders - US</a>
+                     
+                  </div>
+             </li>
+             @*<li class="nav-item">
                  <a class="nav-link" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
              </li>
              <li class="nav-item">
@@ -73,7 +87,7 @@
              </li>
              <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>
-             </li>
+             </li>*@
              
 
                            @* <li class="nav-item dropdown">

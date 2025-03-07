@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace KTSite.DataAccess.Repository.IRepository
 {
-    public interface IAmazonOrdersRepository
+    public interface ILitalAmazonOrdersRepository
     {
        public List<SkuQtyForAverage> GetAllOrdersForAvg(string marketPlace);
-       //public List<SkuQtyForAverage> GetAllWebsiteOrdersForAvg();
+       
        public List<GraphData> GetGraphData(string marketPlace, string asin);
     }
 }
