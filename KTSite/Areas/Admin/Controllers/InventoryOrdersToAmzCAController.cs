@@ -97,7 +97,8 @@ namespace KTSite.Areas.Admin.Controllers
                     _unitOfWork.inventoryOrdersToAmzCA.InsertInvOrder(inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.ProductAsin,
                                                                       inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.ProductSku,
                                                                       inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.Quantity,
-                                                                      inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.DateOrdered);
+                                                                      inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.DateOrdered,
+                                                                       inventoryOrdersToAmzCAVM.inventoryOrdersToAmzCA.lineNumber);
                     
                     _unitOfWork.Save();
                     ViewBag.success = true;

@@ -28,7 +28,7 @@ namespace KTSite.DataAccess.Repository
             var sql =
                 "SELECT a.Id, a.ProductAsin,  " +
 "                   (SELECT ats.ChinaName FROM LitalAsinToSku ats WHERE ats.Asin = a.ProductAsin) ProductChina," +
-"                 a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
+"                 a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated, a.lineNumber" + 
                 " FROM  LitalInventoryOrdersToAmazon a";
 
             List<LitalInventoryOrdersToAmazon> lst = _db.Query<LitalInventoryOrdersToAmazon>(sql).ToList();
@@ -38,7 +38,7 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.ProductAsin, a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
+                "SELECT a.Id, a.ProductAsin, a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated, a.lineNumber" + 
                 " FROM LitalInventoryOrdersToAmazon a WHERE a.Id = " + id;
 
             LitalInventoryOrdersToAmazon lst = _db.Query<LitalInventoryOrdersToAmazon>(sql).Single();
@@ -55,15 +55,15 @@ namespace KTSite.DataAccess.Repository
     return count == 0;
         }
 
-public bool InsertInvOrder(string productAsin, int quantity, DateTime dateOrdered)
+public bool InsertInvOrder(string productAsin, int quantity, DateTime dateOrdered, int lineNumber)
         {
           try
             {
               var formattedDate = dateOrdered.ToString("yyyy-MM-dd HH:mm:ss");
              var maxDate = DateTime.MaxValue.ToString("yyyy-MM-dd HH:mm:ss");
               var sql =  
-                "INSERT INTO LitalInventoryOrdersToAmazon (ProductAsin, Quantity, DateOrdered,DateReceived,InboundUpdated)VALUES" +
-              "('"+productAsin+"' , '"+quantity+"', '"+formattedDate+"','"+maxDate+"',0) ";
+                "INSERT INTO LitalInventoryOrdersToAmazon (ProductAsin, Quantity, lineNumber,DateOrdered,DateReceived,InboundUpdated)VALUES" +
+              "('"+productAsin+"' , '"+quantity+"', '"+lineNumber+"','"+formattedDate+"','"+maxDate+"',0) ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

@@ -1,14 +1,27 @@
 ﻿@model IEnumerable<LitalAsinToSku>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<br />
+}   
+</br>
 <div class="row">
-    <div class="col-6">
-        <h2 class="text-primary">Asin To Sku(KESEM) </h2>
+    <div class="col-3">
+        <h2 class="text-primary" style="background-color:#ffc107">Asin To Sku(KESEM) </h2>
     </div>
 </div>
+<br />
+<div class="row align-items-center" >
+    <div class="col-md-6">
+        <h2 class="text-danger fw-bold">Total Sales of Last 12 Months(US)</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="/Admin/LitalAsinToSku/GraphTotalUS" class="btn text-white"
+           style="background-color: #17a2b8; border-color: #17a2b8; padding: 10px 20px; font-size: 18px;"
+           data-toggle="tooltip" data-placement="top" title="View Sales Graph" target="_blank">
+            <i class="fas fa-chart-bar me-2"></i> View Graph
+        </a>
+    </div>
+</div>
+
 <br />
 <div class="row">
     <div class="col-6 text-right">
@@ -55,12 +68,12 @@
                         <a href="/Admin/LitalAsinToSku/GraphUS/@ask.Id" class="btn btn-success text-white"
                        style="cursor:pointer;background-color: #17a2b8; border-color: #17a2b8;"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
-                            <i class="fas fa-chart-bar" "></i>
+                            <i class="fas fa-chart-bar"></i>
                         </a>
                     </div>
                 </td>
                 <td>
-                    <div class="text-center">
+                <div class="text-center">
                         <a href="/Admin/LitalAsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin">
                             <i class="fas fa-edit"></i>

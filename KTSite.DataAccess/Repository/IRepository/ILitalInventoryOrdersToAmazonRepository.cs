@@ -9,7 +9,7 @@ namespace KTSite.DataAccess.Repository.IRepository
        public List<LitalInventoryOrdersToAmazon> GetList();
        public LitalInventoryOrdersToAmazon GetById(int id);
        public bool getInboundUpdated(string asin);
-       public bool InsertInvOrder(string productAsin, int quantity, DateTime dateOrdered);
+       public bool InsertInvOrder(string productAsin, int quantity, DateTime dateOrdered, int lineNumber);
 public int updateById(int Id, int quantity, DateTime dateReceived,bool inboundUpdated);
        
     }

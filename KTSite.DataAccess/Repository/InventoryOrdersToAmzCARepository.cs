@@ -28,7 +28,7 @@ namespace KTSite.DataAccess.Repository
             var sql =
                 "SELECT a.Id, a.ProductAsin, a.ProductSku, " +
   "                (SELECT ats.ChinaName FROM AsinToSku ats WHERE ats.Asin = a.ProductAsin) ProductChina," +
-  "                a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
+  "                a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated,a.lineNumber" + 
                 " FROM  InventoryOrdersToAmzCA a";
 
             List<InventoryOrdersToAmzCA> lst = _db.Query<InventoryOrdersToAmzCA>(sql).ToList();
@@ -38,7 +38,7 @@ namespace KTSite.DataAccess.Repository
         {
          
             var sql =
-                "SELECT a.Id, a.ProductAsin, a.ProductSku, a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated" + 
+                "SELECT a.Id, a.ProductAsin, a.ProductSku, a.Quantity ,a.DateOrdered, a.DateReceived , a.InboundUpdated,a.lineNumber" + 
                 " FROM InventoryOrdersToAmzCA a WHERE a.Id = " + id;
 
             InventoryOrdersToAmzCA lst = _db.Query<InventoryOrdersToAmzCA>(sql).Single();
@@ -55,15 +55,15 @@ namespace KTSite.DataAccess.Repository
     return count == 0;
         }
 
-public bool InsertInvOrder(string productAsin, string productSku, int quantity, DateTime dateOrdered)
+public bool InsertInvOrder(string productAsin, string productSku, int quantity, DateTime dateOrdered, int lineNumber)
         {
           try
             {
               var formattedDate = dateOrdered.ToString("yyyy-MM-dd HH:mm:ss");
              var maxDate = DateTime.MaxValue.ToString("yyyy-MM-dd HH:mm:ss");
               var sql =  
-                "INSERT INTO InventoryOrdersToAmzCA (ProductAsin, ProductSku, Quantity, DateOrdered,DateReceived,InboundUpdated)VALUES" +
-              "('"+productAsin+"' , '"+productSku+"', '"+quantity+"', '"+formattedDate+"','"+maxDate+"',0) ";
+                "INSERT INTO InventoryOrdersToAmzCA (ProductAsin, ProductSku, Quantity, lineNumber,DateOrdered,DateReceived,InboundUpdated)VALUES" +
+              "('"+productAsin+"' , '"+productSku+"', '"+quantity+"', '"+lineNumber+"','"+formattedDate+"','"+maxDate+"',0) ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

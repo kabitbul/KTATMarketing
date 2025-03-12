@@ -6,12 +6,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var title = "Add Asin-Sku(KESEM)";
 }
-
 <form method="post" enctype="multipart/form-data">
     <div class="container">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="col-12 border-bottom">
-            <h2 class="text-primary">@title</h2>
+        <div class="col-6 border-bottom">
+            <h2 class="text-primary" style="background-color:#ffc107">@title</h2>
         </div>
         <div class="col-8 pt-4">
             <div class="form-group row">
@@ -84,7 +83,6 @@
     }
 
 </form>
-
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>

@@ -10,8 +10,8 @@
     <div class="container">
         <div class="row p-3 border">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="col-12 border-bottom">
-                <h2 class="text-primary">@title</h2>
+            <div class="col-6 border-bottom">
+                <h2 class="text-primary" style="background-color:#ffc107">@title</h2>
             </div>
             <div class="col-8 pt-4">
                 <div class="col-8">
@@ -35,6 +35,9 @@
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="inventoryOrdersToAmazon.Quantity" class="form-control" />
+                </div>
+                <div class="col-8">
+                    <input type="hidden" asp-for="inventoryOrdersToAmazon.lineNumber" class="form-control" />
                 </div>
                 <div class="col-8">
                     <input type="hidden" asp-for="inventoryOrdersToAmazon.DateOrdered" class="form-control" />

@@ -1,14 +1,12 @@
-﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <br />
 <div class="container">
     <div class="row">
-        <div class="col-5">
-            <h2 class="text-primary;text-danger font-weight-bold" style="background-color:#ffc107">US Sales(KESEM) </h2>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-6">
-            <h2 class="text-primary">@ViewBag.ProductName </h2>
+            <h2 class="text-primary;text-danger font-weight-bold">Canada Total Sales </h2>
         </div>
     </div>
     <div>
@@ -17,8 +15,8 @@
     </div>
     &nbsp;&nbsp;&nbsp;
     <div class="col-4 offset-2">
-         <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
-        
+        <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+
     </div>
 </div>
 @section Scripts{
@@ -60,5 +58,4 @@
         };
     </script>
 }
-
 

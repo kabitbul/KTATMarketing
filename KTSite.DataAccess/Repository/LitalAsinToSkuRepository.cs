@@ -80,8 +80,8 @@ public bool InsertAsinToSku(string asin, string chinaName, string imageUrl)
           try
             {
               var sql =  
-                "INSERT INTO LitalAsinToSku (Asin, ChinaName, Restock,ImageUrl)VALUES" +
-              "('"+asin+"' ,  '"+chinaName+"',1, '"+imageUrl+"') ";
+                "INSERT INTO LitalAsinToSku (Asin, ChinaName, Restock,RestockNOTDECIDED, ImageUrl)VALUES" +
+              "('"+asin+"' ,  '"+chinaName+"',1,0, '"+imageUrl+"') ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

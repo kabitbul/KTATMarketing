@@ -201,6 +201,17 @@ string webRootPath = _hostEnvironment.WebRootPath;
             
             return View();
         }
+ public IActionResult GraphTotalUS()
+        {
+            //stack chart
+            List<GraphData> graphData = new List<GraphData>();
+            
+            graphData = _unitOfWork.litalAmazonOrders.GetTotalOrdGraphData("US");
+            
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            
+            return View();
+        }
         #region API CALLS
 [HttpDelete]
         public IActionResult Delete(int id)

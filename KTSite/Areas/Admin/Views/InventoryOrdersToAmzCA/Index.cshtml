@@ -30,6 +30,7 @@
                     <th>Date Ordered</th>
                     <th>Date Received</th>
                     <th>Tracking Updated</th>
+                    <th>Line Number</th>
                     <th></th>
 </thead>
 
@@ -57,7 +58,7 @@
                     {
                         <td>No</td>
                     }
-
+                    <td>@inventoryOrdersToAmzCA.lineNumber</td>
                     @if (!inventoryOrdersToAmzCA.InboundUpdated)
               {
                <td>
@@ -80,7 +81,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[4, "desc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[0, "desc"]], "pageLength": 100 });
         });</script>
     <script>
 

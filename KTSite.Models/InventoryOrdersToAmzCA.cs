@@ -28,6 +28,7 @@ namespace KTSite.Models
         public DateTime DateReceived { get; set; }
         [DefaultValue(false)]
         public bool InboundUpdated { get; set; }
+        public int  lineNumber{ get; set; }
         
 
     }

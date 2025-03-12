@@ -57,23 +57,6 @@ namespace KTSite.Areas.Admin.Controllers
             }
             return View(asinToSkuVM);
         }
-        //public IActionResult AddAsinToSku()
-        //{
-        //  AsinToSkuVM asinToSkuVM = new AsinToSkuVM()
-        //    {
-        //        AsinToSku = new AsinToSku(),
-        //        ProductList = _unitOfWork.Product.GetAll().
-        //        OrderBy(a => a.ProductName).Select(i => new SelectListItem
-        //        {
-        //            Text = i.ProductName,
-        //            Value = i.ProductName
-        //        })
-        //    };
-        //    ViewBag.ShowMsg = false;
-        //    ViewBag.failed = false;
-        //    ViewBag.success = true;
-        //    return View(asinToSkuVM);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(AsinToSkuVM asinToSkuVM)
@@ -221,6 +204,17 @@ string webRootPath = _hostEnvironment.WebRootPath;
             
             return View();
         }
+      public IActionResult GraphTotalUS()
+        {
+            //stack chart
+            List<GraphData> graphData = new List<GraphData>();
+            
+            graphData = _unitOfWork.amazonOrders.GetTotalOrdGraphData("US");
+            
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            
+            return View();
+        }
          public IActionResult GraphCA(int Id)
         {
             //stack chart
@@ -232,8 +226,18 @@ string webRootPath = _hostEnvironment.WebRootPath;
             graphData = _unitOfWork.amazonOrders.GetGraphData("CA",asinToSku.Asin);
             ViewBag.ProductName = asinToSku.ChinaName;
             
-            ViewBag.DataPointsUser = JsonConvert.SerializeObject(graphData);
-            ViewBag.DataPointsAdmin = JsonConvert.SerializeObject(graphData);
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            return View();
+        }
+      public IActionResult GraphTotalCA()
+        {
+            //stack chart
+            List<GraphData> graphData = new List<GraphData>();
+            
+            graphData = _unitOfWork.amazonOrders.GetTotalOrdGraphData("CA");
+            
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            
             return View();
         }
        //[HttpPost]

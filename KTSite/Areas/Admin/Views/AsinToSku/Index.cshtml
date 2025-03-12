@@ -4,12 +4,37 @@
 }
 
 <br />
+
+<div class="row align-items-center">
+    <div class="col-md-6">
+        <h2 class="text-danger fw-bold">Total Sales of Last 12 Months(US)</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="/Admin/AsinToSku/GraphTotalUS" class="btn text-white"
+           style="background-color: #17a2b8; border-color: #17a2b8; padding: 10px 20px; font-size: 18px;"
+           data-toggle="tooltip" data-placement="top" title="View Sales Graph" target="_blank">
+            <i class="fas fa-chart-bar me-2"></i> View Graph
+        </a>
+    </div>
+</div>
+<div class="row align-items-center">
+    <div class="col-md-6">
+        <h2 class="text-danger fw-bold">Total Sales of Last 12 Months(CA)</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="/Admin/AsinToSku/GraphTotalCA" class="btn text-white"
+           style="background-color: #17a2b8; border-color: #17a2b8; padding: 10px 20px; font-size: 18px;"
+           data-toggle="tooltip" data-placement="top" title="View Sales Graph" target="_blank">
+            <i class="fas fa-chart-bar me-2"></i> View Graph
+        </a>
+    </div>
+</div>
+<br />
 <div class="row">
     <div class="col-6">
         <h2 class="text-primary">Asin To Sku </h2>
     </div>
 </div>
-<br />
 <div class="row">
     <div class="col-6 text-right">
         <a class="btn btn-primary" asp-action="Upsert" style="background-color:forestgreen">
@@ -67,7 +92,7 @@
                         <a href="/Admin/AsinToSku/GraphUS/@ask.Id" class="btn btn-success text-white"
                        style="cursor:pointer;background-color: #17a2b8; border-color: #17a2b8;"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
-                            <i class="fas fa-chart-bar" "></i>
+                            <i class="fas fa-chart-bar"></i>
                         </a>
                     </div>
                 </td>
@@ -87,9 +112,8 @@
                     <td></td>
                      }
                 
-                <td>
-                    <div class="text-center">
-                        <a href="/Admin/AsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
+                <td> 
+                  <a href="/Admin/AsinToSku/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
                        data-toggle="tooltip" data-placement="top" title="Edit Asin">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -97,9 +121,7 @@
                        data-toggle="tooltip" data-placement="top" title="Delete Asin">
                             <i class="fas fa-trash-alt"></i>
                         </a>
-                    </div>
                 </td>
-                
             </tr>
         }
     </table>

@@ -31,7 +31,7 @@ namespace KTSite.Areas.Admin.Controllers
             inventoryOrdersToAmazonVM = new LitalInventoryOrdersToAmazonVM()
                 {
                 inventoryOrdersToAmazon = new LitalInventoryOrdersToAmazon(),
-                    ProductList = _unitOfWork.asinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
+                    ProductList = _unitOfWork.litalAsinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.Asin + " - " + i.ChinaName,
@@ -97,7 +97,8 @@ namespace KTSite.Areas.Admin.Controllers
                     ViewBag.QuantityZero = false;
                     _unitOfWork.litalInventoryOrdersToAmazon.InsertInvOrder(inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.ProductAsin,
                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.Quantity,
-                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.DateOrdered);
+                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.DateOrdered,
+                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.lineNumber);
                     
                     _unitOfWork.Save();
                     ViewBag.success = true;
@@ -117,7 +118,7 @@ namespace KTSite.Areas.Admin.Controllers
             LitalInventoryOrdersToAmazonVM inventoryOrdersToAmazonVM2 = new LitalInventoryOrdersToAmazonVM()
             {
                 inventoryOrdersToAmazon = _unitOfWork.litalInventoryOrdersToAmazon.GetById(inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.Id),
-                ProductList = _unitOfWork.asinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
+                ProductList = _unitOfWork.litalAsinToSku.GetList(). //GetAll().Where(a=>a.MerchId == null).OrderBy(a=>a.ProductName).
                     Select(i => new SelectListItem
                     {
                         Text = i.Asin + " - " + i.ChinaName,

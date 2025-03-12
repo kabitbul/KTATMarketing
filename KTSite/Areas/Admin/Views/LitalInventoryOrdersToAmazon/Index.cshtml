@@ -7,7 +7,7 @@
 <div class="container">
     <div class="row">
         <div class="col-6">
-            <h2 class="text-primary">China Orders List (KESEM)</h2>
+            <h2 class="text-primary" style="background-color:#ffc107">China Orders List (KESEM)</h2>
         </div>
     </div>
     <div class="row">
@@ -30,6 +30,7 @@
                     <th>Date Ordered</th>
                     <th>Date Received</th>
                     <th>Tracking Updated</th>
+                    <th>Line Number</th>
                     <th></th>
 </thead>
 
@@ -57,7 +58,7 @@
                     {
                         <td>No</td>
                     }
-
+                    <td>@inventoryOrdersToAmazon.lineNumber</td>
              @if (!inventoryOrdersToAmazon.InboundUpdated)
               {
                <td>
@@ -80,7 +81,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[4, "desc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[0, "desc"]], "pageLength": 100 });
         });</script>
     <script>
         $.fn.dataTable.ext.search.push(

@@ -103,7 +103,8 @@ namespace KTSite.Areas.Admin.Controllers
                     _unitOfWork.inventoryOrdersToAmazon.InsertInvOrder(inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.ProductAsin,
                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.ProductSku,
                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.Quantity,
-                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.DateOrdered);
+                                                                        inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.DateOrdered,
+                                                                       inventoryOrdersToAmazonVM.inventoryOrdersToAmazon.lineNumber);
                     
                     _unitOfWork.Save();
                     ViewBag.success = true;
