@@ -25,8 +25,9 @@
                     <th>Inbound Qty</th>
                     <th>OnTheWay</th>
                     <th>3daysAvg</th>
-                    <th>weekAvg</th>
+                    <th>14daysAvg</th>
                     <th>monthAvg</th>
+                    <th>30daysSales</th>
                     <th>Days To OOS</th> 
                     <th>Restock</th>
                     <th>Restock Not Decided</th>
@@ -45,14 +46,15 @@
                     {
                         <td></td>
                     }
-                    <td>@inv.Asin</td>
+                <td><a href="https://www.amazon.com/dp/@inv.Asin" target="_blank">@inv.Asin</a></td>
                     <td>@inv.ChinaName</td>
                     <td>@inv.AmzAvailQty</td>
                     <td>@inv.AmzInboundQty</td>
                     <td>@inv.onTheWay</td>
                     <td>@inv.avg3days</td>
-                    <td>@inv.avg7days</td>
+                    <td>@inv.avg14days</td>
                     <td>@inv.avgMonth</td>
+                    <td>@inv.sales30Days</td>
                     <td style="color: @(inv.daysToOOS < 100 ? "red" : "black");font-weight: @(inv.daysToOOS < 100 ? "bold" : "normal")">@inv.daysToOOS</td>
                         <td>
                             <div class="text-center">
@@ -75,7 +77,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[9, "asc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[10, "asc"]], "pageLength": 100 });
         });</script>
 @*-----------------------------------------------------*@
 <script>

@@ -23,6 +23,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult Index(bool? showRestock )
         {
+          int avg14daysForCalcOOS = 0;
           List<AmazonInvStatistics> invList = 
                   _unitOfWork.amazonInventories.GetInventoryStat("US",showRestock);
           List<SkuQtyForAverage> skuQtyForAverage = 
@@ -36,24 +37,27 @@ namespace KTSite.Areas.Admin.Controllers
               
                count++;
                obj.avg3days = getAvg(3,obj.Asin,skuQtyForAverage, false); 
-               obj.avg7days = getAvg(7,obj.Asin,skuQtyForAverage, false);
+               //obj.avg7days = getAvg(7,obj.Asin,skuQtyForAverage, false);
                obj.avgMonth = getAvg(30,obj.Asin,skuQtyForAverage, false);
+               avg14daysForCalcOOS = getAvg(14,obj.Asin,skuQtyForAverage, false);
+               obj.avg14days = avg14daysForCalcOOS; 
+               obj.sales30Days = last30daysSales(obj.Asin,skuQtyForAverage);
                //obj.avg3daysEbay = getAvg(3,obj.sku,websiteOrdersForAverage,true); 
-               if(obj.avg3days == 0)
+               if(avg14daysForCalcOOS == 0)
                { 
-                obj.daysToOOS = 10000;
+                avg14daysForCalcOOS = 10000;
                 obj.needToOrderFromChina = false;
                 //obj.needToOSendFromWarehouse = false;
                }
                else{ 
-                   if(obj.avg3days == 0)
+                   if(avg14daysForCalcOOS == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg3days);
+                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(avg14daysForCalcOOS);
                     
                     
                     
-                         obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days,obj.onTheWay);
+                         obj.needToOrderFromChina = needToOrderFromChina(obj,avg14daysForCalcOOS,obj.onTheWay);
                   // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
                                                             //          (obj.avg3days));
                  }
@@ -63,6 +67,7 @@ namespace KTSite.Areas.Admin.Controllers
         }
         public IActionResult CAInv(bool showRestock = true)
         {
+            int avg14daysForCalcOOS = 0;
                 List<AmazonInvStatistics> invList = 
                   _unitOfWork.amazonInventories.GetInventoryStat("CA",showRestock);
           List<SkuQtyForAverage> skuQtyForAverage = 
@@ -75,8 +80,11 @@ namespace KTSite.Areas.Admin.Controllers
               
                count++;
                obj.avg3days = getAvg(3,obj.Asin,skuQtyForAverage, false); 
-               obj.avg7days = getAvg(7,obj.Asin,skuQtyForAverage, false);
+               //obj.avg7days = getAvg(7,obj.Asin,skuQtyForAverage, false);
                obj.avgMonth = getAvg(30,obj.Asin,skuQtyForAverage, false);
+                 avg14daysForCalcOOS = getAvg(14,obj.Asin,skuQtyForAverage, false);
+                obj.avg14days = avg14daysForCalcOOS;  
+               obj.sales30Days = last30daysSales(obj.Asin,skuQtyForAverage);
                //obj.avg3daysEbay = getAvg(3,obj.sku,websiteOrdersForAverage,true); 
                if(obj.avg3days == 0)
                { 
@@ -85,20 +93,36 @@ namespace KTSite.Areas.Admin.Controllers
                 //obj.needToOSendFromWarehouse = false;
                }
                else{ 
-                   if(obj.avg3days == 0)
+                   if(avg14daysForCalcOOS == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg3days);
+                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(avg14daysForCalcOOS);
                     
                     
                     
-                         obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days,obj.onTheWay);
+                         obj.needToOrderFromChina = needToOrderFromChina(obj,avg14daysForCalcOOS,obj.onTheWay);
                   // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
                                                             //          (obj.avg3days));
                  }
               
             }
             return View(invList);
+        }
+     public int last30daysSales(string asin, List<SkuQtyForAverage> lst)
+        {
+         
+        DateTime startDate = TimeZoneInfo.ConvertTime(DateTime.UtcNow.AddDays(-30),
+                              TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+                          .Date;
+         DateTime endDate = TimeZoneInfo.ConvertTime(DateTime.UtcNow,
+                              TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+                          .Date;
+         
+           int totalQty = lst
+            .Where(a => a.Asin == asin && a.PurchaseDate >= startDate && a.PurchaseDate <= endDate
+                 ).Sum(a => a.Qty);
+            return totalQty;
+        
         }
         public int getAvg(int days, string asin, List<SkuQtyForAverage> lst, bool isWebsite)
         {

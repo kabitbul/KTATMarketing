@@ -33,7 +33,7 @@ namespace KTSite.DataAccess.Repository
                           .Date.ToString("yyyy-MM-dd HH:mm:ss");
             var sql =
                 "SELECT sk.Asin, o.Qty,o.PurchaseDate "+
-"                FROM LitalAmazonOrders o , AsinToSku sk " +
+"                FROM LitalAmazonOrders o , LitalAsinToSku sk " +
 "                WHERE MarketPlace = '"+marketPlace+"' AND " +
 "                      o.Asin = sk.Asin AND "+
 "                      o.PurchaseDate >=  '"+startDate+"' AND" +

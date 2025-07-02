@@ -34,24 +34,24 @@ namespace KTSite.Areas.Admin.Controllers
               
                count++;
                obj.avg3days = getAvg(3,obj.Asin,skuQtyForAverage, false); 
-               obj.avg7days = getAvg(7,obj.Asin,skuQtyForAverage, false);
+               obj.avg14days = getAvg(14,obj.Asin,skuQtyForAverage, false);
                obj.avgMonth = getAvg(30,obj.Asin,skuQtyForAverage, false);
-               //obj.avg3daysEbay = getAvg(3,obj.sku,websiteOrdersForAverage,true); 
-               if(obj.avg3days == 0)
+               obj.sales30Days = last30daysSales(obj.Asin,skuQtyForAverage);
+               if(obj.avg14days == 0)
                { 
                 obj.daysToOOS = 10000;
                 obj.needToOrderFromChina = false;
                 //obj.needToOSendFromWarehouse = false;
                }
                else{ 
-                   if(obj.avg3days == 0)
+                   if(obj.avg14days == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg3days);
+                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg14days);
                     
                     
                     
-                         obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg3days,obj.onTheWay);
+                         obj.needToOrderFromChina = needToOrderFromChina(obj,obj.avg14days,obj.onTheWay);
                   // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
                                                             //          (obj.avg3days));
                  }
@@ -59,7 +59,22 @@ namespace KTSite.Areas.Admin.Controllers
             }
             return View(invList);
         }
-       
+        public int last30daysSales(string asin, List<SkuQtyForAverage> lst)
+        {
+         
+        DateTime startDate = TimeZoneInfo.ConvertTime(DateTime.UtcNow.AddDays(-30),
+                              TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+                          .Date;
+         DateTime endDate = TimeZoneInfo.ConvertTime(DateTime.UtcNow,
+                              TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"))
+                          .Date;
+         
+           int totalQty = lst
+            .Where(a => a.Asin == asin && a.PurchaseDate >= startDate && a.PurchaseDate <= endDate
+                 ).Sum(a => a.Qty);
+            return totalQty;
+        
+        }
         public int getAvg(int days, string asin, List<SkuQtyForAverage> lst, bool isWebsite)
         {
          

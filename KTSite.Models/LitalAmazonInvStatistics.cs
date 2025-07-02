@@ -18,8 +18,9 @@ namespace KTSite.Models
         public int warehouseAvailQty { get; set; }
         public int warehouseOnTheWayQty { get; set; }
         public int avg3days { get; set; }
-        public int avg7days { get; set; }
+        public int avg14days { get; set; }
         public int avgMonth { get; set; }
+        public int sales30Days { get; set; }
         public int avg3daysEbay { get; set; }
         public int daysToOOS { get; set; }
         public bool needToOrderFromChina { get; set; }
