@@ -49,7 +49,10 @@
             @*<li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="AmazonInventory" asp-action="Index">Amazon</a>
             </li>*@
-             <li class="nav-item dropdown">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="AAmazonStores" asp-action="Index">Stores</a>
+            </li>
+            @* <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   KT Amazon US
                    </a>
@@ -61,8 +64,8 @@
                          <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>
                      
                   </div>
-             </li>
-             <li class="nav-item dropdown">
+             </li>*@
+            @* <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Lital Amazon (KESEM)
                    </a>
@@ -72,7 +75,32 @@
                          <a class="dropdown-item" asp-area="Admin" asp-controller="LitalInventoryOrdersToAmazon" asp-action="Index">China Orders - US</a>
                      
                   </div>
-             </li>
+             </li>*@
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    KT Store
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzAsinToSkuKT" asp-action="Index">Asin By Sku</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzInventoryKTUS" asp-action="Index">US Inventory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzInventoryKTCA" asp-action="Index">CA Inventory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzStockPurchaseKTUS" asp-action="Index">China Orders - US</a>
+                                    @* <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>
+*@
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Lital Store
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzAsinToSkuLital" asp-action="Index">Asin By Sku</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzInventoryLitalUS" asp-action="Index">US Inventory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzStockPurchaseLitalUS" asp-action="Index">China Orders - US</a>
+                                    @* <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>*@
+                                
+                                </div>
+                            </li>
              @*<li class="nav-item">
                  <a class="nav-link" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
              </li>

@@ -47,7 +47,7 @@ namespace KTSite.Areas.Admin.Controllers
                    if(obj.avg14days == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(obj.avg14days);
+                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.AmzAWDAvailQty + obj.AmzAWDInboundQty + obj.onTheWay) /(obj.avg14days);
                     
                     
                     

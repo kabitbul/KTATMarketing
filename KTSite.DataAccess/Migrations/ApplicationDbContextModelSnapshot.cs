@@ -19,6 +19,216 @@ namespace KTSite.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("KTSite.Models.AAmazonStores", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("StoreName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmazonStores");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AAmzAWDInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Asin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("MarketPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)")
+                        .HasMaxLength(3);
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("totalInboundQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("totalOnhandQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmzAWDInventory");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AAmzAsinToSku", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Asin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<string>("ChinaName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCanadaAsin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RestockCA")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RestockNOTDECIDED")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RestockNOTDECIDEDCA")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RestockUS")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Sku")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmzAsinToSku");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AAmzFBAInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Asin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<int>("AvailableQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InboundReceivingQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InboundShippedQty")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MarketPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)")
+                        .HasMaxLength(3);
+
+                    b.Property<int>("ReservedQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmzFBAInventory");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AAmzOrders", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AmazonOrdId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("Asin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MarketPlace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Qty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("storeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmzOrders");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AAmzStockPurchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateOrdered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateReceived")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("InboundUpdated")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MarketPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)")
+                        .HasMaxLength(3);
+
+                    b.Property<string>("ProductAsin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductChinaName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("lineNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AAmzStockPurchase");
+                });
+
             modelBuilder.Entity("KTSite.Models.AdminVATask", b =>
                 {
                     b.Property<int>("Id")
@@ -44,6 +254,37 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("adminVaTasks");
+                });
+
+            modelBuilder.Entity("KTSite.Models.AmazonAWDInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Asin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("MarketPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)")
+                        .HasMaxLength(3);
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("totalInboundQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("totalOnhandQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AmazonAWDInventories");
                 });
 
             modelBuilder.Entity("KTSite.Models.AmazonInventory", b =>
@@ -570,6 +811,37 @@ namespace KTSite.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("InventoryOrdersToAmzCA");
+                });
+
+            modelBuilder.Entity("KTSite.Models.LitalAmazonAWDInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Asin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("MarketPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)")
+                        .HasMaxLength(3);
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("totalInboundQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("totalOnhandQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LitalAmazonAWDInventories");
                 });
 
             modelBuilder.Entity("KTSite.Models.LitalAmazonInventory", b =>
@@ -1632,6 +1904,29 @@ namespace KTSite.DataAccess.Migrations
                     b.HasIndex("UserNameId");
 
                     b.ToTable("SellersInventories");
+                });
+
+            modelBuilder.Entity("KTSite.Models.TempSkuAsin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("asin")
+                        .HasColumnType("nvarchar(2000)")
+                        .HasMaxLength(2000);
+
+                    b.Property<string>("sku")
+                        .HasColumnType("nvarchar(2000)")
+                        .HasMaxLength(2000);
+
+                    b.Property<int>("storeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TempSkuAsins");
                 });
 
             modelBuilder.Entity("KTSite.Models.UserGuideline", b =>

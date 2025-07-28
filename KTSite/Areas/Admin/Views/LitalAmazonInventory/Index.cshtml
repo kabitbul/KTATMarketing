@@ -23,6 +23,8 @@
                     <th>China Name</th>
                     <th>Available Qty</th>
                     <th>Inbound Qty</th>
+                    <th>AWD Avail</th>
+                    <th>AWD Inbound</th>
                     <th>OnTheWay</th>
                     <th>3daysAvg</th>
                     <th>14daysAvg</th>
@@ -50,6 +52,8 @@
                     <td>@inv.ChinaName</td>
                     <td>@inv.AmzAvailQty</td>
                     <td>@inv.AmzInboundQty</td>
+                    <td>@inv.AmzAWDAvailQty</td>
+                    <td>@inv.AmzAWDInboundQty</td>
                     <td>@inv.onTheWay</td>
                     <td>@inv.avg3days</td>
                     <td>@inv.avg14days</td>
@@ -77,7 +81,7 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-            $('#tblData').DataTable({ "order": [[10, "asc"]], "pageLength": 100 });
+            $('#tblData').DataTable({ "order": [[12, "asc"]], "pageLength": 100 });
         });</script>
 @*-----------------------------------------------------*@
 <script>

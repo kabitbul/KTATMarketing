@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KTSite.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,12 @@ namespace KTSite.DataAccess.Repository.IRepository
 {
     public interface IUnitOfWork : IDisposable
     {
+        IAAmazonStoresRepository AAmazonStores { get; }
+        IAAmzAsinToSkuRepository AAmzAsinToSku { get; }
+        IAAmzFBAInventoryRepository AAmzFBAInventory { get; }
+        IAAmzAWDInentoryRepository AAmzAWDInventory { get; } 
+        IAAmzStockPurchaseRepository AAmzStockPurchase { get; }
+        IAAmzOrdersRepository AAmzOrders { get; } 
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
         IApplicationUserRepository ApplicationUser { get; }
@@ -44,6 +51,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         IAsinToSkuRepository asinToSku { get; }
         IAmazonOrdersRepository amazonOrders { get; }
         IAmazonInventoryRepository amazonInventories { get; }
+        IAmazonAWDInventoryRepository amazonAWDInventories { get; }
         IInventoryOrdersToAmazonRepository inventoryOrdersToAmazon { get; }
         IInventoryOrdersToAmzCARepository inventoryOrdersToAmzCA { get; }
         ILitalAmazonOrdersRepository litalAmazonOrders { get; }

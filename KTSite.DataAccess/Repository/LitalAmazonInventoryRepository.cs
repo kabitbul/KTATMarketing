@@ -37,9 +37,10 @@ namespace KTSite.DataAccess.Repository
 "SELECT sk.Id,sk.ImageUrl, sk.Asin, sk.ChinaName,"+
 "            inv.AvailableQty AmzAvailQty, "+
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
+"            aw.totalInboundQuantity AmzAWDInboundQty, aw.totalOnhandQuantity AmzAWDAvailQty, "+
 "            sk.Restock restock, sk.RestockNOTDECIDED, "+
 "			COALESCE((select sum(Quantity) from LitalInventoryOrdersToAmazon ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
-"     FROM LitalAmazonInventories inv JOIN LitalAsinToSku sk ON inv.Asin = sk.Asin "+
+"     FROM LitalAmazonInventories inv JOIN LitalAsinToSku sk ON inv.Asin = sk.Asin left join LitalAmazonAWDInventories aw on aw.Asin = sk.Asin"+
 "     WHERE inv.MarketPlace = '"+marketPlace+"'";
       if(shr)
        { 

@@ -1,0 +1,134 @@
+﻿
+
+@model KTSite.Models.AAmzAsinToSku
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Add Asin-Sku";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="container">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Asin"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Asin" class="form-control" />
+                    <span asp-validation-for="Asin" class="text-danger"></span>
+                </div>
+             </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Sku"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Sku" class="form-control" />
+                    <span asp-validation-for="Sku" class="text-danger"></span>
+                </div>
+            </div>
+           @* <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="AsinToSku.Sku">Sku</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.AsinToSku.Sku, Model.ProductList, "Select a Product",
+                    new { @class = "form-control", id = "productDropdown" })
+                    <span asp-validation-for="AsinToSku.Sku" class="text-danger"></span>
+                </div>
+            </div>*@
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ChinaName"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ChinaName" class="form-control" />
+                    <span asp-validation-for="ChinaName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="IsCanadaAsin">FBA In Canada</label>
+                </div>
+                <div class="col-8">
+                    <input type="checkbox" asp-for="IsCanadaAsin" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Image
+                </div>
+                <div class="col-8">
+                    <input type="file" name="files" id="uploadBox" multiple class="form-control" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="col-8">
+                <input type="hidden" asp-for="RestockUS" class="form-control" value=true />
+                </div>
+                <div class="col-8">
+                <input type="hidden" asp-for="RestockCA" class="form-control" value=true />
+                </div>
+                <div class="col-8">
+                   <input type="hidden" asp-for="RestockNOTDECIDED" class="form-control" value=false />
+                </div>
+            <div class="col-8">
+                <input type="hidden" asp-for="Id" class="form-control" />
+            </div>
+            </div>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control">Add</button>
+                        </div>
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @if ( Model.Id != 0)
+    {
+        <div class="col-3 offset-1 pt-4">
+            <img src="@Model.ImageUrl" style="border-radius:5px; border:1px solid #bbb9b9" />
+        </div>
+    }
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.tiny.cloud/1/h0b6kdvecrt66vsb30f5tpqd7ocxoezkzq6fcfbbvp0xrbfw/tinymce/5/tinymce.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#productDropdown").chosen();
+        });
+    </script>
+    @if (ViewBag.ShowMsg)
+    {
+        if(ViewBag.failed)
+        {
+            <script>
+                swal("Error, could not Save Data (Check if Asin already Exists)!", "Unkown Error", "error")
+                    .then((value) => {  })
+            </script>
+        }
+        else
+        {
+          <script>
+            swal("Success!", "Asin-Sku Added!", "success")
+                .then((value) => { window.location.href = '/Admin/AAmzAsinToSkuKT'; })
+        </script>
+
+        }
+    }
+}

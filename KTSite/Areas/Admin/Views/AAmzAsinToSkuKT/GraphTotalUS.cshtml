@@ -1,0 +1,60 @@
+﻿@{ Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary;text-danger font-weight-bold">US Total Sales </h2>
+        </div>
+    </div>
+    <div>
+        <div id="chartContainer" style="height: 370px; width: 70%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+    &nbsp;&nbsp;&nbsp;
+    <div class="col-4 offset-2">
+         <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+        
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        window.onload = function () {
+            var rawData = @Html.Raw(ViewBag.DataPointsG);
+
+            // Function to convert numeric month to string representation
+            function getMonthName(monthNumber) {
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                return monthNames[monthNumber - 1]; // Months are 1-based in your data
+            }
+
+            // Transform data to match CanvasJS format
+            var dataPoints = rawData.map(item => ({
+                label: getMonthName(item.pmonth) + " " + item.pyear, // Example: "Jan 2024"
+                y: item.totalQty
+            }));
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Yearly Sales"
+                },
+                axisY: {
+                    title: "Quantity",
+                },
+                data: [
+                    {
+                        type: "column", // Use a simple column chart
+                        showInLegend: false, // No legend needed
+                        indexLabel: "{y}",
+                        indexLabelPlacement: "outside",
+                        dataPoints: dataPoints
+                    }
+                ]
+            });
+            chart.render();
+        };
+    </script>
+}
+
+

@@ -13,6 +13,15 @@ namespace KTSite.DataAccess.Repository
         {
             _db = db;
             _configuration = configuration;
+            //////////////////////////////////////////////////////////
+            AAmzOrders = new AAmzOrdersRepository(_configuration);
+            AAmazonStores = new AAmazonStoresRepository(_configuration);
+            AAmzAsinToSku = new AAmzAsinToSkuRepository(_configuration,AAmzOrders);
+            AAmzFBAInventory = new AAmzFBAInventoryRepository(_configuration,AAmzOrders,AAmzAsinToSku);
+            AAmzAWDInventory = new AAmzAWDInventoryRepository(_configuration);
+            AAmzStockPurchase = new AAmzStockPurchaseRepository(_configuration);
+
+            ////////////////////////////////////////////////////////////////////
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
             ApplicationUser = new ApplicationUserRepository(_db);
@@ -48,8 +57,9 @@ namespace KTSite.DataAccess.Repository
             UsersForAPI = new UsersForAPIRepository(_db);
             inventoryOnTexas = new InventoryOnTexasRepository(_configuration);
             asinToSku = new AsinToSkuRepository(_configuration);
-            amazonOrders = new AmazonOrdersRepository(_configuration);
+            
             amazonInventories = new AmazonInventoryRepository(_configuration);
+            amazonAWDInventories = new AmazonAWDInventoryRepository(_configuration);
             inventoryOrdersToAmazon = new InventoryOrdersToAmazonRepository(_configuration);
             inventoryOrdersToAmzCA = new InventoryOrdersToAmzCARepository(_configuration);
             litalAsinToSku = new LitalAsinToSkuRepository(_configuration);
@@ -57,6 +67,15 @@ namespace KTSite.DataAccess.Repository
             litalInventoryOrdersToAmazon = new LitalInventoryOrdersToAmazonRepository(_configuration);
             litalAmazonInventories = new LitalAmazonInventoryRepository(_configuration);
         }
+        public IAAmazonStoresRepository AAmazonStores { get; private set; }
+        public IAAmzAsinToSkuRepository AAmzAsinToSku { get; private set; }
+        public IAAmzFBAInventoryRepository AAmzFBAInventory { get; private set; }
+        public IAAmzAWDInentoryRepository AAmzAWDInventory { get; private set; }
+        public IAAmzStockPurchaseRepository AAmzStockPurchase { get; private set; }
+        public IAAmzOrdersRepository AAmzOrders { get; private set; }
+//////////////////////////////////////////////////////////////////////////////////////////
+/// 
+/// </summary>
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public ICategoryRepository Category { get; private set; }
         public IProductRepository Product { get; private set; }
@@ -94,6 +113,7 @@ namespace KTSite.DataAccess.Repository
         public IAsinToSkuRepository asinToSku { get; private set; }
         public IAmazonOrdersRepository amazonOrders { get; private set; }
         public IAmazonInventoryRepository amazonInventories { get; private set; }
+        public IAmazonAWDInventoryRepository amazonAWDInventories { get; private set; }
         public IInventoryOrdersToAmazonRepository inventoryOrdersToAmazon { get; private set; }
         public IInventoryOrdersToAmzCARepository inventoryOrdersToAmzCA { get; private set; }
         public ILitalAsinToSkuRepository litalAsinToSku { get; private set; }

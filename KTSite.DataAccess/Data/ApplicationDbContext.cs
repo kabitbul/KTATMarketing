@@ -13,6 +13,14 @@ namespace KTSite.DataAccess.Data
         public ApplicationDbContext()
         {
         }
+        public DbSet<AAmazonStores> AAmazonStores { get; set; }
+        public DbSet<AAmzAsinToSku> AAmzAsinToSku { get; set; } 
+        public DbSet<AAmzFBAInventory> AAmzFBAInventory { get; set; }
+        public DbSet<AAmzAWDInventory> AAmzAWDInventory { get; set; }
+        public DbSet<AAmzStockPurchase> AAmzStockPurchase { get; set; }
+        public DbSet<AAmzOrders> AAmzOrders { get; set; }
+public DbSet<TempSkuAsin> TempSkuAsins { get; set; }
+///////////////////////////////////////////////////////////////////////////
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
 
@@ -52,6 +60,7 @@ namespace KTSite.DataAccess.Data
         public DbSet<AsinToSku> AsinToSku { get; set; }
         public DbSet<AmazonOrders> AmazonOrders { get; set; }
         public DbSet<AmazonInventory> AmazonInventories { get; set; }
+        public DbSet<AmazonAWDInventory> AmazonAWDInventories { get; set; }
         public DbSet<FBAFromWarehouse> FBAFromWarehouses { get; set; }
         public DbSet<ProductOLD> ProductOLD { get; set; }
         public DbSet<InventoryOrdersToAmazon> InventoryOrdersToAmazons { get; set; }
@@ -60,5 +69,6 @@ namespace KTSite.DataAccess.Data
         public DbSet<LitalInventoryOrdersToAmazon> LitalInventoryOrdersToAmazon { get; set; }
         public DbSet<LitalAsinToSku> LitalAsinToSku { get; set; }
         public DbSet<LitalAmazonInventory> LitalAmazonInventories { get; set; }
+        public DbSet<LitalAmazonAWDInventory> LitalAmazonAWDInventories { get; set; }
     }
 }

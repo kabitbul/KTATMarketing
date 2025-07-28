@@ -27,7 +27,7 @@ namespace KTSite.Areas.Admin.Controllers
         {
             if(User.IsInRole(SD.Role_Admin))
             {
-               return Redirect("Admin/AmazonInventory");
+               return Redirect("Admin/AAmzInventoryKTUS");
             //    IEnumerable<Notification> NotList = _unitOfWork.Notification.GetAll().Where(a => a.Visible).OrderByDescending(a => a.DateMsg);
             //    ViewBag.NotificationList = NotList;
             //    if (NotList != null && NotList.Count() > 0)

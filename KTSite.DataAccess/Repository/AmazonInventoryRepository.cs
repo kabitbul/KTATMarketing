@@ -34,12 +34,14 @@ namespace KTSite.DataAccess.Repository
            if (marketPlace == "US")
             { 
     sql =
-"SELECT sk.Id,sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName,"+
+"SELECT sk.Id,sk.ImageUrl, sk.Sku, sk.Asin, sk.ChinaName, "+
 "            inv.AvailableQty AmzAvailQty, "+
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
+"            aw.totalInboundQuantity AmzAWDInboundQty, aw.totalOnhandQuantity AmzAWDAvailQty, "+
 "            sk.RestockUS restockUS, sk.RestockCA restockCA,sk.RestockNOTDECIDED, "+
-"			COALESCE((select sum(Quantity) from InventoryOrdersToAmazons ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
-"     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin "+
+"			COALESCE((select sum(Quantity) from InventoryOrdersToAmazons ioa "+
+"			                        where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
+"     FROM AmazonInventories inv JOIN AsinToSku sk ON inv.Asin = sk.Asin left join AmazonAWDInventories aw on aw.Asin = sk.Asin"+
 "     WHERE inv.MarketPlace = '"+marketPlace+"'";
       if(shr)
        { 

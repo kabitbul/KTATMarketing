@@ -9,6 +9,10 @@ namespace KTSite.Utility
         //AMAZON
         public const int amzWarehouseShipDays =  21;
         public const int amzChinaShipDays =  100;
+        public const string marketPlaceUS = "US";
+        public const string marketPlaceCA = "CA";
+        public const int KTStoreId = 1;
+        public const int LitalStoreId = 2;
         //AMAZON END
         
         

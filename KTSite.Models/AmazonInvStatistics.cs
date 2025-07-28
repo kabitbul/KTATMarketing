@@ -16,6 +16,8 @@ namespace KTSite.Models
         public string MarketPlace { get; set; }
         public int AmzAvailQty { get; set; }
         public int AmzInboundQty { get; set; }
+        public int AmzAWDAvailQty { get; set; }
+        public int AmzAWDInboundQty { get; set; }
         public int warehouseAvailQty { get; set; }
         public int warehouseOnTheWayQty { get; set; }
         public int avg3days { get; set; }
@@ -26,8 +28,9 @@ namespace KTSite.Models
         public int daysToOOS { get; set; }
         public bool needToOrderFromChina { get; set; }
          public bool needToOSendFromWarehouse { get; set; }
-        public bool restockUS { get; set; }
-        public bool restockCA { get; set; }
+        public bool restock { get; set; }
+          //public bool restockUS { get; set; }
+       /// public bool restockCA { get; set; }
         public int onTheWay { get; set; }
         public bool restockNotDecided{ get; set; }
         public bool restockNotDecidedCA{ get; set; }

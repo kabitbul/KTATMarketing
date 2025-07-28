@@ -53,7 +53,8 @@ namespace KTSite.Areas.Admin.Controllers
                    if(avg14daysForCalcOOS == 0)
                       obj.daysToOOS = 10000;
                    else
-                    obj.daysToOOS = (obj.AmzAvailQty+obj.AmzInboundQty + obj.onTheWay) /(avg14daysForCalcOOS);
+                    obj.daysToOOS = 
+            (obj.AmzAvailQty+obj.AmzInboundQty + obj.AmzAWDAvailQty + obj.AmzAWDInboundQty + obj.onTheWay) /(avg14daysForCalcOOS);
                     
                     
                     
@@ -225,42 +226,42 @@ namespace KTSite.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult UpdateInvCA( string model, string  arrId, string checkedVal)
-        {
-            IEnumerable<AmazonInvStatistics> modelData = 
-              JsonConvert.DeserializeObject<IEnumerable<AmazonInvStatistics>>(model);
-            string[] arrIdStrings = arrId.Split(',');
-            int[] Ids = arrIdStrings.Select(int.Parse).ToArray();
-            string[] valStrings = checkedVal.Split(',');
-            bool[] Vals = valStrings.Select(bool.Parse).ToArray();
-             string sql = "";
-            foreach (AmazonInvStatistics obj in modelData)
-            {
-                if(!Ids.Contains(obj.Id))
-                  continue;
+  //      public IActionResult UpdateInvCA( string model, string  arrId, string checkedVal)
+  //      {
+  //          IEnumerable<AmazonInvStatistics> modelData = 
+  //            JsonConvert.DeserializeObject<IEnumerable<AmazonInvStatistics>>(model);
+  //          string[] arrIdStrings = arrId.Split(',');
+  //          int[] Ids = arrIdStrings.Select(int.Parse).ToArray();
+  //          string[] valStrings = checkedVal.Split(',');
+  //          bool[] Vals = valStrings.Select(bool.Parse).ToArray();
+  //           string sql = "";
+  //          foreach (AmazonInvStatistics obj in modelData)
+  //          {
+  //              if(!Ids.Contains(obj.Id))
+  //                continue;
  
-                bool restock = obj.restockCA;
-                int index = Array.IndexOf(Ids, obj.Id);
-                if ((bool)obj.restockCA != Vals[index])
-                 {
-                    if(Vals[index])
-                     {
-                       sql = sql + " UPDATE AsinToSku " +
-  "                               SET RestockCA = 1 " +
-  "                               WHERE Asin = '" + obj.Asin + "'; "; 
-                     }
-                     else
-                      {
-                       sql = sql + " UPDATE AsinToSku " +
-  "                               SET RestockCA = 0 " +
-  "                               WHERE Asin = '" + obj.Asin + "'; "; 
-                     }
-                 }
-              }
+  //              bool restock = obj.restockCA;
+  //              int index = Array.IndexOf(Ids, obj.Id);
+  //              if ((bool)obj.restockCA != Vals[index])
+  //               {
+  //                  if(Vals[index])
+  //                   {
+  //                     sql = sql + " UPDATE AsinToSku " +
+  //"                               SET RestockCA = 1 " +
+  //"                               WHERE Asin = '" + obj.Asin + "'; "; 
+  //                   }
+  //                   else
+  //                    {
+  //                     sql = sql + " UPDATE AsinToSku " +
+  //"                               SET RestockCA = 0 " +
+  //"                               WHERE Asin = '" + obj.Asin + "'; "; 
+  //                   }
+  //               }
+  //            }
  
-            int res = _unitOfWork.asinToSku.updateRestockStatus(sql);
-            return View();
-        }
+  //          int res = _unitOfWork.asinToSku.updateRestockStatus(sql);
+  //          return View();
+  //      }
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()

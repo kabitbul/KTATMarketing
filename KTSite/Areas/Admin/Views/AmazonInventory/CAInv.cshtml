@@ -57,10 +57,10 @@
                 <td>@inv.sales30Days</td>
                 <td style="color: @(inv.daysToOOS < 100 ? "red" : "black");font-weight: @(inv.daysToOOS < 100 ? "bold" : "normal")">@inv.daysToOOS</td>
                 <td>
-                    <div class="text-center">
+                   @* <div class="text-center">
                         <input type="hidden" asp-for="@inv.Id" />
                         <input type="checkbox" asp-for="@inv.restockCA" onchange="updateRestockCA(@inv.Id,this.checked)" />
-                    </div>
+                    </div>*@
                 </td>
                 <td>
                     <div class="text-center">

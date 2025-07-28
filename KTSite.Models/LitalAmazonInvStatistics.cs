@@ -15,6 +15,8 @@ namespace KTSite.Models
         public string MarketPlace { get; set; }
         public int AmzAvailQty { get; set; }
         public int AmzInboundQty { get; set; }
+        public int AmzAWDAvailQty { get; set; }
+        public int AmzAWDInboundQty { get; set; }
         public int warehouseAvailQty { get; set; }
         public int warehouseOnTheWayQty { get; set; }
         public int avg3days { get; set; }
