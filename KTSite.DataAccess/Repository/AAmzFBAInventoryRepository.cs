@@ -89,7 +89,8 @@ namespace KTSite.DataAccess.Repository
 "            aw.totalInboundQuantity AmzAWDInboundQty, aw.totalOnhandQuantity AmzAWDAvailQty, "+
 "            sk.RestockUS restock, sk.RestockCA restockCA,sk.RestockNOTDECIDED, "+
 "			COALESCE((select sum(Quantity) from AAmzStockPurchase sp "+
-"			                        where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0),0) onTheWay "+
+"			     where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0 and MarketPlace = '"+marketPlace+"'" +
+"                  and storeId = "+ storeId +"),0) onTheWay "+
 "     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin left join AAmzAWDInventory aw on aw.Asin = sk.Asin"+
 "     WHERE inv.MarketPlace = '"+marketPlace+"' AND inv.StoreId = " + storeId;
       if(shr)
@@ -103,7 +104,8 @@ sql =
 "            inv.AvailableQty AmzAvailQty, "+
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
 "            sk.RestockUS restockUS, sk.RestockCA restock, sk.RestockNOTDECIDEDCA, "+
-"			COALESCE((select sum(Quantity) from InventoryOrdersToAmzCA ioa where ioa.ProductAsin = inv.Asin and ioa.InboundUpdated = 0),0) onTheWay "+
+"			COALESCE((select sum(Quantity) from AAmzStockPurchase sp where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0" +
+"            and MarketPlace = '"+marketPlace+"' and storeId = "+ storeId +"),0) onTheWay "+
 "     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin "+
 "     WHERE inv.MarketPlace = '"+marketPlace+"' and sk.IsCanadaAsin = 1 AND inv.StoreId = " + storeId;
 if(shr)
