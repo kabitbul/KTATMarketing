@@ -100,6 +100,18 @@
                                 
                                 </div>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Goral Store
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzAsinToSkuGoral" asp-action="Index">Asin By Sku</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzInventoryGoralUS" asp-action="Index">US Inventory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="AAmzStockPurchaseGoralUS" asp-action="Index">China Orders - US</a>
+                                    @* <a class="dropdown-item" asp-area="Admin" asp-controller="InventoryOrdersToAmzCA" asp-action="Index">China Orders - Canada</a>*@
+
+                                </div>
+                            </li>
              @*<li class="nav-item">
                  <a class="nav-link" asp-area="Admin" asp-controller="AsinToSku" asp-action="Index">Asin By Sku</a>
              </li>
