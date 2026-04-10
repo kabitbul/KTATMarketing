@@ -32,6 +32,8 @@ namespace KTSite.Models
          public bool RestockNOTDECIDEDCA { get; set; }
          [DefaultValue(false)]
          public bool IsCanadaAsin { get; set; }
+         public double Cost { get; set; }
+         public double CanadianCost { get; set; }
         
     }
 }

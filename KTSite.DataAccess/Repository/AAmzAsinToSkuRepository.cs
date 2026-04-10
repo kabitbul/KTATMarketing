@@ -31,7 +31,7 @@ namespace KTSite.DataAccess.Repository
             var sql =
                 "SELECT a.Id,a.StoreId, a.Asin, a.Sku, " +
 "                       a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl," +
-"                       a.RestockNOTDECIDED,a.IsCanadaAsin " + 
+"                       a.RestockNOTDECIDED,a.IsCanadaAsin, a.Cost, a.CanadianCost " + 
                 " FROM AAmzAsinToSku a WHERE a.StoreId = " + store;
 
             List<AAmzAsinToSku> lst = _db.Query<AAmzAsinToSku>(sql).ToList();
@@ -42,7 +42,7 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
             var sql =
                 "SELECT a.Id,a.StoreId, a.Asin, a.Sku, " +
 "                       a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl," +
-"                       a.RestockNOTDECIDED,a.IsCanadaAsin " + 
+"                       a.RestockNOTDECIDED,a.IsCanadaAsin ,a.Cost, a.CanadianCost" + 
                 " FROM AAmzAsinToSku a WHERE a.StoreId = " + store ;
            if (marketplace == SD.marketPlaceCA)
             {
@@ -71,14 +71,14 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
         if(aAmzAsinToSku.Id == 0)
                 {
                     return InsertAsinToSku(storeId,aAmzAsinToSku.Asin,aAmzAsinToSku.Sku,
-                               aAmzAsinToSku.ChinaName,aAmzAsinToSku.ImageUrl,aAmzAsinToSku.IsCanadaAsin);
+                               aAmzAsinToSku.ChinaName,aAmzAsinToSku.ImageUrl,aAmzAsinToSku.IsCanadaAsin,aAmzAsinToSku.Cost,aAmzAsinToSku.CanadianCost);
                    
                 }
                 else
                 {
                    int res = updateById(storeId,aAmzAsinToSku.Id,aAmzAsinToSku.Asin,aAmzAsinToSku.Sku,
                           aAmzAsinToSku.ChinaName,aAmzAsinToSku.ImageUrl,aAmzAsinToSku.RestockNOTDECIDED,
-                          aAmzAsinToSku.IsCanadaAsin);
+                          aAmzAsinToSku.IsCanadaAsin,aAmzAsinToSku.Cost,aAmzAsinToSku.CanadianCost);
                   if (res != 1) 
                      return false;
                   return true;
@@ -90,7 +90,7 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
          
             var sql =
                 "SELECT a.Id, a.Asin, a.Sku, a.ChinaName ,a.RestockUS, a.RestockCA , a.ImageUrl," +
-"                       a.RestockNOTDECIDED,a.IsCanadaAsin " + 
+"                       a.RestockNOTDECIDED,a.IsCanadaAsin ,a.Cost, a.CanadianCost" + 
                 " FROM AAmzAsinToSku a WHERE a.Id = " + id + " AND a.StoreId = " + storeId;
 
             AAmzAsinToSku lst = _db.Query<AAmzAsinToSku>(sql).Single();
@@ -121,7 +121,7 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
             }
         }
         public int updateById(int storeId,int id , string asin, string sku, string chinaName, string imageUrl,
-                              bool restockNOTDECIDED, bool IsCanadaAsin)
+                              bool restockNOTDECIDED, bool IsCanadaAsin,double cost, double CACost)
         {
             try
             {
@@ -130,7 +130,8 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
 "                                     ChinaName = '"+chinaName+"', " +
 "                                     ImageUrl = '"+imageUrl+"' ," +
 "                                     RestockNOTDECIDED = "+ (restockNOTDECIDED ? 1 : 0)+", "+
-"                                     IsCanadaAsin = "+ (IsCanadaAsin ? 1 : 0) + " "+  
+"                                     IsCanadaAsin = "+ (IsCanadaAsin ? 1 : 0) +
+                                      ", Cost = " +cost + " , CanadianCost = " + CACost + " " +
   "                               WHERE Id = " + id +" AND StoreId = " + storeId; 
                 return _db.Execute(sql);
             }
@@ -139,13 +140,13 @@ public List<AAmzAsinToSku> GetListByMarketplace(int store,string marketplace)
                 return 0;
             }
         }
-public bool InsertAsinToSku(int storeId,string asin, string sku, string chinaName, string imageUrl,bool IsCanadaAsin)
+public bool InsertAsinToSku(int storeId,string asin, string sku, string chinaName, string imageUrl,bool IsCanadaAsin,double cost, double CACost)
         {
           try
             {
               var sql =  
-                "INSERT INTO AAmzAsinToSku (StoreId,Asin, Sku, ChinaName, RestockCA,RestockUS,ImageUrl,IsCanadaAsin,RestockNOTDECIDED,RestockNOTDECIDEDCA)VALUES" +
-              "("+storeId+" , '"+asin+"' , '"+sku+"', '"+chinaName+"',1,1, '"+imageUrl+"',"+(IsCanadaAsin ? 1 : 0)+",0,0) ";
+                "INSERT INTO AAmzAsinToSku (StoreId,Asin, Sku, ChinaName, RestockCA,RestockUS,ImageUrl,IsCanadaAsin,RestockNOTDECIDED,RestockNOTDECIDEDCA,Cost,CanadianCost)VALUES" +
+              "("+storeId+" , '"+asin+"' , '"+sku+"', '"+chinaName+"',1,1, '"+imageUrl+"',"+(IsCanadaAsin ? 1 : 0)+",0,0,"+cost+","+CACost+") ";
                  var id = _db.Query<int>(sql);
               return true ;
              }

@@ -52,6 +52,28 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.ShowMsg = true;
             if (ModelState.IsValid)
             {
+              string webRootPath = _hostEnvironment.WebRootPath;
+              var files = HttpContext.Request.Form.Files;
+              if (files.Count > 0)
+              {
+                string fileName = Guid.NewGuid().ToString();
+                var uploads = Path.Combine(webRootPath, @"Images\Products");
+                var extention = Path.GetExtension(files[0].FileName);
+                if (aAmzAsinToSku.ImageUrl != null)
+                {
+                 //this is an edit and we need to remove old image
+                 var imagePath = Path.Combine(webRootPath, aAmzAsinToSku.ImageUrl.TrimStart('\\'));
+                 if (System.IO.File.Exists(imagePath))
+                 {
+                   System.IO.File.Delete(imagePath);
+                 }
+                }
+                using(var filesStreams = new FileStream(Path.Combine(uploads,fileName+extention),FileMode.Create))
+                {
+                  files[0].CopyTo(filesStreams);
+                }
+              aAmzAsinToSku.ImageUrl = @"\Images\Products\" + fileName + extention;
+              }
                 bool res = _unitOfWork.AAmzAsinToSku.Upsert(aAmzAsinToSku,gVarStoreId);
                 if(res){ 
                   ViewBag.failed = false;

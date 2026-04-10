@@ -13,8 +13,8 @@ namespace KTSite.DataAccess.Repository.IRepository
        public string GetSkuByAsin(string asin);
        public int updateRestockStatus(string sql);
        public int updateById(int storeId,int id , string asin, string sku, string chinaName, string imageUrl,
-                              bool restockNOTDECIDED, bool IsCanadaAsin);
-       public bool InsertAsinToSku(int storeId,string asin, string sku, string chinaName, string imageUrl,bool IsCanadaAsin);
+                              bool restockNOTDECIDED, bool IsCanadaAsin,double cost, double CACost);
+       public bool InsertAsinToSku(int storeId,string asin, string sku, string chinaName, string imageUrl,bool IsCanadaAsin,double cost, double CACost);
        public bool DeleteById(int id,int storeId);
        
     }
