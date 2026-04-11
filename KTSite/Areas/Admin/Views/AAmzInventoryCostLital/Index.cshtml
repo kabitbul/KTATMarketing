@@ -1,0 +1,194 @@
+﻿@model KTSite.Models.AAmzInventoryCostVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="row">
+    <div class="container">
+        <h2 class="text-primary text-center">Inventory Cost Summary - Kesem</h2>
+    </div>
+</div>
+
+<br />
+
+@if (Model.LatestItems == null || !Model.LatestItems.Any())
+{
+    <div class="container p-4">
+        <div class="alert alert-warning">No inventory cost records found.</div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        @foreach (var item in Model.LatestItems.OrderBy(x =>
+       x.MarketPlace == "US" ? 0 :
+       x.MarketPlace == "CA" ? 1 : 2))
+        {
+            double totalCost = item.FBACost + item.AWDCost + item.OnTheWayCost;
+            string chartId = "inventoryChart_" + item.MarketPlace;
+
+            <div class="row mb-4">
+                <div class="col-lg-4 col-md-12 mb-3">
+                    <div class="p-4 border rounded h-100 bg-white shadow-sm">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h4 class="text-info">Marketplace: @item.MarketPlace</h4>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">Last Inventory Date :</div>
+                            <div class="col-md-8">@item.DateCreated.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">FBA :</div>
+                            <div class="col-md-8">$@item.FBACost.ToString("N2")</div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">AWD :</div>
+                            <div class="col-md-8">$@item.AWDCost.ToString("N2")</div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4 font-weight-bold">On The Way :</div>
+                            <div class="col-md-8">$@item.OnTheWayCost.ToString("N2")</div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row mb-3 p-3 rounded" style="background-color:#e9f7ef;">
+                            <div class="col-md-4 font-weight-bold text-success" style="font-size:1.2rem;">
+                                Total :
+                            </div>
+                            <div class="col-md-8 font-weight-bold text-success" style="font-size:1.3rem;">
+                                $@totalCost.ToString("N2")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 col-md-12 mb-3">
+                    <div class="p-4 border rounded h-100 bg-white shadow-sm">
+                        <h4 class="text-primary mb-3">Inventory Cost History - Last 60 Days - @item.MarketPlace</h4>
+
+                        <div id="@chartId" style="height:420px; width:100%;">
+                            <!-- chart for @item.MarketPlace goes here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts{
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            var usPoints = [
+        @for (int i = 0; i < Model.USHistory.Count; i++)
+        {
+            var rec = Model.USHistory[i];
+            var total = rec.FBACost + rec.AWDCost + rec.OnTheWayCost;
+
+            @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @total.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+            if (i < Model.USHistory.Count - 1)
+            {
+                @:,
+            }
+        }
+        ];
+            var chart = new CanvasJS.Chart("inventoryChart_US", {
+                animationEnabled: true,
+                zoomEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "US Inventory History - Last 60 Days"
+                },
+                axisX: {
+                    title: "Date",
+                    labelAngle: -45
+                },
+                axisY: {
+                    title: "Total Cost",
+                    prefix: "$",
+                    includeZero: false
+                },
+                toolTip: {
+                    shared: true
+                },
+                data: [
+                    {
+                        type: "line",
+                        lineThickness: 3,
+                        name: "Total",
+                        showInLegend: true,
+                        markerSize: 4,
+                        dataPoints: usPoints
+                    }
+                ]
+            });
+
+            chart.render();
+        });
+    </script>
+    @if (Model.CAHistory != null && Model.CAHistory.Any())
+    {
+        <script>
+            window.addEventListener("load", function () {
+
+                var caPoints = [
+            @for (int i = 0; i < Model.CAHistory.Count; i++)
+            {
+                var rec = Model.CAHistory[i];
+                var total = rec.FBACost + rec.AWDCost + rec.OnTheWayCost;
+
+                @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @total.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+                if (i < Model.CAHistory.Count - 1)
+                {
+                    @:,
+                }
+            }
+                        ];
+
+                var chart = new CanvasJS.Chart("inventoryChart_CA", {
+                    animationEnabled: true,
+                    zoomEnabled: true,
+                    theme: "light2",
+                    title: {
+                        text: "CA Inventory History - Last 60 Days"
+                    },
+                    axisX: {
+                        title: "Date",
+                        labelAngle: -45
+                    },
+                    axisY: {
+                        title: "Total Cost",
+                        prefix: "$",
+                        includeZero: false
+                    },
+                    toolTip: {
+                        shared: true
+                    },
+                    data: [
+                        {
+                            type: "line",
+                            name: "Total",
+                            showInLegend: true,
+                            lineThickness: 3,
+                            markerSize: 4,
+                            dataPoints: caPoints
+                        }
+                    ]
+                });
+
+                chart.render();
+            });
+        </script>
+    }
+    </script>
+}

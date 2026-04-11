@@ -19,7 +19,8 @@ namespace KTSite.DataAccess.Data
         public DbSet<AAmzAWDInventory> AAmzAWDInventory { get; set; }
         public DbSet<AAmzStockPurchase> AAmzStockPurchase { get; set; }
         public DbSet<AAmzOrders> AAmzOrders { get; set; }
-public DbSet<TempSkuAsin> TempSkuAsins { get; set; }
+        public DbSet<TempSkuAsin> TempSkuAsins { get; set; }
+        public DbSet<AAmzInventoryCost> AAmzInventoryCost { get; set; }
 ///////////////////////////////////////////////////////////////////////////
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }

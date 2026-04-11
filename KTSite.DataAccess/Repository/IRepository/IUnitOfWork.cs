@@ -12,6 +12,7 @@ namespace KTSite.DataAccess.Repository.IRepository
         IAAmzFBAInventoryRepository AAmzFBAInventory { get; }
         IAAmzAWDInentoryRepository AAmzAWDInventory { get; } 
         IAAmzStockPurchaseRepository AAmzStockPurchase { get; }
+        IAAmzInventoryCostRepository AAmzInventoryCost { get; }
         IAAmzOrdersRepository AAmzOrders { get; } 
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }

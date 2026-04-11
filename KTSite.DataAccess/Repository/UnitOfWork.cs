@@ -20,6 +20,7 @@ namespace KTSite.DataAccess.Repository
             AAmzFBAInventory = new AAmzFBAInventoryRepository(_configuration,AAmzOrders,AAmzAsinToSku);
             AAmzAWDInventory = new AAmzAWDInventoryRepository(_configuration);
             AAmzStockPurchase = new AAmzStockPurchaseRepository(_configuration);
+            AAmzInventoryCost = new AAmzInventoryCostRepository(_configuration);
 
             ////////////////////////////////////////////////////////////////////
             Category = new CategoryRepository(_db);
@@ -73,6 +74,7 @@ namespace KTSite.DataAccess.Repository
         public IAAmzAWDInentoryRepository AAmzAWDInventory { get; private set; }
         public IAAmzStockPurchaseRepository AAmzStockPurchase { get; private set; }
         public IAAmzOrdersRepository AAmzOrders { get; private set; }
+        public IAAmzInventoryCostRepository AAmzInventoryCost { get; private set; }
 //////////////////////////////////////////////////////////////////////////////////////////
 /// 
 /// </summary>
