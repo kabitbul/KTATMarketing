@@ -89,7 +89,7 @@ else
     <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
     <script>
         window.addEventListener("load", function () {
-            var usPoints = [
+            var usTotalPoints = [
         @for (int i = 0; i < Model.USHistory.Count; i++)
         {
             var rec = Model.USHistory[i];
@@ -101,7 +101,43 @@ else
                 @:,
             }
         }
-        ];
+                ];
+            var usFbaPoints = [
+        @for (int i = 0; i < Model.USHistory.Count; i++)
+        {
+            var rec = Model.USHistory[i];
+
+            @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @rec.FBACost.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+            if (i < Model.USHistory.Count - 1)
+            {
+                @:,
+            }
+        }
+                ];
+            var usAwdPoints = [
+        @for (int i = 0; i < Model.USHistory.Count; i++)
+        {
+            var rec = Model.USHistory[i];
+
+            @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @rec.AWDCost.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+            if (i < Model.USHistory.Count - 1)
+            {
+                @:,
+            }
+        }
+                ];
+            var usOtwPoints = [
+        @for (int i = 0; i < Model.USHistory.Count; i++)
+        {
+            var rec = Model.USHistory[i];
+
+            @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @rec.OnTheWayCost.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+            if (i < Model.USHistory.Count - 1)
+            {
+                @:,
+            }
+        }
+                ];
             var chart = new CanvasJS.Chart("inventoryChart_US", {
                 animationEnabled: true,
                 zoomEnabled: true,
@@ -124,11 +160,38 @@ else
                 data: [
                     {
                         type: "line",
-                        lineThickness: 3,
+                        lineThickness: 4,
                         name: "Total",
                         showInLegend: true,
-                        markerSize: 4,
-                        dataPoints: usPoints
+                        markerSize: 5,
+                        dataPoints: usTotalPoints
+                    },
+                    {
+                        type: "line",
+                        lineThickness: 2,
+                        name: "FBA",
+                        showInLegend: true,
+                        markerSize: 2,
+                        dashType: "dash",
+                        dataPoints: usFbaPoints
+                    },
+                    {
+                        type: "line",
+                        lineThickness: 2,
+                        name: "AWD",
+                        showInLegend: true,
+                        markerSize: 2,
+                        dashType: "dash",
+                        dataPoints: usAwdPoints
+                    },
+                    {
+                        type: "line",
+                        lineThickness: 2,
+                        name: "On The Way",
+                        showInLegend: true,
+                        markerSize: 2,
+                        dashType: "dot",
+                        dataPoints: usOtwPoints
                     }
                 ]
             });
@@ -141,13 +204,39 @@ else
         <script>
             window.addEventListener("load", function () {
 
-                var caPoints = [
+                var caTotalPoints = [
             @for (int i = 0; i < Model.CAHistory.Count; i++)
             {
                 var rec = Model.CAHistory[i];
                 var total = rec.FBACost + rec.AWDCost + rec.OnTheWayCost;
 
                 @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @total.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+                if (i < Model.CAHistory.Count - 1)
+                {
+                    @:,
+                }
+            }
+                        ];
+
+                var caFbaPoints = [
+            @for (int i = 0; i < Model.CAHistory.Count; i++)
+            {
+                var rec = Model.CAHistory[i];
+
+                @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @rec.FBACost.ToString(System.Globalization.CultureInfo.InvariantCulture) }
+                if (i < Model.CAHistory.Count - 1)
+                {
+                    @:,
+                }
+            }
+                        ];
+
+                var caOtwPoints = [
+            @for (int i = 0; i < Model.CAHistory.Count; i++)
+            {
+                var rec = Model.CAHistory[i];
+
+                @:{ label: "@rec.DateCreated.ToString("dd/MM")", y: @rec.OnTheWayCost.ToString(System.Globalization.CultureInfo.InvariantCulture) }
                 if (i < Model.CAHistory.Count - 1)
                 {
                     @:,
@@ -177,11 +266,29 @@ else
                     data: [
                         {
                             type: "line",
+                            lineThickness: 4,
                             name: "Total",
                             showInLegend: true,
-                            lineThickness: 3,
-                            markerSize: 4,
-                            dataPoints: caPoints
+                            markerSize: 5,
+                            dataPoints: caTotalPoints
+                        },
+                        {
+                            type: "line",
+                            lineThickness: 2,
+                            name: "FBA",
+                            showInLegend: true,
+                            markerSize: 2,
+                            dashType: "dash",
+                            dataPoints: caFbaPoints
+                        },
+                        {
+                            type: "line",
+                            lineThickness: 2,
+                            name: "On The Way",
+                            showInLegend: true,
+                            markerSize: 2,
+                            dashType: "dot",
+                            dataPoints: caOtwPoints
                         }
                     ]
                 });
@@ -190,5 +297,5 @@ else
             });
         </script>
     }
-    </script>
+        </script>
 }
