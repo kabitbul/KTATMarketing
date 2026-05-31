@@ -102,6 +102,21 @@ namespace KTSite.Areas.Admin.Controllers
             
             return View();
         }
+public IActionResult GraphUS2months(int Id)
+        {
+            //stack chart
+            List<GraphDataDaily> graphData = new List<GraphDataDaily>();
+            AAmzAsinToSku asinToSku = _unitOfWork.AAmzAsinToSku.GetById(Id,gVarStoreId);
+                if(asinToSku == null)
+                  return View();
+            
+            graphData = _unitOfWork.AAmzOrders.GetGraphData2months(gVarStoreId, SD.marketPlaceUS,asinToSku.Asin);
+            ViewBag.ProductName = asinToSku.ChinaName;
+            
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            
+            return View();
+        }
       public IActionResult GraphTotalUS()
         {
             //stack chart
@@ -126,6 +141,21 @@ namespace KTSite.Areas.Admin.Controllers
             ViewBag.ProductName = asinToSku.ChinaName;
             
             ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            return View();
+        }
+public IActionResult GraphCA2months(int Id)
+        {
+            //stack chart
+            List<GraphDataDaily> graphData = new List<GraphDataDaily>();
+            AAmzAsinToSku asinToSku = _unitOfWork.AAmzAsinToSku.GetById(Id,gVarStoreId);
+                if(asinToSku == null)
+                  return View();
+            
+            graphData = _unitOfWork.AAmzOrders.GetGraphData2months(gVarStoreId, SD.marketPlaceCA,asinToSku.Asin);
+            ViewBag.ProductName = asinToSku.ChinaName;
+            
+            ViewBag.DataPointsG = JsonConvert.SerializeObject(graphData);
+            
             return View();
         }
       public IActionResult GraphTotalCA()

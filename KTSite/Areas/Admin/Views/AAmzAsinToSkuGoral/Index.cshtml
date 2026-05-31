@@ -42,7 +42,8 @@
 <div class="row">
     <div class="col-6 text-right">
         <a class="btn btn-primary" asp-action="Upsert" style="background-color:forestgreen">
-            <i class="fas fa-plus"></i> &nbsp; Add Asin-Sku</a>
+            <i class="fas fa-plus"></i> &nbsp; Add Asin-Sku
+        </a>
     </div>
 </div>
 <br />
@@ -60,6 +61,8 @@
                 <th>CA Cost</th>
                 <th>Graph US</th>
                 <th>Graph CA</th>
+                <th>Graph US 2months</th>
+                <th>Graph CA 2months</th>
                 <th></th>
             </tr>
         </thead>
@@ -93,6 +96,8 @@
                 {
                     <td>No</td>
                 }
+                <td>@ask.Cost</td>
+                <td>@ask.CanadianCost</td>
                 <td>
                     <div class="text-center">
                         <a href="/Admin/@controllerName/GraphUS/@ask.Id" class="btn btn-success text-white"
@@ -102,38 +107,59 @@
                         </a>
                     </div>
                 </td>
-                
-                    @if(ask.IsCanadaAsin)
-                     {
+
+                @if (ask.IsCanadaAsin)
+                {
                     <td>
                         <a href="/Admin/@controllerName/GraphCA/@ask.Id" class="btn btn-success text-white"
                    style="cursor:pointer;background-color: yellow; border-color: #yellow;"
                    data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
-                    <i class="fas fa-chart-bar" style="color: #17a2b8;"></i>
+                            <i class="fas fa-chart-bar" style="color: #17a2b8;"></i>
                         </a>
                     </td>
-                     }
-                     else
-                     {
+                }
+                else
+                {
                     <td></td>
-                     }
-                <td>@ask.Cost</td>
-                <td>@ask.CanadianCost</td>
+                }
+                <td>
+                    <div class="text-center">
+                        <a href="/Admin/@controllerName/GraphUS2months/@ask.Id" class="btn btn-success text-white"
+                       style="cursor:pointer;background-color: forestgreen; border-color: forestgreen;"
+                       data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
+                            <i class="fas fa-chart-bar"></i>
+                        </a>
+                    </div>
+                </td>
+
+                @if (ask.IsCanadaAsin)
+                {
+                    <td>
+                        <a href="/Admin/@controllerName/GraphCA2months/@ask.Id" class="btn btn-success text-white"
+                   style="cursor:pointer;background-color: lightyellow; border-color: lightyellow;"
+                   data-toggle="tooltip" data-placement="top" title="Edit Asin" target="_blank">
+                            <i class="fas fa-chart-bar" style="color: #17a2b8;"></i>
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
                 <td>
                     <a href="/Admin/@controllerName/Upsert/@ask.Id" class="btn btn-success text-white" style="cursor:pointer"
-                       data-toggle="tooltip" data-placement="top" title="Edit Asin">
-                            <i class="fas fa-edit"></i>
-                        </a>
+                   data-toggle="tooltip" data-placement="top" title="Edit Asin">
+                        <i class="fas fa-edit"></i>
+                    </a>
                     <a onclick="Delete('/Admin/@controllerName/Delete/@ask.Id')" class="btn btn-danger text-white" style="cursor:pointer"
-                       data-toggle="tooltip" data-placement="top" title="Delete Asin">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
+                   data-toggle="tooltip" data-placement="top" title="Delete Asin">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
                 </td>
             </tr>
         }
     </table>
 </div>
-
 @section Scripts{
     <script>
         $(document).ready(function () {

@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-danger font-weight-bold">CA Sales - Last 60 Days</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">@ViewBag.ProductName </h2>
+        </div>
+    </div>
+
+    <div>
+        <div id="chartContainer" style="height: 370px; width: 90%;"></div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </div>
+
+    <br />
+
+    <div class="col-4 offset-2">
+        <a asp-action="Index" class="btn btn-success form-control">Back To List</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        window.onload = function () {
+
+            var rawData = @Html.Raw(ViewBag.DataPointsG);
+
+            var dataPoints = rawData.map(item => {
+                var date = new Date(item.day);
+
+                return {
+                    label: date.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit"
+                    }),
+                    y: item.sold
+                };
+            });
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Daily Sales - Last 60 Days"
+                },
+                axisX: {
+                    title: "Date",
+                    labelAngle: -45,
+                    interval: 5
+                },
+                axisY: {
+                    title: "Quantity Sold",
+                    includeZero: true
+                },
+                data: [
+                    {
+                        type: "column",
+                        showInLegend: false,
+                        indexLabel: "{y}",
+                        indexLabelPlacement: "outside",
+                        dataPoints: dataPoints
+                    }
+                ]
+            });
+
+            chart.render();
+        };
+    </script>
+}

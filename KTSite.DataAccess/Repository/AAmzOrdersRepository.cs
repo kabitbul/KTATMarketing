@@ -76,6 +76,23 @@ public List<GraphData> GetGraphData(int storeId , string marketPlace, string asi
             List<GraphData> ordList = _db.Query<GraphData>(sql).ToList();
             return ordList;
         }
+public List<GraphDataDaily> GetGraphData2months(int storeId , string marketPlace, string asin)
+        {
+
+            var sql =
+"                    SELECT " +
+"                        CAST(PurchaseDate AS date) AS day," +
+"                        sum(Qty) AS sold " +
+"                    FROM dbo.AAmzOrders" +
+"                    WHERE Asin = '"+asin+"'  AND MarketPlace = '"+marketPlace+"' " +
+"                           and PurchaseDate >= (GETDATE() - 60)" +
+"                    GROUP BY CAST(PurchaseDate AS date)" +
+"                    ORDER BY CAST(PurchaseDate AS date);";
+
+
+            List<GraphDataDaily> ordList = _db.Query<GraphDataDaily>(sql).ToList();
+            return ordList;
+        }
 public List<GraphData> GetTotalOrdGraphData(string marketPlace,int storeId)
         {
 

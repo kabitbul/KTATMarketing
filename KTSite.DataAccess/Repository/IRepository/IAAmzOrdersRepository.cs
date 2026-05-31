@@ -7,6 +7,7 @@ namespace KTSite.DataAccess.Repository.IRepository
     {
       public List<SkuQtyForAverage> GetAllOrdersForAvg(string marketPlace,int storeId);
       public List<GraphData> GetGraphData(int storeId , string marketPlace, string asin);
+      public List<GraphDataDaily> GetGraphData2months(int storeId , string marketPlace, string asin);
       public List<GraphData> GetTotalOrdGraphData(string marketPlace,int storeId);
        
     }
