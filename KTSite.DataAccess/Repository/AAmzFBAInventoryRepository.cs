@@ -68,8 +68,32 @@ namespace KTSite.DataAccess.Repository
                   // obj.needToOSendFromWarehouse = needToSendFromWarehouse(obj,
                                                             //          (obj.avg3days));
                  }
-              
-            }
+              //major decrease
+                obj.majorDecrease =
+                    obj.avg3days <= (obj.avg14days * 0.8) &&
+                    obj.avg14days <= (obj.avgMonth * 0.9) &&
+                    obj.sales30Days > 10;
+               //minor decrease
+                obj.minorDecrease =
+                    obj.sales30Days > 10 &&
+                    !obj.majorDecrease &&
+                    obj.avg3days < obj.avg14days &&
+                    obj.avg14days <= obj.avgMonth;
+                //major increase
+                obj.majorIncrease =
+                    obj.sales30Days > 10 &&
+                    obj.avg3days >= obj.avg14days * 1.2 &&
+                    obj.avg14days >= obj.avgMonth * 1.1;
+               //minorIncrease
+                obj.minorIncrease =
+                    obj.sales30Days > 10 &&
+                    !obj.majorIncrease &&
+                    obj.avg3days > obj.avg14days &&
+                    obj.avg14days >= obj.avgMonth;
+                  
+                     obj.dontPaint  = (!obj.majorDecrease && !obj.minorDecrease && !obj.majorIncrease && !obj.minorIncrease);
+
+                }
             return invList;    
         }
    public List<AmazonInvStatistics> GetInventoryStat(string marketPlace,int storeId,bool? showRestock)

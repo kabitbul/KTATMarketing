@@ -34,6 +34,11 @@ namespace KTSite.Models
         public int onTheWay { get; set; }
         public bool restockNotDecided{ get; set; }
         public bool restockNotDecidedCA{ get; set; }
+        public bool majorDecrease{ get; set; }
+        public bool minorDecrease{ get; set; }
+        public bool majorIncrease{ get; set; }
+        public bool minorIncrease{ get; set; }
+        public bool dontPaint{ get; set; }
 
     }
 }

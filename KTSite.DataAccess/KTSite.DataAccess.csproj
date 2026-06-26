@@ -1,46 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Migrations\20201003105113_addUsersStore.cs" />
-    <Compile Remove="Migrations\20201003105113_addUsersStore.Designer.cs" />
-    <Compile Remove="Migrations\20201003112606_addUserStoreName2.cs" />
-    <Compile Remove="Migrations\20201003112606_addUserStoreName2.Designer.cs" />
-    <Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.cs" />
-    <Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.Designer.cs" />
-    <Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.cs" />
-    <Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.Designer.cs" />
-    <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.cs" />
-    <Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.Designer.cs" />
-    <Compile Remove="Migrations\20210912070622_updategeneral.cs" />
-    <Compile Remove="Migrations\20210912070622_updategeneral.Designer.cs" />
-    <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.cs" />
-    <Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.Designer.cs" />
-    <Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.cs" />
-    <Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.Designer.cs" />
-    <Compile Remove="Migrations\20230202154832_addBalanceUpdate.cs" />
-    <Compile Remove="Migrations\20230202154832_addBalanceUpdate.Designer.cs" />
-    <Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.cs" />
-    <Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.Designer.cs" />
-    <Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.cs" />
-    <Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.Designer.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Migrations\20201003105113_addUsersStore.cs" />
+		<Compile Remove="Migrations\20201003105113_addUsersStore.Designer.cs" />
+		<Compile Remove="Migrations\20201003112606_addUserStoreName2.cs" />
+		<Compile Remove="Migrations\20201003112606_addUserStoreName2.Designer.cs" />
+		<Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.cs" />
+		<Compile Remove="Migrations\20201006160131_alterColumnStoreToStoreId.Designer.cs" />
+		<Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.cs" />
+		<Compile Remove="Migrations\20201113094528_addStoreIdToComplaint.Designer.cs" />
+		<Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.cs" />
+		<Compile Remove="Migrations\20201113094623_addStoreIdToComplaint.Designer.cs" />
+		<Compile Remove="Migrations\20210912070622_updategeneral.cs" />
+		<Compile Remove="Migrations\20210912070622_updategeneral.Designer.cs" />
+		<Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.cs" />
+		<Compile Remove="Migrations\20210924134527_addArchiveTablesOrdersRelated.Designer.cs" />
+		<Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.cs" />
+		<Compile Remove="Migrations\20220601164734_שגגUדקרIגFםרUדקרדFםרAPI.Designer.cs" />
+		<Compile Remove="Migrations\20230202154832_addBalanceUpdate.cs" />
+		<Compile Remove="Migrations\20230202154832_addBalanceUpdate.Designer.cs" />
+		<Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.cs" />
+		<Compile Remove="Migrations\20231019075205_addmaxLengthToAmazonOrdId.Designer.cs" />
+		<Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.cs" />
+		<Compile Remove="Migrations\20231023190742_addRestockColumnCAAndUSToAsinToSku.Designer.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.0.123" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.0.123" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.2.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.27" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.27" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.27" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\KTSite.Models\KTSite.Models.csproj" />
-    <ProjectReference Include="..\KTSite.Utility\KTSite.Utility.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\KTSite.Models\KTSite.Models.csproj" />
+		<ProjectReference Include="..\KTSite.Utility\KTSite.Utility.csproj" />
+	</ItemGroup>
 
 </Project>
