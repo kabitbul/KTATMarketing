@@ -44,9 +44,6 @@
                     <input type="hidden" asp-for="aAmzStockPurchase.ProductChinaName" class="form-control" />
                 </div>
                 <div class="col-8">
-                    <input type="hidden" asp-for="aAmzStockPurchase.Quantity" class="form-control" />
-                </div>
-                <div class="col-8">
                     <input type="hidden" asp-for="aAmzStockPurchase.DateOrdered" class="form-control" />
                 </div>
                 <div class="col-8">
@@ -60,7 +57,7 @@
                         <label asp-for="aAmzStockPurchase.Quantity">Quantity</label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="aAmzStockPurchase.Quantity" class="form-control" disabled="true" />
+                        <input asp-for="aAmzStockPurchase.Quantity" class="form-control" />
                         <span asp-validation-for="aAmzStockPurchase.Quantity" class="text-danger"></span>
                     </div>
                 </div>

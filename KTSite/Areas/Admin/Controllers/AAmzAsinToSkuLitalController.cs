@@ -63,10 +63,10 @@ namespace KTSite.Areas.Admin.Controllers
                 {
                  //this is an edit and we need to remove old image
                  var imagePath = Path.Combine(webRootPath, aAmzAsinToSku.ImageUrl.TrimStart('\\'));
-                 if (System.IO.File.Exists(imagePath))
-                 {
-                   System.IO.File.Delete(imagePath);
-                 }
+                 //if (System.IO.File.Exists(imagePath))
+                 //{
+                 //  System.IO.File.Delete(imagePath);
+                 //}
                 }
                 using(var filesStreams = new FileStream(Path.Combine(uploads,fileName+extention),FileMode.Create))
                 {

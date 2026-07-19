@@ -83,14 +83,21 @@ public int updateById(AAmzStockPurchaseVM aAmzStockPurchaseVM)
                bool inboundUpdate = aAmzStockPurchaseVM.aAmzStockPurchase.InboundUpdated;
                var dateRecieve = aAmzStockPurchaseVM.aAmzStockPurchase.DateReceived.ToString("yyyy-MM-dd HH:mm:ss");
                 int inbUpd = 0;
+                var sql ="";
                if (inboundUpdate)
+                 { 
                    inbUpd = 1;
-               else
-                  inbUpd = 0;
-                var sql =  " UPDATE AAmzStockPurchase " +
+                   sql =  " UPDATE AAmzStockPurchase " +
   "                               SET Quantity = "+qty+" , InboundUpdated = "+inbUpd+", DateReceived = '" +dateRecieve+"' "+ 
-  "                               WHERE Id = " + aAmzStockPurchaseVM.aAmzStockPurchase.Id; 
-                return _db.Execute(sql);
+  "                               WHERE Id = " + aAmzStockPurchaseVM.aAmzStockPurchase.Id;
+                  }
+               else
+                  { 
+                  inbUpd = 0;
+                   sql =  " UPDATE AAmzStockPurchase " +
+  "                               SET Quantity = "+qty + " WHERE Id = " + aAmzStockPurchaseVM.aAmzStockPurchase.Id;
+                   }                
+               return _db.Execute(sql);
             }
             catch (Exception ex)
             {
