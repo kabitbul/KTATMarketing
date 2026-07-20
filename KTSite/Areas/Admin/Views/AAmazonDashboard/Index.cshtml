@@ -1,0 +1,167 @@
+﻿@model KTSite.Models.AAmzMainDashboardVM
+
+@{
+    ViewBag.Title = "Amazon Stores Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // התאם לפי הלייאאוט של הפרויקט שלך
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container-fluid py-4">
+    <h2 class="mb-4 text-center">Amazon Sales Overview</h2>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">60 Days Daily Sales Comparison</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 400px;">
+                <canvas id="dailySalesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">18 Months Cumulative / Stacked Sales</h5>
+        </div>
+        <div class="card-body">
+            <div style="height: 400px;">
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // --- 1. Graph 1: 60 Days Daily Sales ---
+        var dailyLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.DateLabel)));
+        var ktDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.KtSales)));
+        var kesemDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.KesemSales)));
+        var goralDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.GoralSales)));
+        var webrushDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.WebrushSales)));
+
+        var ctxDaily = document.getElementById('dailySalesChart').getContext('2d');
+        new Chart(ctxDaily, {
+            type: 'line',
+            data: {
+                labels: dailyLabels,
+                datasets: [
+                    {
+                        label: 'KT',
+                        data: ktDaily,
+                        borderColor: '#2563eb', // Blue
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'KESEM',
+                        data: kesemDaily,
+                        borderColor: '#059669', // Green
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'GORAL',
+                        data: goralDaily,
+                        borderColor: '#d97706', // Orange
+                        backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.2
+                    },
+                    {
+                        label: 'WEBRUSH',
+                        data: webrushDaily,
+                        borderColor: '#dc2626', // Red
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 13, weight: 'bold' } }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Date (Last 60 Days)' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Units Sold' }
+                    }
+                }
+            }
+        });
+
+
+        // --- 2. Graph 2: 18 Months Stacked Sales ---
+        var monthlyLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.MonthLabels));
+        var ktMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.KtSales));
+        var kesemMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.KesemSales));
+        var goralMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.GoralSales));
+        var webrushMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.WebrushSales));
+
+        var ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');
+        new Chart(ctxMonthly, {
+            type: 'bar',
+            data: {
+                labels: monthlyLabels,
+                datasets: [
+                    {
+                        label: 'KT',
+                        data: ktMonthly,
+                        backgroundColor: '#2563eb'
+                    },
+                    {
+                        label: 'KESEM',
+                        data: kesemMonthly,
+                        backgroundColor: '#059669'
+                    },
+                    {
+                        label: 'GORAL',
+                        data: goralMonthly,
+                        backgroundColor: '#d97706'
+                    },
+                    {
+                        label: 'WEBRUSH',
+                        data: webrushMonthly,
+                        backgroundColor: '#dc2626'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 13, weight: 'bold' } }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Month' }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Total Units Sold' }
+                    }
+                }
+            }
+        });
+
+    });
+</script>
