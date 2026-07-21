@@ -29,7 +29,36 @@ namespace KTSite.Models
 
         public List<DashboardChartSeriesVM> MonthlySeries { get; set; }
             = new List<DashboardChartSeriesVM>();
+public List<DashboardRestockAlertVM> RestockAlerts { get; set; }
+    = new List<DashboardRestockAlertVM>();
     }
+
+public class DashboardRestockAlertVM
+{
+    public int StoreId { get; set; }
+
+    public string StoreName { get; set; } = string.Empty;
+
+    public string Marketplace { get; set; } = string.Empty;
+
+    public string Asin { get; set; } = string.Empty;
+
+    public string ProductName { get; set; } = string.Empty;
+
+    public int AvailableQty { get; set; }
+
+    public int InboundQty { get; set; }
+
+    public int AWDAvailableQty { get; set; }
+
+    public int AWDInboundQty { get; set; }
+
+    public int OnTheWayQty { get; set; }
+
+    public int Average14Days { get; set; }
+
+    public int DaysToOOS { get; set; }
+}
 
     public class AmazonStoreDashboardVM
     {
