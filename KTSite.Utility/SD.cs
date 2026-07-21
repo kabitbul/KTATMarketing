@@ -14,6 +14,7 @@ namespace KTSite.Utility
         public const int KTStoreId = 1;
         public const int LitalStoreId = 2;
         public const int GoralStoreId = 3;
+        public const int WebrushStoreId = 4;
         //AMAZON END
         
         

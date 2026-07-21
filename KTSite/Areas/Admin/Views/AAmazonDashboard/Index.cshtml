@@ -1,167 +1,534 @@
-﻿@model KTSite.Models.AAmzMainDashboardVM
+﻿@using System.Globalization
+@model KTSite.Models.AAmzMainDashboardVM
+
+@using System.Text.Json
 
 @{
-    ViewBag.Title = "Amazon Stores Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // התאם לפי הלייאאוט של הפרויקט שלך
+    ViewData["Title"] = "Amazon Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    string dailyLabelsJson =
+        JsonSerializer.Serialize(Model.DailyLabels, jsonOptions);
+
+    string dailySeriesJson =
+        JsonSerializer.Serialize(Model.DailySeries, jsonOptions);
+
+    string monthlyLabelsJson =
+        JsonSerializer.Serialize(Model.MonthlyLabels, jsonOptions);
+
+    string monthlySeriesJson =
+        JsonSerializer.Serialize(Model.MonthlySeries, jsonOptions);
 }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .dashboard-page {
+        padding: 20px 10px 40px;
+    }
 
-<div class="container-fluid py-4">
-    <h2 class="mb-4 text-center">Amazon Sales Overview</h2>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
 
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">60 Days Daily Sales Comparison</h5>
-        </div>
-        <div class="card-body">
-            <div style="height: 400px;">
-                <canvas id="dailySalesChart"></canvas>
+    .dashboard-title {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .dashboard-updated {
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 17px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-card-total {
+        border-top: 4px solid #111827;
+    }
+
+    .dashboard-card-title {
+        margin-bottom: 6px;
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .dashboard-card-value {
+        color: #111827;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .dashboard-card-subtitle {
+        margin-top: 5px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .dashboard-chart-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+
+    .dashboard-chart-title {
+        margin: 0;
+        color: #1f2937;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .dashboard-chart-subtitle {
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .dashboard-chart-container {
+        position: relative;
+        width: 100%;
+        height: 340px;
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .dashboard-table th,
+        .dashboard-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: right;
+        }
+
+            .dashboard-table th:first-child,
+            .dashboard-table td:first-child {
+                text-align: left;
+            }
+
+        .dashboard-table th {
+            color: #4b5563;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+    .dashboard-table-total {
+        font-weight: 700;
+        background: #f9fafb;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .dashboard-chart-container {
+            height: 290px;
+        }
+    }
+
+    .dashboard-date-filter {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .date-filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+        .date-filter-field label {
+            margin: 0;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .date-filter-field input {
+            min-width: 145px;
+        }
+</style>
+
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Amazon Stores Dashboard</h1>
+            <form method="get"
+                  asp-area="Admin"
+                  asp-controller="AAmazonDashboard"
+                  asp-action="Index"
+                  class="dashboard-date-filter">
+
+                <div class="date-filter-field">
+                    <label for="fromDate">From</label>
+
+                    <input type="date"
+                           id="fromDate"
+                           name="fromDate"
+                           value="@Model.DailyFromDate.ToString("yyyy-MM-dd")"
+                           class="form-control" />
+                </div>
+
+                <div class="date-filter-field">
+                    <label for="toDate">To</label>
+
+                    <input type="date"
+                           id="toDate"
+                           name="toDate"
+                           value="@Model.DailyToDate.ToString("yyyy-MM-dd")"
+                           class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Apply
+                </button>
+
+                <a asp-area="Admin"
+                   asp-controller="AAmazonDashboard"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    60 Days
+                </a>
+            </form>
+            <div class="dashboard-updated">
+                Updated: @Model.GeneratedAt.ToString("dd/MM/yyyy HH:mm")
             </div>
         </div>
     </div>
 
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-dark text-white">
-            <h5 class="card-title mb-0">18 Months Cumulative / Stacked Sales</h5>
-        </div>
-        <div class="card-body">
-            <div style="height: 400px;">
-                <canvas id="monthlySalesChart"></canvas>
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card dashboard-card-total">
+            <div class="dashboard-card-title">
+                Total Inventory Value
+            </div>
+
+            <div class="dashboard-card-value">
+                @Model.TotalInventoryCost.ToString("C0", CultureInfo.GetCultureInfo("en-US"))
+            </div>
+
+            <div class="dashboard-card-subtitle">
+                FBA + AWD + On The Way
             </div>
         </div>
+
+        @foreach (var store in Model.Stores)
+        {
+            <div class="dashboard-card">
+                <div class="dashboard-card-title">
+                    @store.StoreName
+                </div>
+
+                <div class="dashboard-card-value">
+                    @store.InventoryCost.ToString("C0", CultureInfo.GetCultureInfo("en-US"))
+                </div>
+
+                <div class="dashboard-card-subtitle">
+                    @store.InventorySharePercent.ToString("0.0")%
+                    of inventory ·
+                    @store.UnitsLast60Days.ToString("N0")
+                    units in 60 days
+                </div>
+            </div>
+        }
+
     </div>
+
+    <div class="dashboard-chart-card">
+
+        <div class="dashboard-chart-header">
+            <div>
+                <h2 class="dashboard-chart-title">
+                    Daily Units Sold
+                </h2>
+
+                <div class="dashboard-chart-subtitle">
+                    Last 60 days — total displayed by default
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-chart-container">
+            <canvas id="dailySalesChart"></canvas>
+        </div>
+
+    </div>
+
+    <div class="dashboard-chart-card">
+
+        <div class="dashboard-chart-header">
+            <div>
+                <h2 class="dashboard-chart-title">
+                    Monthly Units Sold
+                </h2>
+
+                <div class="dashboard-chart-subtitle">
+                    Last 18 months — stacked by store
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-chart-container">
+            <canvas id="monthlySalesChart"></canvas>
+        </div>
+
+    </div>
+
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+@section Scripts {
 
-        // --- 1. Graph 1: 60 Days Daily Sales ---
-        var dailyLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.DateLabel)));
-        var ktDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.KtSales)));
-        var kesemDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.KesemSales)));
-        var goralDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.GoralSales)));
-        var webrushDaily = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DailySalesLast60Days.Select(d => d.WebrushSales)));
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
-        var ctxDaily = document.getElementById('dailySalesChart').getContext('2d');
-        new Chart(ctxDaily, {
-            type: 'line',
-            data: {
-                labels: dailyLabels,
-                datasets: [
-                    {
-                        label: 'KT',
-                        data: ktDaily,
-                        borderColor: '#2563eb', // Blue
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.2
-                    },
-                    {
-                        label: 'KESEM',
-                        data: kesemDaily,
-                        borderColor: '#059669', // Green
-                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.2
-                    },
-                    {
-                        label: 'GORAL',
-                        data: goralDaily,
-                        borderColor: '#d97706', // Orange
-                        backgroundColor: 'rgba(217, 119, 6, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.2
-                    },
-                    {
-                        label: 'WEBRUSH',
-                        data: webrushDaily,
-                        borderColor: '#dc2626', // Red
-                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.2
-                    }
-                ]
+    <script>
+        const dailyLabels = @Html.Raw(dailyLabelsJson);
+        const dailySeries = @Html.Raw(dailySeriesJson);
+
+        const monthlyLabels = @Html.Raw(monthlyLabelsJson);
+        const monthlySeries = @Html.Raw(monthlySeriesJson);
+
+        const storeColors = {
+            KT: "#24457B",
+            KESEM: "#E47F47",
+            GORAL: "#8A7535",
+            WEBRUSH: "#168C92"
+        };
+
+        function getStoreColor(storeName, index) {
+            const normalizedName =
+                (storeName || "").trim().toUpperCase();
+
+            if (storeColors[normalizedName]) {
+                return storeColors[normalizedName];
+            }
+
+            const fallbackColors = [
+                "#4F46E5",
+                "#DC2626",
+                "#059669",
+                "#7C3AED",
+                "#D97706",
+                "#0891B2"
+            ];
+
+            return fallbackColors[index % fallbackColors.length];
+        }
+
+        function sumSeries(seriesCollection) {
+            if (!seriesCollection.length) {
+                return [];
+            }
+
+            const valueCount =
+                seriesCollection[0].values.length;
+
+            const totals = new Array(valueCount).fill(0);
+
+            seriesCollection.forEach(series => {
+                series.values.forEach((value, index) => {
+                    totals[index] += value;
+                });
+            });
+
+            return totals;
+        }
+
+        const dailyTotalValues =
+            sumSeries(dailySeries);
+
+        const dailyDatasets = [
+            {
+                label: "TOTAL",
+                data: dailyTotalValues,
+                borderColor: "#111827",
+                backgroundColor: "#111827",
+                borderWidth: 3,
+                pointRadius: 1,
+                pointHoverRadius: 5,
+                tension: 0.25,
+                hidden: false
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { size: 13, weight: 'bold' } }
-                    }
+            ...dailySeries.map((series, index) => {
+                const color =
+                    getStoreColor(series.storeName, index);
+
+                return {
+                    label: series.storeName,
+                    data: series.values,
+                    borderColor: color,
+                    backgroundColor: color,
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    tension: 0.25,
+
+                    // Total is shown by default.
+                    // Click a store in the legend to display it.
+                    hidden: true
+                };
+            })
+        ];
+
+        new Chart(
+            document.getElementById("dailySalesChart"),
+            {
+                type: "line",
+
+                data: {
+                    labels: dailyLabels,
+                    datasets: dailyDatasets
                 },
-                scales: {
-                    x: {
-                        title: { display: true, text: 'Date (Last 60 Days)' }
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: "index",
+                        intersect: false
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Units Sold' }
+                    plugins: {
+                        legend: {
+                            position: "top"
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} units`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: "Units"
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxTicksLimit: 15
+                            }
+                        }
                     }
                 }
             }
-        });
+        );
 
+        const monthlyDatasets =
+            monthlySeries.map((series, index) => {
+                const color =
+                    getStoreColor(series.storeName, index);
 
-        // --- 2. Graph 2: 18 Months Stacked Sales ---
-        var monthlyLabels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.MonthLabels));
-        var ktMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.KtSales));
-        var kesemMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.KesemSales));
-        var goralMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.GoralSales));
-        var webrushMonthly = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.MonthlySalesLast18Months.WebrushSales));
+                return {
+                    label: series.storeName,
+                    data: series.values,
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderWidth: 1
+                };
+            });
 
-        var ctxMonthly = document.getElementById('monthlySalesChart').getContext('2d');
-        new Chart(ctxMonthly, {
-            type: 'bar',
-            data: {
-                labels: monthlyLabels,
-                datasets: [
-                    {
-                        label: 'KT',
-                        data: ktMonthly,
-                        backgroundColor: '#2563eb'
-                    },
-                    {
-                        label: 'KESEM',
-                        data: kesemMonthly,
-                        backgroundColor: '#059669'
-                    },
-                    {
-                        label: 'GORAL',
-                        data: goralMonthly,
-                        backgroundColor: '#d97706'
-                    },
-                    {
-                        label: 'WEBRUSH',
-                        data: webrushMonthly,
-                        backgroundColor: '#dc2626'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { size: 13, weight: 'bold' } }
-                    }
+        new Chart(
+            document.getElementById("monthlySalesChart"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: monthlyLabels,
+                    datasets: monthlyDatasets
                 },
-                scales: {
-                    x: {
-                        stacked: true,
-                        title: { display: true, text: 'Month' }
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: "index",
+                        intersect: false
                     },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true,
-                        title: { display: true, text: 'Total Units Sold' }
+                    plugins: {
+                        legend: {
+                            position: "top"
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} units`;
+                                },
+                                footer: function(items) {
+                                    const total = items.reduce(
+                                        (sum, item) =>
+                                            sum + item.parsed.y,
+                                        0
+                                    );
+
+                                    return `Total: ${total.toLocaleString()} units`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            title: {
+                                display: true,
+                                text: "Units"
+                            }
+                        }
                     }
                 }
             }
-        });
-
-    });
-</script>
+        );
+    </script>
+}

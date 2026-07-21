@@ -3,33 +3,54 @@ using System.Collections.Generic;
 
 namespace KTSite.Models
 {
-    // ViewModel ראשי של הדאשבורד
     public class AAmzMainDashboardVM
     {
-        // גרף 1: מכירות יומיות ל-60 יום האחרונים
-        public List<DailySalesDataPoint> DailySalesLast60Days { get; set; } = new List<DailySalesDataPoint>();
+        public DateTime GeneratedAt { get; set; }
+        public DateTime DailyFromDate { get; set; }
 
-        // גרף 2: מכירות חודשיות מצטברות ל-18 חודשים
-        public StackedMonthlySalesVM MonthlySalesLast18Months { get; set; } = new StackedMonthlySalesVM();
+    public DateTime DailyToDate { get; set; }
+
+        // Inventory value
+        public decimal TotalInventoryCost { get; set; }
+
+        public List<AmazonStoreDashboardVM> Stores { get; set; }
+            = new List<AmazonStoreDashboardVM>();
+
+        // Daily units sold - last 60 days
+        public List<string> DailyLabels { get; set; }
+            = new List<string>();
+
+        public List<DashboardChartSeriesVM> DailySeries { get; set; }
+            = new List<DashboardChartSeriesVM>();
+
+        // Monthly units sold - last 18 months
+        public List<string> MonthlyLabels { get; set; }
+            = new List<string>();
+
+        public List<DashboardChartSeriesVM> MonthlySeries { get; set; }
+            = new List<DashboardChartSeriesVM>();
     }
 
-    // נתונים יומיים לגרף 60 יום
-    public class DailySalesDataPoint
+    public class AmazonStoreDashboardVM
     {
-        public string DateLabel { get; set; } // פורמט: "dd/MM"
-        public int KtSales { get; set; }
-        public int KesemSales { get; set; }
-        public int GoralSales { get; set; }
-        public int WebrushSales { get; set; }
+        public int StoreId { get; set; }
+
+        public string StoreName { get; set; } = string.Empty;
+
+        public decimal InventoryCost { get; set; }
+
+        public int UnitsLast60Days { get; set; }
+
+        public decimal InventorySharePercent { get; set; }
     }
 
-    // נתונים חודשיים לגרף 18 חודשים (Stacked/Cumulative)
-    public class StackedMonthlySalesVM
+    public class DashboardChartSeriesVM
     {
-        public List<string> MonthLabels { get; set; } = new List<string>(); // פורמט: "MMM yyyy"
-        public List<int> KtSales { get; set; } = new List<int>();
-        public List<int> KesemSales { get; set; } = new List<int>();
-        public List<int> GoralSales { get; set; } = new List<int>();
-        public List<int> WebrushSales { get; set; } = new List<int>();
+        public int StoreId { get; set; }
+
+        public string StoreName { get; set; } = string.Empty;
+
+        public List<int> Values { get; set; }
+            = new List<int>();
     }
 }
