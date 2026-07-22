@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KTSite.DataAccess.Repository.IRepository;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -16,11 +18,15 @@ namespace KTSite.Areas.Admin.Controllers
     public class AAmazonDashboardController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AAmazonDashboardController(ApplicationDbContext db)
-        {
-            _db = db;
-        }
+    public AAmazonDashboardController(
+        ApplicationDbContext db,
+        IUnitOfWork unitOfWork)
+    {
+        _db = db;
+        _unitOfWork = unitOfWork;
+    }
 private sealed class DashboardOrderRow
 {
     public int StoreId { get; set; }
@@ -180,10 +186,212 @@ List<DashboardOrderRow> orders = await _db.AAmzOrders
                 stores,
                 orders,
                 monthlyStartDate);
+viewModel.RestockAlerts = GetRestockAlerts();
 
-            return View(viewModel);
+FillMajorTrends(viewModel);
+
+return View(viewModel);
+         
+        }
+private void FillMajorTrends(AAmzMainDashboardVM viewModel)
+{
+    var allTrendItems = new List<DashboardTrendItem>();
+
+    List<AAmazonStores> stores =
+        _unitOfWork.AAmazonStores.GetList();
+
+    string[] marketplaces =
+    {
+        SD.marketPlaceUS,
+        SD.marketPlaceCA
+    };
+
+    foreach (AAmazonStores store in stores)
+    {
+        foreach (string marketplace in marketplaces)
+        {
+            AddStoreTrends(
+                allTrendItems,
+                store,
+                marketplace);
+        }
+    }
+
+    viewModel.MajorIncreases = allTrendItems
+        .Where(x =>
+            x.MajorIncrease &&
+            !x.MajorDecrease)
+        .OrderByDescending(GetIncreaseStrength)
+        .Take(10)
+        .ToList();
+
+    viewModel.MajorDecreases = allTrendItems
+        .Where(x =>
+            x.MajorDecrease &&
+            !x.MajorIncrease)
+        .OrderByDescending(GetDecreaseStrength)
+        .Take(10)
+        .ToList();
+}
+private void AddStoreTrends(
+    List<DashboardTrendItem> target,
+    AAmazonStores store,
+    string marketplace)
+{
+    var inventory =
+        _unitOfWork.AAmzFBAInventory.inventoryIndexData(
+            false,
+            marketplace,
+            store.Id);
+
+    string controllerName =
+        $"AAmzAsinToSku{store.StoreName}";
+
+    string actionName =
+        marketplace == SD.marketPlaceUS
+            ? "GraphUS2months"
+            : "GraphCA2months";
+
+    target.AddRange(
+        inventory
+            .Where(x =>
+                x.HasSalesHistoryOver30Days &&
+                x.sales30Days > 10 &&
+                x.avgMonth > 0 &&
+                x.AmzAvailQty >= 60 &&
+                (x.majorIncrease || x.majorDecrease))
+            .Select(x => new DashboardTrendItem
+            {
+                Store = GetDisplayStoreName(store.StoreName),
+                Marketplace = marketplace,
+
+                Asin = x.Asin ?? "",
+                Sku = x.sku ?? "",
+                Title = x.ChinaName ?? "",
+
+                Avg3Days = x.avg3days,
+                Avg14Days = x.avg14days,
+                Avg30Days = x.avgMonth,
+                Sales30Days = x.sales30Days,
+
+                MajorIncrease = x.majorIncrease,
+                MajorDecrease = x.majorDecrease,
+
+                GraphUrl = Url.Action(
+                    actionName,
+                    controllerName,
+                    new { id = x.Id }) ?? ""
+            }));
+}
+private static decimal GetIncreaseStrength(DashboardTrendItem item)
+{
+    if (item.Avg14Days <= 0 || item.Avg30Days <= 0)
+        return 0;
+
+    decimal shortTermIncrease =
+        (decimal)item.Avg3Days / item.Avg14Days;
+
+    decimal mediumTermIncrease =
+        (decimal)item.Avg14Days / item.Avg30Days;
+
+    return shortTermIncrease * mediumTermIncrease;
+}
+
+private static decimal GetDecreaseStrength(DashboardTrendItem item)
+{
+    if (item.Avg3Days <= 0 || item.Avg14Days <= 0)
+        return decimal.MaxValue;
+
+    decimal shortTermDecrease =
+        (decimal)item.Avg14Days / item.Avg3Days;
+
+    decimal mediumTermDecrease =
+        item.Avg30Days > 0
+            ? (decimal)item.Avg30Days / item.Avg14Days
+            : 1;
+
+    return shortTermDecrease * mediumTermDecrease;
+}
+private List<DashboardRestockAlertVM> GetRestockAlerts()
+{
+    var alerts = new List<DashboardRestockAlertVM>();
+
+    AddRestockAlerts(
+        alerts,
+        storeId: SD.KTStoreId,
+        storeName: "KT",
+        marketplace: SD.marketPlaceUS);
+
+    AddRestockAlerts(
+        alerts,
+        storeId: SD.KTStoreId,
+        storeName: "KT",
+        marketplace: SD.marketPlaceCA);
+
+    AddRestockAlerts(
+        alerts,
+        storeId: SD.LitalStoreId,
+        storeName: "KESEM",
+        marketplace: SD.marketPlaceUS);
+
+    AddRestockAlerts(
+        alerts,
+        storeId: SD.GoralStoreId,
+        storeName: "GORAL",
+        marketplace: SD.marketPlaceUS);
+
+    AddRestockAlerts(
+        alerts,
+        storeId: SD.WebrushStoreId,
+        storeName: "WEBRUSH",
+        marketplace: SD.marketPlaceUS);
+
+    return alerts
+        .OrderBy(x => x.StoreName)
+        .ThenBy(x => x.Marketplace)
+        .ThenBy(x => x.DaysToOOS)
+        .ToList();
+}
+
+private void AddRestockAlerts(
+    List<DashboardRestockAlertVM> alerts,
+    int storeId,
+    string storeName,
+    string marketplace)
+{
+    List<AmazonInvStatistics> inventoryRows =
+        _unitOfWork.AAmzFBAInventory.inventoryIndexData(
+            showRestock: true,
+            marketplace: marketplace,
+            storeId: storeId);
+
+    foreach (AmazonInvStatistics item in inventoryRows)
+    {
+      bool restockNotDecided =   marketplace == SD.marketPlaceCA
+                                 ? item.restockNotDecidedCA
+                                 : item.restockNotDecided;
+       if (!item.needToOrderFromChina || restockNotDecided)
+        {
+            continue;
         }
 
+        alerts.Add(new DashboardRestockAlertVM
+        {
+            StoreId = storeId,
+            StoreName = storeName,
+            Marketplace = marketplace,
+            Asin = item.Asin ?? string.Empty,
+            ProductName = item.ChinaName ?? string.Empty,
+            AvailableQty = item.AmzAvailQty,
+            InboundQty = item.AmzInboundQty,
+            AWDAvailableQty = item.AmzAWDAvailQty,
+            AWDInboundQty = item.AmzAWDInboundQty,
+            OnTheWayQty = item.onTheWay,
+            Average14Days = item.avg14days,
+            DaysToOOS = item.daysToOOS
+        });
+    }
+}
         private static void BuildDailyChart(
             AAmzMainDashboardVM viewModel,
             List<AAmazonStores> stores,

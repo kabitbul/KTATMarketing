@@ -114,8 +114,11 @@ namespace KTSite.DataAccess.Repository
 "            sk.RestockUS restock, sk.RestockCA restockCA,sk.RestockNOTDECIDED, "+
 "			COALESCE((select sum(Quantity) from AAmzStockPurchase sp "+
 "			     where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0 and MarketPlace = '"+marketPlace+"'" +
-"                  and storeId = "+ storeId +"),0) onTheWay "+
-"     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin left join AAmzAWDInventory aw on aw.Asin = sk.Asin"+
+"                  and storeId = "+ storeId +"),0) onTheWay, " +
+"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days"+
+"     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin left join AAmzAWDInventory aw on aw.Asin = sk.Asin " +
+"     OUTER APPLY( SELECT MIN(o.PurchaseDate) AS FirstSaleDate FROM AAmzOrders o   WHERE o.Asin = inv.Asin  " +
+"      AND o.storeId = inv.StoreId     AND o.MarketPlace = inv.MarketPlace) firstSale "+
 "     WHERE inv.MarketPlace = '"+marketPlace+"' AND inv.StoreId = " + storeId;
       if(shr)
        { 
@@ -129,8 +132,11 @@ sql =
 "            (inv.InboundReceivingQty + inv.InboundShippedQty + inv.ReservedQty) AmzInboundQty, "+
 "            sk.RestockUS restockUS, sk.RestockCA restock, sk.RestockNOTDECIDEDCA, "+
 "			COALESCE((select sum(Quantity) from AAmzStockPurchase sp where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0" +
-"            and MarketPlace = '"+marketPlace+"' and storeId = "+ storeId +"),0) onTheWay "+
+"            and MarketPlace = '"+marketPlace+"' and storeId = "+ storeId +"),0) onTheWay, " +
+"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days"+
 "     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin "+
+"     OUTER APPLY( SELECT MIN(o.PurchaseDate) AS FirstSaleDate FROM AAmzOrders o   WHERE o.Asin = inv.Asin  " +
+"      AND o.storeId = inv.StoreId     AND o.MarketPlace = inv.MarketPlace) firstSale "+
 "     WHERE inv.MarketPlace = '"+marketPlace+"' and sk.IsCanadaAsin = 1 AND inv.StoreId = " + storeId;
 if(shr)
        { 

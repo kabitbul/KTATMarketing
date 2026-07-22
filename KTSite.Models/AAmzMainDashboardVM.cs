@@ -31,8 +31,27 @@ namespace KTSite.Models
             = new List<DashboardChartSeriesVM>();
 public List<DashboardRestockAlertVM> RestockAlerts { get; set; }
     = new List<DashboardRestockAlertVM>();
+public List<DashboardTrendItem> MajorIncreases { get; set; } = new();
+public List<DashboardTrendItem> MajorDecreases { get; set; } = new();
     }
+public class DashboardTrendItem
+{
+    public string Store { get; set; } = "";
+    public string Marketplace { get; set; } = "";
+    public string Asin { get; set; } = "";
+    public string Sku { get; set; } = "";
+    public string Title { get; set; } = "";
 
+    public decimal Avg3Days { get; set; }
+public decimal Avg14Days { get; set; }
+public decimal Sales30Days { get; set; }
+    public decimal Avg30Days { get; set; }
+    public decimal ChangePercent { get; set; }
+
+    public bool MajorIncrease { get; set; }
+    public bool MajorDecrease { get; set; }
+   public string GraphUrl { get; set; } = "";
+}
 public class DashboardRestockAlertVM
 {
     public int StoreId { get; set; }

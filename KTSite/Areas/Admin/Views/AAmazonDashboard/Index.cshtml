@@ -186,6 +186,36 @@
         .date-filter-field input {
             min-width: 145px;
         }
+        .restock-alert-card {
+    border-left: 5px solid #dc2626;
+}
+
+.restock-alert-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.restock-summary-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 13px;
+}
+
+.restock-days {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.restock-more {
+    margin-top: 12px;
+    color: #6b7280;
+    font-size: 13px;
+    text-align: right;
+}
 </style>
 
 <div class="dashboard-page">
@@ -271,9 +301,275 @@
                 </div>
             </div>
         }
+    </div>
+    @if (Model.RestockAlerts.Any())
+{
+    <div class="dashboard-chart-card restock-alert-card">
+
+        <div class="dashboard-chart-header">
+            <div>
+                <h2 class="dashboard-chart-title">
+                    Restock Required
+                </h2>
+
+                <div class="dashboard-chart-subtitle">
+                    @Model.RestockAlerts.Count products require attention
+                </div>
+            </div>
+        </div>
+
+        <div class="restock-alert-summary">
+            @foreach (var group in Model.RestockAlerts
+                .GroupBy(x => new { x.StoreName, x.Marketplace }))
+            {
+                <span class="restock-summary-badge">
+                    @group.Key.StoreName @group.Key.Marketplace:
+                    <strong>@group.Count()</strong>
+                </span>
+            }
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Store</th>
+                        <th>Marketplace</th>
+                        <th>ASIN</th>
+                        <th>Product</th>
+                        <th>Available</th>
+                        <th>Inbound</th>
+                        <th>AWD</th>
+                        <th>On The Way</th>
+                        <th>14-Day Avg</th>
+                        <th>Days To OOS</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var alert in Model.RestockAlerts.Take(10))
+                    {
+                        <tr>
+                            <td>@alert.StoreName</td>
+                            <td>@alert.Marketplace</td>
+                            <td>@alert.Asin</td>
+                            <td>@alert.ProductName</td>
+                            <td>@alert.AvailableQty</td>
+                            <td>@alert.InboundQty</td>
+                            <td>
+                                @(alert.AWDAvailableQty + alert.AWDInboundQty)
+                            </td>
+                            <td>@alert.OnTheWayQty</td>
+                            <td>@alert.Average14Days</td>
+                            <td class="restock-days">
+                                @alert.DaysToOOS
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.RestockAlerts.Count > 10)
+        {
+            <div class="restock-more">
+                Showing 10 of @Model.RestockAlerts.Count alerts
+            </div>
+        }
 
     </div>
+}
+<div class="row mt-4">
 
+    <!-- Strong increases -->
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header fw-bold"
+                 style="background-color:#86EFAC; color:#14532D;">
+                Strong Increases
+            </div>
+
+            <div class="card-body p-0">
+                @if (Model.MajorIncreases != null &&
+                     Model.MajorIncreases.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Marketplace</th>
+                                    <th>Product</th>
+                                    <th class="text-center">3 Days</th>
+                                    <th class="text-center">14 Days</th>
+                                    <th class="text-center">30 Days</th>
+                                    <th class="text-center">Graph</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.MajorIncreases)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            @item.Store
+                                        </td>
+
+                                        <td>
+                                            @item.Marketplace
+                                        </td>
+
+                                        <td>
+                                            <div class="fw-semibold">
+                                                @item.Title
+                                            </div>
+
+                                                <small class="text-muted">
+                                                    <a href="https://www.amazon.com/dp/@item.Asin"
+                                                       target="_blank"
+                                                       >
+                                                        @item.Asin
+                                                    </a>
+                                                </small>
+                                        </td>
+
+                                        <td class="text-center"
+                                            style="background-color:#86EFAC; color:#14532D; font-weight:700;">
+                                            @item.Avg3Days
+                                        </td>
+
+                                        <td class="text-center">
+                                            @item.Avg14Days
+                                        </td>
+
+                                        <td class="text-center">
+                                            @item.Avg30Days
+                                        </td>
+                                        <td class="text-center">
+                                        @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
+                                        {
+                                            <a href="@item.GraphUrl"
+                                               class="btn btn-success text-white"
+                                               style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
+                                               data-toggle="tooltip"
+                                               data-placement="top"
+                                               title="60 Days Sales Graph"
+                                               target="_blank">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </a>
+                                        }
+</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-3 text-muted">
+                        No strong increases found.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Strong decreases -->
+    <div class="col-xl-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header fw-bold"
+                 style="background-color:#FCA5A5; color:#7F1D1D;">
+                Strong Decreases
+            </div>
+
+            <div class="card-body p-0">
+                @if (Model.MajorDecreases != null &&
+                     Model.MajorDecreases.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Marketplace</th>
+                                    <th>Product</th>
+                                    <th class="text-center">3 Days</th>
+                                    <th class="text-center">14 Days</th>
+                                    <th class="text-center">30 Days</th>
+                                    <th class="text-center">Graph</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.MajorDecreases)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            @item.Store
+                                        </td>
+
+                                        <td>
+                                            @item.Marketplace
+                                        </td>
+
+                                        <td>
+                                            <div class="fw-semibold">
+                                                @item.Title
+                                            </div>
+
+                                                <small class="text-muted">
+                                                    <a href="https://www.amazon.com/dp/@item.Asin"
+                                                       target="_blank"
+                                                       >
+                                                        @item.Asin
+                                                    </a>
+                                                </small>
+                                        </td>
+
+                                        <td class="text-center"
+                                            style="background-color:#FCA5A5; color:#7F1D1D; font-weight:700;">
+                                            @item.Avg3Days
+                                        </td>
+
+                                        <td class="text-center">
+                                            @item.Avg14Days
+                                        </td>
+
+                                        <td class="text-center">
+                                            @item.Avg30Days
+                                        </td>
+                                        <td class="text-center">
+    @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
+    {
+        <a href="@item.GraphUrl"
+           class="btn btn-success text-white"
+           style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
+           data-toggle="tooltip"
+           data-placement="top"
+           title="60 Days Sales Graph"
+           target="_blank">
+            <i class="fas fa-chart-bar"></i>
+        </a>
+    }
+</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-3 text-muted">
+                        No strong decreases found.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
     <div class="dashboard-chart-card">
 
         <div class="dashboard-chart-header">

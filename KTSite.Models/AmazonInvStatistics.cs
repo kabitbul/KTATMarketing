@@ -39,6 +39,7 @@ namespace KTSite.Models
         public bool majorIncrease{ get; set; }
         public bool minorIncrease{ get; set; }
         public bool dontPaint{ get; set; }
+        public bool HasSalesHistoryOver30Days{ get; set; }
 
     }
 }

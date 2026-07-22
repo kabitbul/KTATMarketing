@@ -16,9 +16,11 @@ namespace KTSite.Models
         [Required]
         [MaxLength(20)]
         public string AmazonOrdId { get; set; }
+        [MaxLength(3)]
         public string MarketPlace { get; set; }
         public DateTime PurchaseDate { get; set; }
         public int Qty { get; set; }   
+         [MaxLength(12)]
         public string Asin { get; set; }
         
     }
