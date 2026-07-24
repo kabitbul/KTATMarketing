@@ -1,6 +1,32 @@
 ﻿@using System.Globalization
 @model KTSite.Models.AAmzMainDashboardVM
+@functions {
+    private string? GetRestockInventoryUrl(string? store, string? marketplace)
+    {
+        var storeName = store?.Trim().ToUpperInvariant();
+        var market = marketplace?.Trim().ToUpperInvariant();
 
+        return (storeName, market) switch
+        {
+            ("KT", "US") =>
+                "/Admin/AAmzInventoryKTUS?showRestock=true",
+
+            ("KT", "CA") =>
+                "/Admin/AAmzInventoryKTCA?showRestock=true",
+
+            ("KESEM", "US") =>
+                "/Admin/AAmzInventoryLitalUS?showRestock=true",
+
+            ("GORAL", "US") =>
+                "/Admin/AAmzInventoryGoralUS?showRestock=true",
+
+            ("WEBRUSH", "US") =>
+                "/Admin/AAmzInventoryWebrushUS?showRestock=true",
+
+            _ => null
+        };
+    }
+}
 @using System.Text.Json
 
 @{
@@ -216,6 +242,16 @@
     font-size: 13px;
     text-align: right;
 }
+
+    .restock-store-link {
+        color: #0d6efd;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+        .restock-store-link:hover {
+            color: #0a58ca;
+        }
 </style>
 
 <div class="dashboard-page">
@@ -350,7 +386,27 @@
                     @foreach (var alert in Model.RestockAlerts.Take(10))
                     {
                         <tr>
-                            <td>@alert.StoreName</td>
+                            <td>
+                            @{
+                        var inventoryUrl = GetRestockInventoryUrl(
+                                alert.StoreName,
+                                alert.Marketplace);
+                             }
+
+    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+    {
+                                        <a href="@inventoryUrl"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="restock-store-link">
+                                            @alert.StoreName
+                                        </a>
+    }
+    else
+    {
+        @alert.StoreName
+    }
+</td>
                             <td>@alert.Marketplace</td>
                             <td>@alert.Asin</td>
                             <td>@alert.ProductName</td>
