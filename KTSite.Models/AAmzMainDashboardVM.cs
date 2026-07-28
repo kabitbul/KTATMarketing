@@ -51,6 +51,7 @@ public decimal Sales30Days { get; set; }
     public bool MajorIncrease { get; set; }
     public bool MajorDecrease { get; set; }
    public string GraphUrl { get; set; } = "";
+public string? ImageUrl { get; set; }
 }
 public class DashboardRestockAlertVM
 {
@@ -77,6 +78,8 @@ public class DashboardRestockAlertVM
     public int Average14Days { get; set; }
 
     public int DaysToOOS { get; set; }
+public string GraphUrl { get; set; } = string.Empty;
+public string? ImageUrl { get; set; }
 }
 
     public class AmazonStoreDashboardVM

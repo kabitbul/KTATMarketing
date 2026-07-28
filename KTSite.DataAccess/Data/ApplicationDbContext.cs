@@ -21,6 +21,7 @@ namespace KTSite.DataAccess.Data
         public DbSet<AAmzOrders> AAmzOrders { get; set; }
         public DbSet<TempSkuAsin> TempSkuAsins { get; set; }
         public DbSet<AAmzInventoryCost> AAmzInventoryCost { get; set; }
+        public DbSet<AAmzFBAReceivingAlert> AAmzFBAReceivingAlerts { get; set; }
 ///////////////////////////////////////////////////////////////////////////
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -71,5 +72,32 @@ namespace KTSite.DataAccess.Data
         public DbSet<LitalAsinToSku> LitalAsinToSku { get; set; }
         public DbSet<LitalAmazonInventory> LitalAmazonInventories { get; set; }
         public DbSet<LitalAmazonAWDInventory> LitalAmazonAWDInventories { get; set; }
+     protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    base.OnModelCreating(modelBuilder);
+
+    modelBuilder.Entity<AAmzFBAReceivingAlert>()
+        .HasIndex(x => new
+        {
+            x.StoreId,
+            x.Marketplace,
+            x.Asin,
+            x.CreatedDate
+        })
+        .HasDatabaseName(
+            "IX_AAmzFBAReceivingAlerts_Store_Marketplace_Asin_Date"
+        );
+
+    modelBuilder.Entity<AAmzFBAReceivingAlert>()
+        .HasIndex(x => new
+        {
+            x.IsHandled,
+            x.CreatedDate
+        })
+        .HasDatabaseName(
+            "IX_AAmzFBAReceivingAlerts_Handled_Date"
+        );
+}
+
     }
 }

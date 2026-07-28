@@ -268,6 +268,7 @@ private void AddStoreTrends(
                 Asin = x.Asin ?? "",
                 Sku = x.sku ?? "",
                 Title = x.ChinaName ?? "",
+                 ImageUrl = x.ImageUrl,
 
                 Avg3Days = x.avg3days,
                 Avg14Days = x.avg14days,
@@ -359,6 +360,18 @@ private void AddRestockAlerts(
     string storeName,
     string marketplace)
 {
+string controllerName = storeId switch
+{
+    SD.KTStoreId => "AAmzAsinToSkuKT",
+    SD.LitalStoreId => "AAmzAsinToSkuLital",
+    SD.GoralStoreId => "AAmzAsinToSkuGoral",
+    SD.WebrushStoreId => "AAmzAsinToSkuWebrush",
+    _ => string.Empty
+};
+
+string actionName = marketplace == SD.marketPlaceUS
+    ? "GraphUS2months"
+    : "GraphCA2months";
     List<AmazonInvStatistics> inventoryRows =
         _unitOfWork.AAmzFBAInventory.inventoryIndexData(
             showRestock: true,
@@ -388,7 +401,15 @@ private void AddRestockAlerts(
             AWDInboundQty = item.AmzAWDInboundQty,
             OnTheWayQty = item.onTheWay,
             Average14Days = item.avg14days,
-            DaysToOOS = item.daysToOOS
+            DaysToOOS = item.daysToOOS,
+            
+GraphUrl = string.IsNullOrWhiteSpace(controllerName)
+    ? string.Empty
+    : Url.Action(
+        actionName,
+        controllerName,
+        new { id = item.Id }) ?? string.Empty,
+       ImageUrl = item.ImageUrl,
         });
     }
 }

@@ -252,6 +252,96 @@
         .restock-store-link:hover {
             color: #0a58ca;
         }
+
+    .restock-product-column {
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
+
+    .restock-product-name {
+        line-height: 1.35;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+    .restock-product-column {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+}
+
+.restock-product-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.restock-product-image {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    object-fit: contain;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    background: #fff;
+    padding: 2px;
+}
+
+.restock-product-name {
+    min-width: 0;
+    line-height: 1.35;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.trend-product-column {
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+.trend-product-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.trend-product-image {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    object-fit: contain;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    background: #fff;
+    padding: 2px;
+}
+
+.trend-product-details {
+    min-width: 0;
+}
+
+.trend-product-name {
+    line-height: 1.35;
+    font-weight: 600;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
 </style>
 
 <div class="dashboard-page">
@@ -366,13 +456,14 @@
         </div>
 
         <div style="overflow-x:auto;">
-            <table class="dashboard-table">
+                <table class="dashboard-table restock-table">
                 <thead>
                     <tr>
                         <th>Store</th>
                         <th>Marketplace</th>
                         <th>ASIN</th>
-                        <th>Product</th>
+                        <th>GRAPH</th>
+                            <th class="restock-product-column">Product</th>
                         <th>Available</th>
                         <th>Inbound</th>
                         <th>AWD</th>
@@ -408,8 +499,42 @@
     }
 </td>
                             <td>@alert.Marketplace</td>
-                            <td>@alert.Asin</td>
-                            <td>@alert.ProductName</td>
+                            <td class="text-muted">
+                              <a href="https://www.amazon.com/dp/@alert.Asin"
+                                 target="_blank"> @alert.Asin</a>
+                            </td>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrWhiteSpace(alert.GraphUrl))
+                                    {
+                                        <a href="@alert.GraphUrl"
+                                           class="btn btn-success text-white"
+                                           style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           title="60 Days Sales Graph"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                    }
+                                </td>
+                                <td class="restock-product-column">
+    <div class="restock-product-content">
+        @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
+        {
+            <img src="@alert.ImageUrl"
+                 alt="@alert.ProductName"
+                 class="restock-product-image"
+                 loading="lazy"
+                 onerror="this.style.display='none';" />
+        }
+
+        <div class="restock-product-name"
+             title="@alert.ProductName">
+            @alert.ProductName
+        </div>
+    </div>
+</td>
                             <td>@alert.AvailableQty</td>
                             <td>@alert.InboundQty</td>
                             <td>
@@ -455,7 +580,7 @@
                                 <tr>
                                     <th>Store</th>
                                     <th>Marketplace</th>
-                                    <th>Product</th>
+                                   <th class="trend-product-column">Product</th>
                                     <th class="text-center">3 Days</th>
                                     <th class="text-center">14 Days</th>
                                     <th class="text-center">30 Days</th>
@@ -475,19 +600,35 @@
                                             @item.Marketplace
                                         </td>
 
-                                        <td>
-                                            <div class="fw-semibold">
-                                                @item.Title
-                                            </div>
+                                       <td class="trend-product-column">
+    <div class="trend-product-content">
 
-                                                <small class="text-muted">
-                                                    <a href="https://www.amazon.com/dp/@item.Asin"
-                                                       target="_blank"
-                                                       >
-                                                        @item.Asin
-                                                    </a>
-                                                </small>
-                                        </td>
+        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+        {
+            <img src="@item.ImageUrl"
+                 alt="@item.Title"
+                 class="trend-product-image"
+                 loading="lazy"
+                 onerror="this.style.display='none';" />
+        }
+
+        <div class="trend-product-details">
+            <div class="trend-product-name"
+                 title="@item.Title">
+                @item.Title
+            </div>
+
+            <small class="text-muted">
+                <a href="https://www.amazon.com/dp/@item.Asin"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    @item.Asin
+                </a>
+            </small>
+        </div>
+
+    </div>
+</td>
 
                                         <td class="text-center"
                                             style="background-color:#86EFAC; color:#14532D; font-weight:700;">
@@ -549,7 +690,7 @@
                                 <tr>
                                     <th>Store</th>
                                     <th>Marketplace</th>
-                                    <th>Product</th>
+                                    <th class="trend-product-column">Product</th>
                                     <th class="text-center">3 Days</th>
                                     <th class="text-center">14 Days</th>
                                     <th class="text-center">30 Days</th>
@@ -569,19 +710,35 @@
                                             @item.Marketplace
                                         </td>
 
-                                        <td>
-                                            <div class="fw-semibold">
-                                                @item.Title
-                                            </div>
+                                        <td class="trend-product-column">
+    <div class="trend-product-content">
 
-                                                <small class="text-muted">
-                                                    <a href="https://www.amazon.com/dp/@item.Asin"
-                                                       target="_blank"
-                                                       >
-                                                        @item.Asin
-                                                    </a>
-                                                </small>
-                                        </td>
+        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+        {
+            <img src="@item.ImageUrl"
+                 alt="@item.Title"
+                 class="trend-product-image"
+                 loading="lazy"
+                 onerror="this.style.display='none';" />
+        }
+
+        <div class="trend-product-details">
+            <div class="trend-product-name"
+                 title="@item.Title">
+                @item.Title
+            </div>
+
+            <small class="text-muted">
+                <a href="https://www.amazon.com/dp/@item.Asin"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    @item.Asin
+                </a>
+            </small>
+        </div>
+
+    </div>
+</td>
 
                                         <td class="text-center"
                                             style="background-color:#FCA5A5; color:#7F1D1D; font-weight:700;">
