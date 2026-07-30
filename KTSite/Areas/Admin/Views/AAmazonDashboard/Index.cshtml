@@ -26,6 +26,34 @@
             _ => null
         };
     }
+    private string? GetStockPurchaseUrl(string? store, string? marketplace)
+{
+    var storeName = store?.Trim().ToUpperInvariant();
+    var market = marketplace?.Trim().ToUpperInvariant();
+
+    return (storeName, market) switch
+    {
+        ("KT", "US") =>
+            "/Admin/AAmzStockPurchaseKTUS",
+
+        ("KT", "CA") =>
+            "/Admin/AAmzStockPurchaseKTCA",
+
+        ("LITAL", "US") =>
+            "/Admin/AAmzStockPurchaseLitalUS",
+
+        ("KESEM", "US") =>
+            "/Admin/AAmzStockPurchaseLitalUS",
+
+        ("GORAL", "US") =>
+            "/Admin/AAmzStockPurchaseGoralUS",
+
+        ("WEBRUSH", "US") =>
+            "/Admin/AAmzStockPurchaseWebrushUS",
+
+        _ => null
+    };
+}
 }
 @using System.Text.Json
 
@@ -389,6 +417,9 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+.missing-tracking-alert-card {
+    border-left: 5px solid #f59e0b;
+}
 </style>
 
 <div class="dashboard-page">
@@ -475,6 +506,103 @@
             </div>
         }
     </div>
+    @if (Model.MissingTrackingAlerts.Any())
+{
+    <div class="dashboard-chart-card missing-tracking-alert-card">
+
+        <div class="dashboard-chart-header">
+            <div>
+                <h2 class="dashboard-chart-title">
+                    China Orders Missing Tracking
+                </h2>
+
+                <div class="dashboard-chart-subtitle">
+                    @Model.MissingTrackingAlerts.Count orders have been waiting
+                    more than 30 days for tracking
+                </div>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Store</th>
+                        <th>Marketplace</th>
+                        <th>Product</th>
+                        <th>ASIN</th>
+                        <th class="text-center">Quantity</th>
+                        <th>Date Ordered</th>
+                        <th class="text-center">Days Waiting</th>
+                        <th class="text-center">Line Number</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var alert in Model.MissingTrackingAlerts)
+                    {
+                        <tr>
+                            <td>
+    @{
+        var stockPurchaseUrl = GetStockPurchaseUrl(
+            alert.StoreName,
+            alert.Marketplace);
+    }
+
+    @if (!string.IsNullOrWhiteSpace(stockPurchaseUrl))
+    {
+        <a href="@stockPurchaseUrl"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="restock-store-link">
+            @alert.StoreName
+        </a>
+    }
+    else
+    {
+        <strong>@alert.StoreName</strong>
+    }
+</td>
+
+                            <td>
+                                @alert.Marketplace
+                            </td>
+
+                            <td>
+                                @alert.ProductName
+                            </td>
+
+                            <td>
+                                <a href="https://www.amazon.com/dp/@alert.Asin"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    @alert.Asin
+                                </a>
+                            </td>
+
+                            <td class="text-center">
+                                @alert.Quantity.ToString("N0")
+                            </td>
+
+                            <td>
+                                @alert.DateOrdered.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td class="text-center fw-bold text-danger">
+                                @alert.DaysWaiting
+                            </td>
+
+                            <td class="text-center">
+                                @alert.LineNumber
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+}
     @if (Model.FbaReceivingAlerts.Any())
 {
     <div class="dashboard-chart-card fba-receiving-alert-card">

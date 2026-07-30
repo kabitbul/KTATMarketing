@@ -193,6 +193,8 @@ viewModel.RestockAlerts = GetRestockAlerts();
 FillMajorTrends(viewModel);
 viewModel.FbaReceivingAlerts =
     await GetFbaReceivingAlertsAsync();
+viewModel.MissingTrackingAlerts =
+    await GetMissingTrackingAlertsAsync();
 return View(viewModel);
          
         }
@@ -608,6 +610,36 @@ public async Task<IActionResult> MarkFbaReceivingAlertHandled(int id)
         new { Id = id });
 
     return RedirectToAction(nameof(Index));
+}
+public async Task<List<DashboardMissingTrackingAlertVM>>
+    GetMissingTrackingAlertsAsync()
+{
+    const string sql = @"
+        SELECT
+            purchase.Id,
+            purchase.StoreId,
+            store.StoreName,
+            purchase.MarketPlace AS Marketplace,
+            purchase.ProductAsin AS Asin,
+            purchase.ProductChinaName AS ProductName,
+            purchase.Quantity,
+            purchase.DateOrdered,
+            DATEDIFF(DAY, purchase.DateOrdered, GETDATE()) AS DaysWaiting,
+            purchase.lineNumber AS LineNumber
+        FROM dbo.AAmzStockPurchase purchase
+        INNER JOIN dbo.AAmazonStores store
+            ON store.Id = purchase.StoreId
+        WHERE purchase.DateReceived = '0001-01-01'
+          AND purchase.InboundUpdated = 0
+          AND purchase.DateOrdered < DATEADD(DAY, -30, GETDATE())
+        ORDER BY purchase.DateOrdered ASC;";
+
+    var connection = _db.Database.GetDbConnection();
+
+    var alerts = await connection.QueryAsync<DashboardMissingTrackingAlertVM>(
+        sql);
+
+    return alerts.ToList();
 }
     }
 }

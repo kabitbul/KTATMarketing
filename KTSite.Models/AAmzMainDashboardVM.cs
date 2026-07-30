@@ -35,6 +35,8 @@ public List<DashboardFbaReceivingAlertVM> FbaReceivingAlerts { get; set; }
     = new List<DashboardFbaReceivingAlertVM>();
 public List<DashboardTrendItem> MajorIncreases { get; set; } = new();
 public List<DashboardTrendItem> MajorDecreases { get; set; } = new();
+public List<DashboardMissingTrackingAlertVM> MissingTrackingAlerts { get; set; }
+    = new List<DashboardMissingTrackingAlertVM>();
     }
 public class DashboardTrendItem
 {
@@ -133,4 +135,26 @@ public class DashboardFbaReceivingAlertVM
         public List<int> Values { get; set; }
             = new List<int>();
     }
+public class DashboardMissingTrackingAlertVM
+{
+    public int Id { get; set; }
+
+    public int StoreId { get; set; }
+
+    public string StoreName { get; set; } = string.Empty;
+
+    public string Marketplace { get; set; } = string.Empty;
+
+    public string Asin { get; set; } = string.Empty;
+
+    public string ProductName { get; set; } = string.Empty;
+
+    public int Quantity { get; set; }
+
+    public DateTime DateOrdered { get; set; }
+
+    public int DaysWaiting { get; set; }
+
+    public int LineNumber { get; set; }
+}
 }
