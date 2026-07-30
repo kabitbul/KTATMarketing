@@ -23,5 +23,10 @@ public class AAmzFBAReceivingAlert
     public DateTime CreatedDate { get; set; }
     public bool IsHandled { get; set; }
     public DateTime? HandledDate { get; set; }
+    public int PreviousAvailableQty { get; set; }
+    public int PreviousInboundShippedQty { get; set; }
+    public int PreviousInboundReceivingQty { get; set; }
+    public int PreviousReservedQty { get; set; }
+
 }
 }

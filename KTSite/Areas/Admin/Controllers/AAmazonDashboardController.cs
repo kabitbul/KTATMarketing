@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KTSite.DataAccess.Repository.IRepository;
+using Dapper;
+using System.Data.Common;
 
 namespace KTSite.Areas.Admin.Controllers
 {
@@ -189,7 +191,8 @@ List<DashboardOrderRow> orders = await _db.AAmzOrders
 viewModel.RestockAlerts = GetRestockAlerts();
 
 FillMajorTrends(viewModel);
-
+viewModel.FbaReceivingAlerts =
+    await GetFbaReceivingAlertsAsync();
 return View(viewModel);
          
         }
@@ -532,5 +535,79 @@ GraphUrl = string.IsNullOrWhiteSpace(controllerName)
 
             return storeName.Trim();
         }
+public async Task<List<DashboardFbaReceivingAlertVM>>
+    GetFbaReceivingAlertsAsync()
+{
+    const string sql = @"
+        SELECT
+            alert.Id,
+            alert.StoreId,
+            alert.Marketplace,
+            alert.Asin,
+
+            CASE
+                WHEN store.StoreName = 'LITAL' THEN 'KESEM'
+                ELSE store.StoreName
+            END AS StoreName,
+
+            ISNULL(product.ChinaName, '') AS ProductName,
+            product.ImageUrl,
+
+            alert.AvailableQty,
+            alert.InboundShippedQty,
+            alert.InboundReceivingQty,
+            alert.ReservedQty,
+            alert.DetectionReason,
+            alert.CreatedDate
+
+        FROM dbo.AAmzFBAReceivingAlerts alert
+
+        LEFT JOIN dbo.AAmzAsinToSku product
+            ON product.StoreId = alert.StoreId
+           AND product.Asin = alert.Asin
+
+        LEFT JOIN dbo.AAmazonStores store
+            ON store.Id = alert.StoreId
+
+        WHERE alert.IsHandled = 0
+
+        ORDER BY
+            alert.CreatedDate DESC,
+            alert.StoreId,
+            alert.Marketplace,
+            alert.Asin;";
+
+    DbConnection connection = _db.Database.GetDbConnection();
+
+    IEnumerable<DashboardFbaReceivingAlertVM> alerts =
+        await connection.QueryAsync<DashboardFbaReceivingAlertVM>(sql);
+
+    return alerts.ToList();
+}
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> MarkFbaReceivingAlertHandled(int id)
+{
+    const string sql = @"
+        UPDATE dbo.AAmzFBAReceivingAlerts
+        SET
+            IsHandled = 1,
+            HandledDate = CAST(
+                SYSUTCDATETIME()
+                AT TIME ZONE 'UTC'
+                AT TIME ZONE 'Israel Standard Time'
+                AS datetime2
+            )
+        WHERE Id = @Id
+          AND IsHandled = 0;";
+
+    var connection = _db.Database.GetDbConnection();
+
+    await connection.ExecuteAsync(
+        sql,
+        new { Id = id });
+
+    return RedirectToAction(nameof(Index));
+}
     }
 }

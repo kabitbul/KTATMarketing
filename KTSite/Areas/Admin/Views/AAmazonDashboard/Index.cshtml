@@ -342,6 +342,53 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+.fba-receiving-alert-card {
+    border-left: 5px solid #198754;
+}
+
+.fba-receiving-table {
+    width: 100%;
+}
+
+.fba-product-column {
+    width: 310px;
+    min-width: 310px;
+    max-width: 310px;
+}
+
+.fba-product-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.fba-product-image {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    object-fit: contain;
+    padding: 2px;
+    background: #fff;
+    border: 1px solid #e2e5e9;
+    border-radius: 6px;
+}
+
+.fba-product-details {
+    min-width: 0;
+}
+
+.fba-product-name {
+    line-height: 1.35;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
 </style>
 
 <div class="dashboard-page">
@@ -428,6 +475,148 @@
             </div>
         }
     </div>
+    @if (Model.FbaReceivingAlerts.Any())
+{
+    <div class="dashboard-chart-card fba-receiving-alert-card">
+
+        <div class="dashboard-chart-header">
+            <div>
+                <h2 class="dashboard-chart-title">
+                    FBA Stock Ready
+                </h2>
+
+                <div class="dashboard-chart-subtitle">
+                    @Model.FbaReceivingAlerts.Count products are ready for attention
+                </div>
+            </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table class="dashboard-table fba-receiving-table">
+                <thead>
+                    <tr>
+                        <th>Store</th>
+                        <th>Marketplace</th>
+                        <th class="fba-product-column">Product</th>
+                        <th class="text-center">Available</th>
+                        <th class="text-center">Inbound Shipped</th>
+                        <th class="text-center">Receiving</th>
+                        <th class="text-center">Reserved</th>
+                        <th>Detected</th>
+                        <th>Reason</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var alert in Model.FbaReceivingAlerts)
+                    {
+                        <tr>
+                            <td>
+    @{
+        var inventoryUrl = GetRestockInventoryUrl(
+            alert.StoreName,
+            alert.Marketplace);
+    }
+
+    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+    {
+        <a href="@inventoryUrl"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="restock-store-link">
+            @alert.StoreName
+        </a>
+    }
+    else
+    {
+        <strong>@alert.StoreName</strong>
+    }
+</td>
+
+                            <td>
+                                @alert.Marketplace
+                            </td>
+
+                            <td class="fba-product-column">
+                                <div class="fba-product-content">
+
+                                    @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
+                                    {
+                                        <img src="@alert.ImageUrl"
+                                             alt="@alert.ProductName"
+                                             class="fba-product-image"
+                                             loading="lazy"
+                                             onerror="this.style.display='none';" />
+                                    }
+
+                                    <div class="fba-product-details">
+                                        <div class="fba-product-name"
+                                             title="@alert.ProductName">
+                                            @alert.ProductName
+                                        </div>
+
+                                        <small>
+                                            <a href="https://www.amazon.com/dp/@alert.Asin"
+                                               target="_blank"
+                                               rel="noopener noreferrer">
+                                                @alert.Asin
+                                            </a>
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td class="text-center fw-bold">
+                                @alert.AvailableQty
+                            </td>
+
+                            <td class="text-center">
+                                @alert.InboundShippedQty
+                            </td>
+
+                            <td class="text-center">
+                                @alert.InboundReceivingQty
+                            </td>
+
+                            <td class="text-center">
+                                @alert.ReservedQty
+                            </td>
+
+                            <td>
+                                @alert.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @alert.DetectionReason
+                            </td>
+                            <td class="text-center">
+    <form asp-action="MarkFbaReceivingAlertHandled"
+          method="post"
+          class="d-inline">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               name="id"
+               value="@alert.Id" />
+
+        <button type="submit"
+                class="btn btn-sm btn-success"
+                onclick="return confirm('Mark this alert as handled?');">
+            Handled
+        </button>
+    </form>
+</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+}
     @if (Model.RestockAlerts.Any())
 {
     <div class="dashboard-chart-card restock-alert-card">
@@ -593,8 +782,26 @@
                                 {
                                     <tr>
                                         <td class="fw-semibold">
-                                            @item.Store
-                                        </td>
+    @{
+        var inventoryUrl = GetRestockInventoryUrl(
+            item.Store,
+            item.Marketplace);
+    }
+
+    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+    {
+        <a href="@inventoryUrl"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="restock-store-link">
+            @item.Store
+        </a>
+    }
+    else
+    {
+        @item.Store
+    }
+</td>
 
                                         <td>
                                             @item.Marketplace
@@ -703,8 +910,26 @@
                                 {
                                     <tr>
                                         <td class="fw-semibold">
-                                            @item.Store
-                                        </td>
+    @{
+        var inventoryUrl = GetRestockInventoryUrl(
+            item.Store,
+            item.Marketplace);
+    }
+
+    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+    {
+        <a href="@inventoryUrl"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="restock-store-link">
+            @item.Store
+        </a>
+    }
+    else
+    {
+        @item.Store
+    }
+</td>
 
                                         <td>
                                             @item.Marketplace

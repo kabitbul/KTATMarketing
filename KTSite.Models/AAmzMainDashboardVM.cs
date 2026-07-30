@@ -31,6 +31,8 @@ namespace KTSite.Models
             = new List<DashboardChartSeriesVM>();
 public List<DashboardRestockAlertVM> RestockAlerts { get; set; }
     = new List<DashboardRestockAlertVM>();
+public List<DashboardFbaReceivingAlertVM> FbaReceivingAlerts { get; set; }
+    = new List<DashboardFbaReceivingAlertVM>();
 public List<DashboardTrendItem> MajorIncreases { get; set; } = new();
 public List<DashboardTrendItem> MajorDecreases { get; set; } = new();
     }
@@ -81,7 +83,34 @@ public class DashboardRestockAlertVM
 public string GraphUrl { get; set; } = string.Empty;
 public string? ImageUrl { get; set; }
 }
+public class DashboardFbaReceivingAlertVM
+{
+    public int Id { get; set; }
 
+    public int StoreId { get; set; }
+
+    public string StoreName { get; set; } = string.Empty;
+
+    public string Marketplace { get; set; } = string.Empty;
+
+    public string Asin { get; set; } = string.Empty;
+
+    public string ProductName { get; set; } = string.Empty;
+
+    public string? ImageUrl { get; set; }
+
+    public int AvailableQty { get; set; }
+
+    public int InboundShippedQty { get; set; }
+
+    public int InboundReceivingQty { get; set; }
+
+    public int ReservedQty { get; set; }
+
+    public string DetectionReason { get; set; } = string.Empty;
+
+    public DateTime CreatedDate { get; set; }
+}
     public class AmazonStoreDashboardVM
     {
         public int StoreId { get; set; }
