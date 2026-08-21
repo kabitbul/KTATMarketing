@@ -112,6 +112,13 @@ public class DashboardFbaReceivingAlertVM
     public string DetectionReason { get; set; } = string.Empty;
 
     public DateTime CreatedDate { get; set; }
+public int PreviousAvailableQty { get; set; }
+
+public int PreviousInboundShippedQty { get; set; }
+
+public int PreviousInboundReceivingQty { get; set; }
+
+public int PreviousReservedQty { get; set; }
 }
     public class AmazonStoreDashboardVM
     {

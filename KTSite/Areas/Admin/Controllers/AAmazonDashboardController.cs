@@ -554,7 +554,11 @@ public async Task<List<DashboardFbaReceivingAlertVM>>
 
             ISNULL(product.ChinaName, '') AS ProductName,
             product.ImageUrl,
-
+ 
+            alert.PreviousAvailableQty,
+            alert.PreviousInboundShippedQty,
+            alert.PreviousInboundReceivingQty,
+            alert.PreviousReservedQty,
             alert.AvailableQty,
             alert.InboundShippedQty,
             alert.InboundReceivingQty,

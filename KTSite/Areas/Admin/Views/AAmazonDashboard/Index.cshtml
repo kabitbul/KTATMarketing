@@ -420,6 +420,23 @@
 .missing-tracking-alert-card {
     border-left: 5px solid #f59e0b;
 }
+.confidence-light {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.confidence-medium {
+    background-color: #86efac;
+    color: #14532d;
+    border: 1px solid #4ade80;
+}
+
+.confidence-high {
+    background-color: #16a34a;
+    color: #ffffff;
+    border: 1px solid #15803d;
+}
 </style>
 
 <div class="dashboard-page">
@@ -696,9 +713,31 @@
                                 </div>
                             </td>
 
-                            <td class="text-center fw-bold">
-                                @alert.AvailableQty
-                            </td>
+<td class="text-center">
+    @{
+        var availableIncrease =
+            alert.AvailableQty - alert.PreviousAvailableQty;
+    }
+
+    <div>
+        <span class="text-muted">
+            @alert.PreviousAvailableQty
+        </span>
+
+        <span class="mx-1">→</span>
+
+        <strong>
+            @alert.AvailableQty
+        </strong>
+    </div>
+
+    @if (availableIncrease > 0)
+    {
+        <div class="text-success fw-bold">
+            +@availableIncrease
+        </div>
+    }
+</td>
 
                             <td class="text-center">
                                 @alert.InboundShippedQty
@@ -716,9 +755,34 @@
                                 @alert.CreatedDate.ToString("dd/MM/yyyy HH:mm")
                             </td>
 
-                            <td>
-                                @alert.DetectionReason
-                            </td>
+                         <td>
+    @switch (alert.DetectionReason)
+    {
+        case "FirstFbaStockAvailable":
+            <span class="badge confidence-high">
+                High Confidence
+            </span>
+            break;
+
+        case "LowStockRecovery":
+            <span class="badge confidence-medium">
+                Strong Signal
+            </span>
+            break;
+
+        case "SignificantStockIncrease":
+            <span class="badge confidence-light">
+                Likely Received
+            </span>
+            break;
+
+        default:
+            <span class="badge confidence-light">
+                @alert.DetectionReason
+            </span>
+            break;
+    }
+</td>
                             <td class="text-center">
     <form asp-action="MarkFbaReceivingAlertHandled"
           method="post"
