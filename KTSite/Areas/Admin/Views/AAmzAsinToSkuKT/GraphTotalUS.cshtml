@@ -25,7 +25,7 @@
             // Function to convert numeric month to string representation
             function getMonthName(monthNumber) {
                 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                return monthNames[monthNumber - 1]; // Months are 1-based in your data
+                return monthNames[monthNumber - 1]; // Months are 1-based in  data
             }
 
             // Transform data to match CanvasJS format
@@ -41,6 +41,7 @@
                 },
                 axisY: {
                     title: "Quantity",
+                    minimum: 0
                 },
                 data: [
                     {

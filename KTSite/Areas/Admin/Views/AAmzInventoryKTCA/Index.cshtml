@@ -57,11 +57,35 @@
                 <td>@inv.AmzAWDAvailQty</td>
                 <td>@inv.AmzAWDInboundQty</td>
                 <td>@inv.onTheWay</td>
-                <td>@inv.avg3days</td>
-                <td>@inv.avg14days</td>
-                <td>@inv.avgMonth</td>
+                <td style="@(inv.dontPaint ? "" :
+                                                     inv.majorDecrease ? "background-color:#FCA5A5; color:#7F1D1D; font-weight:700;" :
+                                                     inv.minorDecrease ? "background-color:#FEE2E2; color:#991B1B; font-weight:600;" :
+                                                     inv.majorIncrease ? "background-color:#86EFAC; color:#14532D; font-weight:700;" :
+                                                     inv.minorIncrease ? "background-color:#DCFCE7; color:#166534; font-weight:600;" :
+                                                     "")">
+                @inv.avg3days
+            </td>
+
+                <td style="@(inv.dontPaint ? "" :
+                                             inv.majorDecrease ? "background-color:#FCA5A5; color:#7F1D1D; font-weight:700;" :
+                                             inv.minorDecrease ? "background-color:#FEE2E2; color:#991B1B; font-weight:600;" :
+                                             inv.majorIncrease ? "background-color:#86EFAC; color:#14532D; font-weight:700;" :
+                                             inv.minorIncrease ? "background-color:#DCFCE7; color:#166534; font-weight:600;" :
+                                             "")">
+                @inv.avg14days
+            </td>
+
+                <td style="@(inv.dontPaint ? "" :
+                                             inv.majorDecrease ? "background-color:#FCA5A5; color:#7F1D1D; font-weight:700;" :
+                                             inv.minorDecrease ? "background-color:#FEE2E2; color:#991B1B; font-weight:600;" :
+                                             inv.majorIncrease ? "background-color:#86EFAC; color:#14532D; font-weight:700;" :
+                                             inv.minorIncrease ? "background-color:#DCFCE7; color:#166534; font-weight:600;" :
+                                             "")">
+                @inv.avgMonth
                 <td>@inv.sales30Days</td>
-                <td style="color: @(inv.daysToOOS < 100 ? "red" : "black");font-weight: @(inv.daysToOOS < 100 ? "bold" : "normal")">@inv.daysToOOS</td>
+            <td style="color: @(inv.needToOrderFromChina && !inv.restockNotDecided ? "red" : "black"); font-weight: @(inv.needToOrderFromChina && !inv.restockNotDecided ? "bold" : "normal")">
+                @inv.daysToOOS
+            </td>
                 <td>
                     <div class="text-center">
                         <input type="hidden" asp-for="@inv.Id" />
