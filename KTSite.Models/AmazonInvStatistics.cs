@@ -29,6 +29,7 @@ namespace KTSite.Models
         public bool needToOrderFromChina { get; set; }
          public bool needToOSendFromWarehouse { get; set; }
         public bool restock { get; set; }
+        public bool isStrongAsin { get; set; }
           //public bool restockUS { get; set; }
        /// public bool restockCA { get; set; }
         public int onTheWay { get; set; }

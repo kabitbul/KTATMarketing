@@ -59,6 +59,7 @@
                 <th>In Canada FBA</th>
                 <th>Cost</th>
                 <th>CA Cost</th>
+                <th>Strong Product</th>
                 <th>Graph US</th>
                 <th>Graph CA</th>
                 <th>Graph US 2months</th>
@@ -98,6 +99,18 @@
                 }
                 <td>@ask.Cost</td>
                 <td>@ask.CanadianCost</td>
+                @if (ask.IsStrongAsin)
+                {
+                    <td class="text-center fw-bold bg-success text-white">
+                        YES
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center">
+                        No
+                    </td>
+                }
                 <td>
                     <div class="text-center">
                         <a href="/Admin/@controllerName/GraphUS/@ask.Id" class="btn btn-success text-white"

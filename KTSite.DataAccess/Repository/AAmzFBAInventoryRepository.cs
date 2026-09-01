@@ -80,8 +80,10 @@ namespace KTSite.DataAccess.Repository
                     obj.avg3days < obj.avg14days &&
                     obj.avg14days <= obj.avgMonth;
                 //major increase
+                //major increase
                 obj.majorIncrease =
                     obj.sales30Days > 10 &&
+                    obj.avg3days > obj.avg14days &&
                     obj.avg3days >= obj.avg14days * 1.2 &&
                     obj.avg14days >= obj.avgMonth * 1.1;
                //minorIncrease
@@ -115,7 +117,8 @@ namespace KTSite.DataAccess.Repository
 "			COALESCE((select sum(Quantity) from AAmzStockPurchase sp "+
 "			     where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0 and MarketPlace = '"+marketPlace+"'" +
 "                  and storeId = "+ storeId +"),0) onTheWay, " +
-"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days"+
+"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days," +
+"            sk.IsStrongAsin "+
 "     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin left join AAmzAWDInventory aw on aw.Asin = sk.Asin " +
 "     OUTER APPLY( SELECT MIN(o.PurchaseDate) AS FirstSaleDate FROM AAmzOrders o   WHERE o.Asin = inv.Asin  " +
 "      AND o.storeId = inv.StoreId     AND o.MarketPlace = inv.MarketPlace) firstSale "+
@@ -133,7 +136,8 @@ sql =
 "            sk.RestockUS restockUS, sk.RestockCA restock, sk.RestockNOTDECIDEDCA, "+
 "			COALESCE((select sum(Quantity) from AAmzStockPurchase sp where sp.ProductAsin = inv.Asin and sp.InboundUpdated = 0" +
 "            and MarketPlace = '"+marketPlace+"' and storeId = "+ storeId +"),0) onTheWay, " +
-"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days"+
+"            CAST(CASE WHEN firstSale.FirstSaleDate <= DATEADD(DAY, -30, GETDATE()) THEN 1 ELSE 0 END AS bit ) AS HasSalesHistoryOver30Days, " +
+"            sk.IsStrongAsin "+
 "     FROM AAmzFBAInventory inv JOIN AAmzAsinToSku sk ON inv.Asin = sk.Asin "+
 "     OUTER APPLY( SELECT MIN(o.PurchaseDate) AS FirstSaleDate FROM AAmzOrders o   WHERE o.Asin = inv.Asin  " +
 "      AND o.storeId = inv.StoreId     AND o.MarketPlace = inv.MarketPlace) firstSale "+
@@ -184,6 +188,23 @@ if(shr)
         }
 public bool needToOrderFromChina(AmazonInvStatistics obj,double dailySales, int onTheWay)
 {
+ if(obj.isStrongAsin)
+{
+//if number of items that expected to be sold is less then
+// our total inventory in watrhouse + amazon + on the way
+   if((SD.amzChinaShipDaysStrongAsin*dailySales) >= 
+              (obj.AmzAvailQty + obj.AmzInboundQty+ obj.AmzAWDAvailQty + obj.AmzAWDInboundQty + onTheWay))
+             {
+//need to order - but if there is already a line with this asin on china order - and the inboundUpdated is false
+             // bool inboundUpd = _unitOfWork.inventoryOrdersToAmazon.getInboundUpdated(obj.Asin);
+             //  if (!inboundUpd)
+               //   return false;
+               return true;
+             }
+            return false;
+            }
+else
+{
 //if number of items that expected to be sold is less then
 // our total inventory in watrhouse + amazon + on the way
    if((SD.amzChinaShipDays*dailySales) >= 
@@ -196,6 +217,8 @@ public bool needToOrderFromChina(AmazonInvStatistics obj,double dailySales, int 
                return true;
              }
             return false;
+            }
+
           }
 //--///////////////////////////////////////////////////////////////////////////////
 

@@ -262,7 +262,7 @@ private void AddStoreTrends(
             .Where(x =>
                 x.HasSalesHistoryOver30Days &&
                 x.sales30Days > 10 &&
-                x.avgMonth > 0 &&
+               // x.avgMonth > 0 &&
                 x.AmzAvailQty >= 60 &&
                 (x.majorIncrease || x.majorDecrease))
             .Select(x => new DashboardTrendItem
@@ -289,18 +289,28 @@ private void AddStoreTrends(
                     new { id = x.Id }) ?? ""
             }));
 }
+//private static decimal GetIncreaseStrength(DashboardTrendItem item)
+//{
+//    if (item.Avg14Days <= 0 || item.Avg30Days <= 0)
+//        return 0;
+
+//    decimal shortTermIncrease =
+//        (decimal)item.Avg3Days / item.Avg14Days;
+
+//    decimal mediumTermIncrease =
+//        (decimal)item.Avg14Days / item.Avg30Days;
+
+//    return shortTermIncrease * mediumTermIncrease;
+//}
 private static decimal GetIncreaseStrength(DashboardTrendItem item)
 {
-    if (item.Avg14Days <= 0 || item.Avg30Days <= 0)
+    if (item.Sales30Days <= 0 || item.Avg3Days <= 0)
         return 0;
 
-    decimal shortTermIncrease =
-        (decimal)item.Avg3Days / item.Avg14Days;
+    decimal avg30Exact =
+        (decimal)item.Sales30Days / 30m;
 
-    decimal mediumTermIncrease =
-        (decimal)item.Avg14Days / item.Avg30Days;
-
-    return shortTermIncrease * mediumTermIncrease;
+    return (decimal)item.Avg3Days / avg30Exact;
 }
 
 private static decimal GetDecreaseStrength(DashboardTrendItem item)
