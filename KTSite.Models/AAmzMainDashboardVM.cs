@@ -37,7 +37,10 @@ public List<DashboardTrendItem> MajorIncreases { get; set; } = new();
 public List<DashboardTrendItem> MajorDecreases { get; set; } = new();
 public List<DashboardMissingTrackingAlertVM> MissingTrackingAlerts { get; set; }
     = new List<DashboardMissingTrackingAlertVM>();
+public List<DashboardNewProductVM> NewProducts { get; set; }
+    = new List<DashboardNewProductVM>();
     }
+
 public class DashboardTrendItem
 {
     public string Store { get; set; } = "";
@@ -163,5 +166,26 @@ public class DashboardMissingTrackingAlertVM
     public int DaysWaiting { get; set; }
 
     public int LineNumber { get; set; }
+}
+
+public class DashboardNewProductVM
+{
+    public int StoreId { get; set; }
+
+    public string StoreName { get; set; } = string.Empty;
+
+    public string Marketplace { get; set; } = string.Empty;
+
+    public string Asin { get; set; } = string.Empty;
+
+    public string ProductName { get; set; } = string.Empty;
+
+    public string? ImageUrl { get; set; }
+
+    public int PurchasedQty { get; set; }
+
+    public DateTime FirstPurchaseDate { get; set; }
+
+    public int DaysSinceFirstPurchase { get; set; }
 }
 }

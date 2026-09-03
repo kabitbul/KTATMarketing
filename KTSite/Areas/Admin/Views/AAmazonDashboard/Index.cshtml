@@ -27,33 +27,33 @@
         };
     }
     private string? GetStockPurchaseUrl(string? store, string? marketplace)
-{
-    var storeName = store?.Trim().ToUpperInvariant();
-    var market = marketplace?.Trim().ToUpperInvariant();
-
-    return (storeName, market) switch
     {
-        ("KT", "US") =>
-            "/Admin/AAmzStockPurchaseKTUS",
+        var storeName = store?.Trim().ToUpperInvariant();
+        var market = marketplace?.Trim().ToUpperInvariant();
 
-        ("KT", "CA") =>
-            "/Admin/AAmzStockPurchaseKTCA",
+        return (storeName, market) switch
+        {
+            ("KT", "US") =>
+                "/Admin/AAmzStockPurchaseKTUS",
 
-        ("LITAL", "US") =>
-            "/Admin/AAmzStockPurchaseLitalUS",
+            ("KT", "CA") =>
+                "/Admin/AAmzStockPurchaseKTCA",
 
-        ("KESEM", "US") =>
-            "/Admin/AAmzStockPurchaseLitalUS",
+            ("LITAL", "US") =>
+                "/Admin/AAmzStockPurchaseLitalUS",
 
-        ("GORAL", "US") =>
-            "/Admin/AAmzStockPurchaseGoralUS",
+            ("KESEM", "US") =>
+                "/Admin/AAmzStockPurchaseLitalUS",
 
-        ("WEBRUSH", "US") =>
-            "/Admin/AAmzStockPurchaseWebrushUS",
+            ("GORAL", "US") =>
+                "/Admin/AAmzStockPurchaseGoralUS",
 
-        _ => null
-    };
-}
+            ("WEBRUSH", "US") =>
+                "/Admin/AAmzStockPurchaseWebrushUS",
+
+            _ => null
+        };
+    }
 }
 @using System.Text.Json
 
@@ -240,36 +240,37 @@
         .date-filter-field input {
             min-width: 145px;
         }
-        .restock-alert-card {
-    border-left: 5px solid #dc2626;
-}
 
-.restock-alert-summary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
-}
+    .restock-alert-card {
+        border-left: 5px solid #dc2626;
+    }
 
-.restock-summary-badge {
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: #fee2e2;
-    color: #991b1b;
-    font-size: 13px;
-}
+    .restock-alert-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
 
-.restock-days {
-    color: #dc2626;
-    font-weight: 700;
-}
+    .restock-summary-badge {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-size: 13px;
+    }
 
-.restock-more {
-    margin-top: 12px;
-    color: #6b7280;
-    font-size: 13px;
-    text-align: right;
-}
+    .restock-days {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .restock-more {
+        margin-top: 12px;
+        color: #6b7280;
+        font-size: 13px;
+        text-align: right;
+    }
 
     .restock-store-link {
         color: #0d6efd;
@@ -296,147 +297,188 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
+
     .restock-product-column {
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
-}
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
 
-.restock-product-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
+    .restock-product-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
 
-.restock-product-image {
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-    object-fit: contain;
-    border: 1px solid #e5e5e5;
-    border-radius: 6px;
-    background: #fff;
-    padding: 2px;
-}
+    .restock-product-image {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+        object-fit: contain;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        background: #fff;
+        padding: 2px;
+    }
 
-.restock-product-name {
-    min-width: 0;
-    line-height: 1.35;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    .restock-product-name {
+        min-width: 0;
+        line-height: 1.35;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
 
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-.trend-product-column {
-    width: 300px;
-    min-width: 300px;
-    max-width: 300px;
-}
+    .trend-product-column {
+        width: 300px;
+        min-width: 300px;
+        max-width: 300px;
+    }
 
-.trend-product-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
+    .trend-product-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
 
-.trend-product-image {
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-    object-fit: contain;
-    border: 1px solid #e5e5e5;
-    border-radius: 6px;
-    background: #fff;
-    padding: 2px;
-}
+    .trend-product-image {
+        width: 46px;
+        height: 46px;
+        flex: 0 0 46px;
+        object-fit: contain;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        background: #fff;
+        padding: 2px;
+    }
 
-.trend-product-details {
-    min-width: 0;
-}
+    .trend-product-details {
+        min-width: 0;
+    }
 
-.trend-product-name {
-    line-height: 1.35;
-    font-weight: 600;
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    .trend-product-name {
+        line-height: 1.35;
+        font-weight: 600;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
 
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-.fba-receiving-alert-card {
-    border-left: 5px solid #198754;
-}
+    .fba-receiving-alert-card {
+        border-left: 5px solid #198754;
+    }
 
-.fba-receiving-table {
-    width: 100%;
-}
+    .fba-receiving-table {
+        width: 100%;
+    }
 
-.fba-product-column {
-    width: 310px;
-    min-width: 310px;
-    max-width: 310px;
-}
+    .fba-product-column {
+        width: 310px;
+        min-width: 310px;
+        max-width: 310px;
+    }
 
-.fba-product-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
+    .fba-product-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
 
-.fba-product-image {
-    width: 48px;
-    height: 48px;
-    flex: 0 0 48px;
-    object-fit: contain;
-    padding: 2px;
-    background: #fff;
-    border: 1px solid #e2e5e9;
-    border-radius: 6px;
-}
+    .fba-product-image {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        object-fit: contain;
+        padding: 2px;
+        background: #fff;
+        border: 1px solid #e2e5e9;
+        border-radius: 6px;
+    }
 
-.fba-product-details {
-    min-width: 0;
-}
+    .fba-product-details {
+        min-width: 0;
+    }
 
-.fba-product-name {
-    line-height: 1.35;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
+    .fba-product-name {
+        line-height: 1.35;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
 
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-}
-.missing-tracking-alert-card {
-    border-left: 5px solid #f59e0b;
-}
-.confidence-light {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
+    .missing-tracking-alert-card {
+        border-left: 5px solid #f59e0b;
+    }
 
-.confidence-medium {
-    background-color: #86efac;
-    color: #14532d;
-    border: 1px solid #4ade80;
-}
+    .confidence-light {
+        background-color: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
 
-.confidence-high {
-    background-color: #16a34a;
-    color: #ffffff;
-    border: 1px solid #15803d;
-}
+    .confidence-medium {
+        background-color: #86efac;
+        color: #14532d;
+        border: 1px solid #4ade80;
+    }
+
+    .confidence-high {
+        background-color: #16a34a;
+        color: #ffffff;
+        border: 1px solid #15803d;
+    }
+
+    .new-products-card {
+        border-left: 5px solid #0ea5e9;
+    }
+
+    .new-products-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .new-products-summary-badge {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #e0f2fe;
+        color: #075985;
+        border: 1px solid #bae6fd;
+        font-size: 13px;
+    }
+
+    .new-products-scroll {
+        max-height: 430px;
+        overflow-y: auto;
+        overflow-x: auto;
+        border-top: 1px solid #e5e7eb;
+    }
+
+        .new-products-scroll table {
+            margin-bottom: 0;
+        }
+
+        .new-products-scroll thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: #ffffff;
+            box-shadow: 0 1px 0 #e5e7eb;
+        }
 </style>
 
 <div class="dashboard-page">
@@ -523,367 +565,499 @@
             </div>
         }
     </div>
-    @if (Model.MissingTrackingAlerts.Any())
-{
-    <div class="dashboard-chart-card missing-tracking-alert-card">
-
+    <div class="dashboard-chart-card new-products-card">
         <div class="dashboard-chart-header">
             <div>
                 <h2 class="dashboard-chart-title">
-                    China Orders Missing Tracking
+                    New Products - Waiting for First Sale
                 </h2>
 
                 <div class="dashboard-chart-subtitle">
-                    @Model.MissingTrackingAlerts.Count orders have been waiting
-                    more than 30 days for tracking
+                    @Model.NewProducts.Count products were purchased and still have no sales yet
                 </div>
+
+                @if (Model.NewProducts.Any())
+                {
+                    <div class="new-products-summary">
+                        @foreach (var group in Model.NewProducts
+                                            .GroupBy(x => x.StoreName)
+                                            .OrderBy(x => x.Key))
+                        {
+                            <span class="new-products-summary-badge">
+                                @group.Key:
+                                <strong>@group.Count()</strong>
+                            </span>
+                        }
+                    </div>
+                }
             </div>
         </div>
 
-        <div style="overflow-x:auto;">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Store</th>
-                        <th>Marketplace</th>
-                        <th>Product</th>
-                        <th>ASIN</th>
-                        <th class="text-center">Quantity</th>
-                        <th>Date Ordered</th>
-                        <th class="text-center">Days Waiting</th>
-                        <th class="text-center">Line Number</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var alert in Model.MissingTrackingAlerts)
-                    {
+        @if (Model.NewProducts.Any())
+        {
+            <div class="new-products-scroll">
+                <table class="dashboard-table fba-receiving-table">
+                    <thead>
                         <tr>
-                            <td>
-    @{
-        var stockPurchaseUrl = GetStockPurchaseUrl(
-            alert.StoreName,
-            alert.Marketplace);
-    }
-
-    @if (!string.IsNullOrWhiteSpace(stockPurchaseUrl))
-    {
-        <a href="@stockPurchaseUrl"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="restock-store-link">
-            @alert.StoreName
-        </a>
-    }
-    else
-    {
-        <strong>@alert.StoreName</strong>
-    }
-</td>
-
-                            <td>
-                                @alert.Marketplace
-                            </td>
-
-                            <td>
-                                @alert.ProductName
-                            </td>
-
-                            <td>
-                                <a href="https://www.amazon.com/dp/@alert.Asin"
-                                   target="_blank"
-                                   rel="noopener noreferrer">
-                                    @alert.Asin
-                                </a>
-                            </td>
-
-                            <td class="text-center">
-                                @alert.Quantity.ToString("N0")
-                            </td>
-
-                            <td>
-                                @alert.DateOrdered.ToString("dd/MM/yyyy")
-                            </td>
-
-                            <td class="text-center fw-bold text-danger">
-                                @alert.DaysWaiting
-                            </td>
-
-                            <td class="text-center">
-                                @alert.LineNumber
-                            </td>
+                            <th>Store</th>
+                            <th>Marketplace</th>
+                            <th class="fba-product-column">Product</th>
+                            <th class="text-center">Purchased Qty</th>
+                            <th>First Purchased</th>
+                            <th class="text-center">Days Waiting</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-}
-    @if (Model.FbaReceivingAlerts.Any())
-{
-    <div class="dashboard-chart-card fba-receiving-alert-card">
-
-        <div class="dashboard-chart-header">
-            <div>
-                <h2 class="dashboard-chart-title">
-                    FBA Stock Ready
-                </h2>
-
-                <div class="dashboard-chart-subtitle">
-                    @Model.FbaReceivingAlerts.Count products are ready for attention
-                </div>
-            </div>
-        </div>
-
-        <div style="overflow-x:auto;">
-            <table class="dashboard-table fba-receiving-table">
-                <thead>
-                    <tr>
-                        <th>Store</th>
-                        <th>Marketplace</th>
-                        <th class="fba-product-column">Product</th>
-                        <th class="text-center">Available</th>
-                        <th class="text-center">Inbound Shipped</th>
-                        <th class="text-center">Receiving</th>
-                        <th class="text-center">Reserved</th>
-                        <th>Detected</th>
-                        <th>Reason</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var alert in Model.FbaReceivingAlerts)
-                    {
-                        <tr>
-                            <td>
-    @{
-        var inventoryUrl = GetRestockInventoryUrl(
-            alert.StoreName,
-            alert.Marketplace);
-    }
-
-    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
-    {
-        <a href="@inventoryUrl"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="restock-store-link">
-            @alert.StoreName
-        </a>
-    }
-    else
-    {
-        <strong>@alert.StoreName</strong>
-    }
-</td>
-
-                            <td>
-                                @alert.Marketplace
-                            </td>
-
-                            <td class="fba-product-column">
-                                <div class="fba-product-content">
-
-                                    @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
-                                    {
-                                        <img src="@alert.ImageUrl"
-                                             alt="@alert.ProductName"
-                                             class="fba-product-image"
-                                             loading="lazy"
-                                             onerror="this.style.display='none';" />
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.NewProducts)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var stockPurchaseUrl = GetStockPurchaseUrl(
+                                        item.StoreName,
+                                        item.Marketplace);
                                     }
 
-                                    <div class="fba-product-details">
-                                        <div class="fba-product-name"
-                                             title="@alert.ProductName">
-                                            @alert.ProductName
+                                    @if (!string.IsNullOrWhiteSpace(stockPurchaseUrl))
+                                    {
+                                        <a href="@stockPurchaseUrl"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="restock-store-link">
+                                            @item.StoreName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <strong>@item.StoreName</strong>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.Marketplace
+                                </td>
+
+                                <td class="fba-product-column">
+                                    <div class="fba-product-content">
+                                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl"
+                                                 alt="@item.ProductName"
+                                                 class="fba-product-image"
+                                                 loading="lazy"
+                                                 onerror="this.style.display='none';" />
+                                        }
+
+                                        <div class="fba-product-details">
+                                            <div class="fba-product-name"
+                                                 title="@item.ProductName">
+                                                @item.ProductName
+                                            </div>
+
+                                            <small>
+                                                @{
+                                                    var amazonUrl = item.Marketplace == "CA"
+                                                    ? $"https://www.amazon.ca/dp/{item.Asin}"
+                                                    : $"https://www.amazon.com/dp/{item.Asin}";
+                                                }
+
+                                                <a href="@amazonUrl"
+                                                   target="_blank"
+                                                   rel="noopener noreferrer">
+                                                    @item.Asin
+                                                </a>
+                                            </small>
                                         </div>
-
-                                        <small>
-                                            <a href="https://www.amazon.com/dp/@alert.Asin"
-                                               target="_blank"
-                                               rel="noopener noreferrer">
-                                                @alert.Asin
-                                            </a>
-                                        </small>
                                     </div>
+                                </td>
 
-                                </div>
-                            </td>
+                                <td class="text-center fw-bold">
+                                    @item.PurchasedQty
+                                </td>
 
-<td class="text-center">
-    @{
-        var availableIncrease =
-            alert.AvailableQty - alert.PreviousAvailableQty;
-    }
+                                <td>
+                                    @item.FirstPurchaseDate.ToString("dd/MM/yyyy")
+                                </td>
 
-    <div>
-        <span class="text-muted">
-            @alert.PreviousAvailableQty
-        </span>
-
-        <span class="mx-1">→</span>
-
-        <strong>
-            @alert.AvailableQty
-        </strong>
+                                <td class="text-center fw-bold"
+                                    style="color:@(item.DaysSinceFirstPurchase > 30 ? "red" : "black");
+                                                   font-weight:@(item.DaysSinceFirstPurchase > 30 ? "bold" : "normal")">
+                                    @item.DaysSinceFirstPurchase
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted">
+                No new purchased products are currently waiting for their first sale.
+            </div>
+        }
     </div>
-
-    @if (availableIncrease > 0)
+    @if (Model.MissingTrackingAlerts.Any())
     {
-        <div class="text-success fw-bold">
-            +@availableIncrease
-        </div>
-    }
-</td>
+        <div class="dashboard-chart-card missing-tracking-alert-card">
 
-                            <td class="text-center">
-                                @alert.InboundShippedQty
-                            </td>
+            <div class="dashboard-chart-header">
+                <div>
+                    <h2 class="dashboard-chart-title">
+                        China Orders Missing Tracking
+                    </h2>
 
-                            <td class="text-center">
-                                @alert.InboundReceivingQty
-                            </td>
-
-                            <td class="text-center">
-                                @alert.ReservedQty
-                            </td>
-
-                            <td>
-                                @alert.CreatedDate.ToString("dd/MM/yyyy HH:mm")
-                            </td>
-
-                         <td>
-    @switch (alert.DetectionReason)
-    {
-        case "FirstFbaStockAvailable":
-            <span class="badge confidence-high">
-                High Confidence
-            </span>
-            break;
-
-        case "LowStockRecovery":
-            <span class="badge confidence-medium">
-                Strong Signal
-            </span>
-            break;
-
-        case "SignificantStockIncrease":
-            <span class="badge confidence-light">
-                Likely Received
-            </span>
-            break;
-
-        default:
-            <span class="badge confidence-light">
-                @alert.DetectionReason
-            </span>
-            break;
-    }
-</td>
-                            <td class="text-center">
-    <form asp-action="MarkFbaReceivingAlertHandled"
-          method="post"
-          class="d-inline">
-
-        @Html.AntiForgeryToken()
-
-        <input type="hidden"
-               name="id"
-               value="@alert.Id" />
-
-        <button type="submit"
-                class="btn btn-sm btn-success"
-                onclick="return confirm('Mark this alert as handled?');">
-            Handled
-        </button>
-    </form>
-</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-}
-    @if (Model.RestockAlerts.Any())
-{
-    <div class="dashboard-chart-card restock-alert-card">
-
-        <div class="dashboard-chart-header">
-            <div>
-                <h2 class="dashboard-chart-title">
-                    Restock Required
-                </h2>
-
-                <div class="dashboard-chart-subtitle">
-                    @Model.RestockAlerts.Count products require attention
+                    <div class="dashboard-chart-subtitle">
+                        @Model.MissingTrackingAlerts.Count orders have been waiting
+                        more than 30 days for tracking
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="restock-alert-summary">
-            @foreach (var group in Model.RestockAlerts
-                .GroupBy(x => new { x.StoreName, x.Marketplace }))
-            {
-                <span class="restock-summary-badge">
-                    @group.Key.StoreName @group.Key.Marketplace:
-                    <strong>@group.Count()</strong>
-                </span>
-            }
-        </div>
-
-        <div style="overflow-x:auto;">
-                <table class="dashboard-table restock-table">
-                <thead>
-                    <tr>
-                        <th>Store</th>
-                        <th>Marketplace</th>
-                        <th>ASIN</th>
-                        <th>GRAPH</th>
-                            <th class="restock-product-column">Product</th>
-                        <th>Available</th>
-                        <th>Inbound</th>
-                        <th>AWD</th>
-                        <th>On The Way</th>
-                        <th>14-Day Avg</th>
-                        <th>Days To OOS</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach (var alert in Model.RestockAlerts.Take(10))
-                    {
+            <div style="overflow-x:auto;">
+                <table class="dashboard-table">
+                    <thead>
                         <tr>
-                            <td>
-                            @{
-                        var inventoryUrl = GetRestockInventoryUrl(
-                                alert.StoreName,
-                                alert.Marketplace);
-                             }
+                            <th>Store</th>
+                            <th>Marketplace</th>
+                            <th>Product</th>
+                            <th>ASIN</th>
+                            <th class="text-center">Quantity</th>
+                            <th>Date Ordered</th>
+                            <th class="text-center">Days Waiting</th>
+                            <th class="text-center">Line Number</th>
+                        </tr>
+                    </thead>
 
-    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+                    <tbody>
+                        @foreach (var alert in Model.MissingTrackingAlerts)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var stockPurchaseUrl = GetStockPurchaseUrl(
+                                        alert.StoreName,
+                                        alert.Marketplace);
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(stockPurchaseUrl))
+                                    {
+                                        <a href="@stockPurchaseUrl"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="restock-store-link">
+                                            @alert.StoreName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <strong>@alert.StoreName</strong>
+                                    }
+                                </td>
+
+                                <td>
+                                    @alert.Marketplace
+                                </td>
+
+                                <td>
+                                    @alert.ProductName
+                                </td>
+
+                                <td>
+                                    <a href="https://www.amazon.com/dp/@alert.Asin"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+                                        @alert.Asin
+                                    </a>
+                                </td>
+
+                                <td class="text-center">
+                                    @alert.Quantity.ToString("N0")
+                                </td>
+
+                                <td>
+                                    @alert.DateOrdered.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td class="text-center fw-bold text-danger">
+                                    @alert.DaysWaiting
+                                </td>
+
+                                <td class="text-center">
+                                    @alert.LineNumber
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    }
+    @if (Model.FbaReceivingAlerts.Any())
     {
+        <div class="dashboard-chart-card fba-receiving-alert-card">
+
+            <div class="dashboard-chart-header">
+                <div>
+                    <h2 class="dashboard-chart-title">
+                        FBA Stock Ready
+                    </h2>
+
+                    <div class="dashboard-chart-subtitle">
+                        @Model.FbaReceivingAlerts.Count products are ready for attention
+                    </div>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="dashboard-table fba-receiving-table">
+                    <thead>
+                        <tr>
+                            <th>Store</th>
+                            <th>Marketplace</th>
+                            <th class="fba-product-column">Product</th>
+                            <th class="text-center">Available</th>
+                            <th class="text-center">Inbound Shipped</th>
+                            <th class="text-center">Receiving</th>
+                            <th class="text-center">Reserved</th>
+                            <th>Detected</th>
+                            <th>Reason</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var alert in Model.FbaReceivingAlerts)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var inventoryUrl = GetRestockInventoryUrl(
+                                        alert.StoreName,
+                                        alert.Marketplace);
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+                                    {
                                         <a href="@inventoryUrl"
                                            target="_blank"
                                            rel="noopener noreferrer"
                                            class="restock-store-link">
                                             @alert.StoreName
                                         </a>
+                                    }
+                                    else
+                                    {
+                                        <strong>@alert.StoreName</strong>
+                                    }
+                                </td>
+
+                                <td>
+                                    @alert.Marketplace
+                                </td>
+
+                                <td class="fba-product-column">
+                                    <div class="fba-product-content">
+
+                                        @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
+                                        {
+                                            <img src="@alert.ImageUrl"
+                                                 alt="@alert.ProductName"
+                                                 class="fba-product-image"
+                                                 loading="lazy"
+                                                 onerror="this.style.display='none';" />
+                                        }
+
+                                        <div class="fba-product-details">
+                                            <div class="fba-product-name"
+                                                 title="@alert.ProductName">
+                                                @alert.ProductName
+                                            </div>
+
+                                            <small>
+                                                <a href="https://www.amazon.com/dp/@alert.Asin"
+                                                   target="_blank"
+                                                   rel="noopener noreferrer">
+                                                    @alert.Asin
+                                                </a>
+                                            </small>
+                                        </div>
+
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    @{
+                                        var availableIncrease =
+                                        alert.AvailableQty - alert.PreviousAvailableQty;
+                                    }
+
+                                    <div>
+                                        <span class="text-muted">
+                                            @alert.PreviousAvailableQty
+                                        </span>
+
+                                        <span class="mx-1">→</span>
+
+                                        <strong>
+                                            @alert.AvailableQty
+                                        </strong>
+                                    </div>
+
+                                    @if (availableIncrease > 0)
+                                    {
+                                        <div class="text-success fw-bold">
+                                            +@availableIncrease
+                                        </div>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    @alert.InboundShippedQty
+                                </td>
+
+                                <td class="text-center">
+                                    @alert.InboundReceivingQty
+                                </td>
+
+                                <td class="text-center">
+                                    @alert.ReservedQty
+                                </td>
+
+                                <td>
+                                    @alert.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    @switch (alert.DetectionReason)
+                                    {
+                                        case "FirstFbaStockAvailable":
+                                            <span class="badge confidence-high">
+                                                High Confidence
+                                            </span>
+                                            break;
+
+                                        case "LowStockRecovery":
+                                            <span class="badge confidence-medium">
+                                                Strong Signal
+                                            </span>
+                                            break;
+
+                                        case "SignificantStockIncrease":
+                                            <span class="badge confidence-light">
+                                                Likely Received
+                                            </span>
+                                            break;
+
+                                        default:
+                                            <span class="badge confidence-light">
+                                                @alert.DetectionReason
+                                            </span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <form asp-action="MarkFbaReceivingAlertHandled"
+                                          method="post"
+                                          class="d-inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@alert.Id" />
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-success"
+                                                onclick="return confirm('Mark this alert as handled?');">
+                                            Handled
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     }
-    else
+    @if (Model.RestockAlerts.Any())
     {
-        @alert.StoreName
-    }
-</td>
-                            <td>@alert.Marketplace</td>
-                            <td class="text-muted">
-                              <a href="https://www.amazon.com/dp/@alert.Asin"
-                                 target="_blank"> @alert.Asin</a>
-                            </td>
+        <div class="dashboard-chart-card restock-alert-card">
+
+            <div class="dashboard-chart-header">
+                <div>
+                    <h2 class="dashboard-chart-title">
+                        Restock Required
+                    </h2>
+
+                    <div class="dashboard-chart-subtitle">
+                        @Model.RestockAlerts.Count products require attention
+                    </div>
+                </div>
+            </div>
+
+            <div class="restock-alert-summary">
+                @foreach (var group in Model.RestockAlerts
+                            .GroupBy(x => new { x.StoreName, x.Marketplace }))
+                {
+                    <span class="restock-summary-badge">
+                        @group.Key.StoreName @group.Key.Marketplace:
+                        <strong>@group.Count()</strong>
+                    </span>
+                }
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="dashboard-table restock-table">
+                    <thead>
+                        <tr>
+                            <th>Store</th>
+                            <th>Marketplace</th>
+                            <th>ASIN</th>
+                            <th>GRAPH</th>
+                            <th class="restock-product-column">Product</th>
+                            <th>Available</th>
+                            <th>Inbound</th>
+                            <th>AWD</th>
+                            <th>On The Way</th>
+                            <th>14-Day Avg</th>
+                            <th>Days To OOS</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var alert in Model.RestockAlerts.Take(10))
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var inventoryUrl = GetRestockInventoryUrl(
+                                        alert.StoreName,
+                                        alert.Marketplace);
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+                                    {
+                                        <a href="@inventoryUrl"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="restock-store-link">
+                                            @alert.StoreName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @alert.StoreName
+                                    }
+                                </td>
+                                <td>@alert.Marketplace</td>
+                                <td class="text-muted">
+                                    <a href="https://www.amazon.com/dp/@alert.Asin"
+                                       target="_blank"> @alert.Asin</a>
+                                </td>
                                 <td class="text-center">
                                     @if (!string.IsNullOrWhiteSpace(alert.GraphUrl))
                                     {
@@ -900,306 +1074,306 @@
                                     }
                                 </td>
                                 <td class="restock-product-column">
-    <div class="restock-product-content">
-        @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
-        {
-            <img src="@alert.ImageUrl"
-                 alt="@alert.ProductName"
-                 class="restock-product-image"
-                 loading="lazy"
-                 onerror="this.style.display='none';" />
-        }
-
-        <div class="restock-product-name"
-             title="@alert.ProductName">
-            @alert.ProductName
-        </div>
-    </div>
-</td>
-                            <td>@alert.AvailableQty</td>
-                            <td>@alert.InboundQty</td>
-                            <td>
-                                @(alert.AWDAvailableQty + alert.AWDInboundQty)
-                            </td>
-                            <td>@alert.OnTheWayQty</td>
-                            <td>@alert.Average14Days</td>
-                            <td class="restock-days">
-                                @alert.DaysToOOS
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        @if (Model.RestockAlerts.Count > 10)
-        {
-            <div class="restock-more">
-                Showing 10 of @Model.RestockAlerts.Count alerts
-            </div>
-        }
-
-    </div>
-}
-<div class="row mt-4">
-
-    <!-- Strong increases -->
-    <div class="col-xl-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header fw-bold"
-                 style="background-color:#86EFAC; color:#14532D;">
-                Strong Increases
-            </div>
-
-            <div class="card-body p-0">
-                @if (Model.MajorIncreases != null &&
-                     Model.MajorIncreases.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Store</th>
-                                    <th>Marketplace</th>
-                                   <th class="trend-product-column">Product</th>
-                                    <th class="text-center">3 Days</th>
-                                    <th class="text-center">14 Days</th>
-                                    <th class="text-center">30 Days</th>
-                                    <th class="text-center">Graph</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach (var item in Model.MajorIncreases)
-                                {
-                                    <tr>
-                                        <td class="fw-semibold">
-    @{
-        var inventoryUrl = GetRestockInventoryUrl(
-            item.Store,
-            item.Marketplace);
-    }
-
-    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
-    {
-        <a href="@inventoryUrl"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="restock-store-link">
-            @item.Store
-        </a>
-    }
-    else
-    {
-        @item.Store
-    }
-</td>
-
-                                        <td>
-                                            @item.Marketplace
-                                        </td>
-
-                                       <td class="trend-product-column">
-    <div class="trend-product-content">
-
-        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-        {
-            <img src="@item.ImageUrl"
-                 alt="@item.Title"
-                 class="trend-product-image"
-                 loading="lazy"
-                 onerror="this.style.display='none';" />
-        }
-
-        <div class="trend-product-details">
-            <div class="trend-product-name"
-                 title="@item.Title">
-                @item.Title
-            </div>
-
-            <small class="text-muted">
-                <a href="https://www.amazon.com/dp/@item.Asin"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    @item.Asin
-                </a>
-            </small>
-        </div>
-
-    </div>
-</td>
-
-                                        <td class="text-center"
-                                            style="background-color:#86EFAC; color:#14532D; font-weight:700;">
-                                            @item.Avg3Days
-                                        </td>
-
-                                        <td class="text-center">
-                                            @item.Avg14Days
-                                        </td>
-
-                                        <td class="text-center">
-                                            @item.Avg30Days
-                                        </td>
-                                        <td class="text-center">
-                                        @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
+                                    <div class="restock-product-content">
+                                        @if (!string.IsNullOrWhiteSpace(alert.ImageUrl))
                                         {
-                                            <a href="@item.GraphUrl"
-                                               class="btn btn-success text-white"
-                                               style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
-                                               data-toggle="tooltip"
-                                               data-placement="top"
-                                               title="60 Days Sales Graph"
-                                               target="_blank">
-                                                <i class="fas fa-chart-bar"></i>
-                                            </a>
+                                            <img src="@alert.ImageUrl"
+                                                 alt="@alert.ProductName"
+                                                 class="restock-product-image"
+                                                 loading="lazy"
+                                                 onerror="this.style.display='none';" />
                                         }
-</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="p-3 text-muted">
-                        No strong increases found.
-                    </div>
-                }
+
+                                        <div class="restock-product-name"
+                                             title="@alert.ProductName">
+                                            @alert.ProductName
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@alert.AvailableQty</td>
+                                <td>@alert.InboundQty</td>
+                                <td>
+                                    @(alert.AWDAvailableQty + alert.AWDInboundQty)
+                                </td>
+                                <td>@alert.OnTheWayQty</td>
+                                <td>@alert.Average14Days</td>
+                                <td class="restock-days">
+                                    @alert.DaysToOOS
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
+
+            @if (Model.RestockAlerts.Count > 10)
+            {
+                <div class="restock-more">
+                    Showing 10 of @Model.RestockAlerts.Count alerts
+                </div>
+            }
+
         </div>
-    </div>
+    }
+    <div class="row mt-4">
 
-    <!-- Strong decreases -->
-    <div class="col-xl-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header fw-bold"
-                 style="background-color:#FCA5A5; color:#7F1D1D;">
-                Strong Decreases
-            </div>
+        <!-- Strong increases -->
+        <div class="col-xl-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold"
+                     style="background-color:#86EFAC; color:#14532D;">
+                    Strong Increases
+                </div>
 
-            <div class="card-body p-0">
-                @if (Model.MajorDecreases != null &&
-                     Model.MajorDecreases.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Store</th>
-                                    <th>Marketplace</th>
-                                    <th class="trend-product-column">Product</th>
-                                    <th class="text-center">3 Days</th>
-                                    <th class="text-center">14 Days</th>
-                                    <th class="text-center">30 Days</th>
-                                    <th class="text-center">Graph</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach (var item in Model.MajorDecreases)
-                                {
+                <div class="card-body p-0">
+                    @if (Model.MajorIncreases != null &&
+                                        Model.MajorIncreases.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead>
                                     <tr>
-                                        <td class="fw-semibold">
-    @{
-        var inventoryUrl = GetRestockInventoryUrl(
-            item.Store,
-            item.Marketplace);
-    }
-
-    @if (!string.IsNullOrWhiteSpace(inventoryUrl))
-    {
-        <a href="@inventoryUrl"
-           target="_blank"
-           rel="noopener noreferrer"
-           class="restock-store-link">
-            @item.Store
-        </a>
-    }
-    else
-    {
-        @item.Store
-    }
-</td>
-
-                                        <td>
-                                            @item.Marketplace
-                                        </td>
-
-                                        <td class="trend-product-column">
-    <div class="trend-product-content">
-
-        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-        {
-            <img src="@item.ImageUrl"
-                 alt="@item.Title"
-                 class="trend-product-image"
-                 loading="lazy"
-                 onerror="this.style.display='none';" />
-        }
-
-        <div class="trend-product-details">
-            <div class="trend-product-name"
-                 title="@item.Title">
-                @item.Title
-            </div>
-
-            <small class="text-muted">
-                <a href="https://www.amazon.com/dp/@item.Asin"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    @item.Asin
-                </a>
-            </small>
-        </div>
-
-    </div>
-</td>
-
-                                        <td class="text-center"
-                                            style="background-color:#FCA5A5; color:#7F1D1D; font-weight:700;">
-                                            @item.Avg3Days
-                                        </td>
-
-                                        <td class="text-center">
-                                            @item.Avg14Days
-                                        </td>
-
-                                        <td class="text-center">
-                                            @item.Avg30Days
-                                        </td>
-                                        <td class="text-center">
-    @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
-    {
-        <a href="@item.GraphUrl"
-           class="btn btn-success text-white"
-           style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
-           data-toggle="tooltip"
-           data-placement="top"
-           title="60 Days Sales Graph"
-           target="_blank">
-            <i class="fas fa-chart-bar"></i>
-        </a>
-    }
-</td>
+                                        <th>Store</th>
+                                        <th>Marketplace</th>
+                                        <th class="trend-product-column">Product</th>
+                                        <th class="text-center">3 Days</th>
+                                        <th class="text-center">14 Days</th>
+                                        <th class="text-center">30 Days</th>
+                                        <th class="text-center">Graph</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="p-3 text-muted">
-                        No strong decreases found.
-                    </div>
-                }
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var item in Model.MajorIncreases)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">
+                                                @{
+                                                    var inventoryUrl = GetRestockInventoryUrl(
+                                                    item.Store,
+                                                    item.Marketplace);
+                                                }
+
+                                                @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+                                                {
+                                                    <a href="@inventoryUrl"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="restock-store-link">
+                                                        @item.Store
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    @item.Store
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @item.Marketplace
+                                            </td>
+
+                                            <td class="trend-product-column">
+                                                <div class="trend-product-content">
+
+                                                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                                    {
+                                                        <img src="@item.ImageUrl"
+                                                             alt="@item.Title"
+                                                             class="trend-product-image"
+                                                             loading="lazy"
+                                                             onerror="this.style.display='none';" />
+                                                    }
+
+                                                    <div class="trend-product-details">
+                                                        <div class="trend-product-name"
+                                                             title="@item.Title">
+                                                            @item.Title
+                                                        </div>
+
+                                                        <small class="text-muted">
+                                                            <a href="https://www.amazon.com/dp/@item.Asin"
+                                                               target="_blank"
+                                                               rel="noopener noreferrer">
+                                                                @item.Asin
+                                                            </a>
+                                                        </small>
+                                                    </div>
+
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center"
+                                                style="background-color:#86EFAC; color:#14532D; font-weight:700;">
+                                                @item.Avg3Days
+                                            </td>
+
+                                            <td class="text-center">
+                                                @item.Avg14Days
+                                            </td>
+
+                                            <td class="text-center">
+                                                @item.Avg30Days
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
+                                                {
+                                                    <a href="@item.GraphUrl"
+                                                       class="btn btn-success text-white"
+                                                       style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
+                                                       data-toggle="tooltip"
+                                                       data-placement="top"
+                                                       title="60 Days Sales Graph"
+                                                       target="_blank">
+                                                        <i class="fas fa-chart-bar"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3 text-muted">
+                            No strong increases found.
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+        <!-- Strong decreases -->
+        <div class="col-xl-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold"
+                     style="background-color:#FCA5A5; color:#7F1D1D;">
+                    Strong Decreases
+                </div>
+
+                <div class="card-body p-0">
+                    @if (Model.MajorDecreases != null &&
+                                        Model.MajorDecreases.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Store</th>
+                                        <th>Marketplace</th>
+                                        <th class="trend-product-column">Product</th>
+                                        <th class="text-center">3 Days</th>
+                                        <th class="text-center">14 Days</th>
+                                        <th class="text-center">30 Days</th>
+                                        <th class="text-center">Graph</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var item in Model.MajorDecreases)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">
+                                                @{
+                                                    var inventoryUrl = GetRestockInventoryUrl(
+                                                    item.Store,
+                                                    item.Marketplace);
+                                                }
+
+                                                @if (!string.IsNullOrWhiteSpace(inventoryUrl))
+                                                {
+                                                    <a href="@inventoryUrl"
+                                                       target="_blank"
+                                                       rel="noopener noreferrer"
+                                                       class="restock-store-link">
+                                                        @item.Store
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    @item.Store
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @item.Marketplace
+                                            </td>
+
+                                            <td class="trend-product-column">
+                                                <div class="trend-product-content">
+
+                                                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                                    {
+                                                        <img src="@item.ImageUrl"
+                                                             alt="@item.Title"
+                                                             class="trend-product-image"
+                                                             loading="lazy"
+                                                             onerror="this.style.display='none';" />
+                                                    }
+
+                                                    <div class="trend-product-details">
+                                                        <div class="trend-product-name"
+                                                             title="@item.Title">
+                                                            @item.Title
+                                                        </div>
+
+                                                        <small class="text-muted">
+                                                            <a href="https://www.amazon.com/dp/@item.Asin"
+                                                               target="_blank"
+                                                               rel="noopener noreferrer">
+                                                                @item.Asin
+                                                            </a>
+                                                        </small>
+                                                    </div>
+
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center"
+                                                style="background-color:#FCA5A5; color:#7F1D1D; font-weight:700;">
+                                                @item.Avg3Days
+                                            </td>
+
+                                            <td class="text-center">
+                                                @item.Avg14Days
+                                            </td>
+
+                                            <td class="text-center">
+                                                @item.Avg30Days
+                                            </td>
+                                            <td class="text-center">
+                                                @if (!string.IsNullOrWhiteSpace(item.GraphUrl))
+                                                {
+                                                    <a href="@item.GraphUrl"
+                                                       class="btn btn-success text-white"
+                                                       style="cursor:pointer; background-color:forestgreen; border-color:forestgreen;"
+                                                       data-toggle="tooltip"
+                                                       data-placement="top"
+                                                       title="60 Days Sales Graph"
+                                                       target="_blank">
+                                                        <i class="fas fa-chart-bar"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3 text-muted">
+                            No strong decreases found.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
     <div class="dashboard-chart-card">
 
         <div class="dashboard-chart-header">

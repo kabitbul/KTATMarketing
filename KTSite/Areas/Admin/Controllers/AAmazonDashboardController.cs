@@ -195,9 +195,73 @@ viewModel.FbaReceivingAlerts =
     await GetFbaReceivingAlertsAsync();
 viewModel.MissingTrackingAlerts =
     await GetMissingTrackingAlertsAsync();
+viewModel.NewProducts = await GetNewProductsAsync();
 return View(viewModel);
          
         }
+public async Task<List<DashboardNewProductVM>> GetNewProductsAsync()
+{
+    const string sql = @"
+WITH PurchaseSummary AS
+(
+    SELECT
+        purchase.StoreId,
+        purchase.MarketPlace AS Marketplace,
+        purchase.ProductAsin AS Asin,
+        SUM(purchase.Quantity) AS PurchasedQty,
+        MIN(purchase.DateOrdered) AS FirstPurchaseDate,
+        MAX(NULLIF(purchase.ProductChinaName, '')) AS PurchaseProductName
+    FROM dbo.AAmzStockPurchase purchase
+    GROUP BY
+        purchase.StoreId,
+        purchase.MarketPlace,
+        purchase.ProductAsin
+)
+SELECT
+    summary.StoreId,
+    CASE
+        WHEN store.StoreName = 'LITAL' THEN 'KESEM'
+        ELSE store.StoreName
+    END AS StoreName,
+    summary.Marketplace,
+    summary.Asin,
+    COALESCE(NULLIF(product.ChinaName, ''), summary.PurchaseProductName, '') AS ProductName,
+    product.ImageUrl,
+    summary.PurchasedQty,
+    summary.FirstPurchaseDate,
+    DATEDIFF(DAY, summary.FirstPurchaseDate, GETDATE()) AS DaysSinceFirstPurchase
+FROM PurchaseSummary summary
+INNER JOIN dbo.AAmazonStores store
+    ON store.Id = summary.StoreId
+OUTER APPLY
+(
+    SELECT TOP 1
+        sku.ChinaName,
+        sku.ImageUrl
+    FROM dbo.AAmzAsinToSku sku
+    WHERE sku.StoreId = summary.StoreId
+      AND sku.Asin = summary.Asin
+) product
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM dbo.AAmzOrders orders
+    WHERE orders.storeId = summary.StoreId
+      AND orders.MarketPlace = summary.Marketplace
+      AND orders.Asin = summary.Asin
+)
+ORDER BY
+    summary.FirstPurchaseDate ASC,
+    summary.StoreId,
+    summary.Marketplace,
+    summary.Asin;";
+
+    var connection = _db.Database.GetDbConnection();
+
+    var items = await connection.QueryAsync<DashboardNewProductVM>(sql);
+
+    return items.ToList();
+}
 private void FillMajorTrends(AAmzMainDashboardVM viewModel)
 {
     var allTrendItems = new List<DashboardTrendItem>();
