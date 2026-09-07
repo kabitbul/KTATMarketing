@@ -1,0 +1,309 @@
+﻿@model AAmzRefundsVM
+
+@{
+    ViewData["Title"] = "Refunds";
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Refunds</h2>
+
+        <div class="text-muted">
+            @Model.FromDate.ToString("dd/MM/yyyy")
+            -
+            @Model.ToDate.ToString("dd/MM/yyyy")
+        </div>
+    </div>
+    <form method="get" class="row g-3 align-items-end mb-4">
+
+        <div class="col-md-3">
+            <label class="form-label">From Date</label>
+            <input type="date"
+                   name="fromDate"
+                   class="form-control"
+                   value="@Model.FromDate.ToString("yyyy-MM-dd")"
+                   max="@DateTime.Today.AddDays(-2).ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">To Date</label>
+            <input type="date"
+                   name="toDate"
+                   class="form-control"
+                   value="@Model.ToDate.ToString("yyyy-MM-dd")"
+                   max="@DateTime.Today.AddDays(-2).ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Store</label>
+            <select asp-for="StoreId" class="form-select">
+                <option value="">All Stores</option>
+                <option value="1">KT</option>
+                <option value="2">Lital</option>
+                <option value="3">Goral</option>
+                <option value="4">Webrush</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Marketplace</label>
+            <select asp-for="Marketplace" class="form-select">
+                <option value="">All</option>
+                <option value="US">US</option>
+                <option value="CA">CA</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                Apply
+            </button>
+        </div>
+
+    </form>
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-muted">Sold Units</div>
+                    <h3>@Model.SoldUnits.ToString("N0")</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-muted">Refunded Units</div>
+                    <h3>@Model.RefundedUnits.ToString("N0")</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-muted">Refund Rate</div>
+                    <h3>@Model.RefundRate.ToString("0.00")%</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="text-muted">Net Refund Loss</div>
+                    <h3>$@Model.NetRefundLoss.ToString("N2")</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @if (Model.Stores != null && Model.Stores.Any())
+    {
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+
+                <h4 class="mb-3">Refunds by Store</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Store</th>
+                                <th class="text-end">Sold Units</th>
+                                <th class="text-end">Refunded Units</th>
+                                <th class="text-end">Refund Rate</th>
+                                <th class="text-end">Net Refund Loss</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var store in Model.Stores)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@store.StoreName</td>
+
+                                    <td class="text-end">
+                                        @store.SoldUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end">
+                                        @store.RefundedUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end fw-bold">
+                                        @store.RefundRate.ToString("0.00")%
+                                    </td>
+
+                                    <td class="text-end">
+                                        $@store.NetRefundLoss.ToString("N2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    }
+    @if (Model.Marketplaces != null && Model.Marketplaces.Any())
+    {
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+
+                <h4 class="mb-3">Refunds by Marketplace</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Marketplace</th>
+                                <th class="text-end">Sold Units</th>
+                                <th class="text-end">Refunded Units</th>
+                                <th class="text-end">Refund Rate</th>
+                                <th class="text-end">Net Refund Loss</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var mp in Model.Marketplaces)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@mp.Marketplace</td>
+
+                                    <td class="text-end">
+                                        @mp.SoldUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end">
+                                        @mp.RefundedUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end fw-bold">
+                                        @mp.RefundRate.ToString("0.00")%
+                                    </td>
+
+                                    <td class="text-end">
+                                        $@mp.NetRefundLoss.ToString("N2")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    }
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+
+                <h4 class="mb-3">Products With Highest Refund Rate</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:70px;">Image</th>
+                                <th>Product</th>
+                                <th>Store</th>
+                                <th>Marketplace</th>
+                                <th class="text-end">Sold Units</th>
+                                <th class="text-end">Refunded Units</th>
+                                <th class="text-end">Refund Rate</th>
+                                <th>Severity</th>
+                                <th class="text-end">Net Refund Loss</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var product in Model.Products)
+                            {
+                                string amazonUrl =
+                                product.Marketplace == "CA"
+                                ? $"https://www.amazon.ca/dp/{product.Asin}"
+                                : $"https://www.amazon.com/dp/{product.Asin}";
+
+                                string severityStyle =
+                                product.Severity == "Critical"
+                                ? "background-color:#fde8e8;color:#b42318;"
+                                : product.Severity == "High"
+                                ? "background-color:#fff4d6;color:#9a6700;"
+                                : "background-color:#edf7ed;color:#2e7d32;";
+
+                                <tr>
+
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl"
+                                                 style="width:50px;height:50px;object-fit:contain;" />
+                                        }
+                                </td>
+
+                                <td>
+                                    <div class="fw-bold">
+                                        @product.ProductName
+                                    </div>
+
+                                    <a href="@amazonUrl"
+                                       target="_blank"
+                                       class="text-decoration-none">
+                                        @product.Asin
+                                    </a>
+                                </td>
+
+                                <td>
+                                    @(product.StoreId == 1 ? "KT" :
+                                                                    product.StoreId == 2 ? "Lital" :
+                                                                    product.StoreId == 3 ? "Goral" :
+                                                                    product.StoreId == 4 ? "Webrush" :
+                                                                    product.StoreId.ToString())
+                            </td>
+
+                                    <td>
+                                        @product.Marketplace
+                                    </td>
+
+                                    <td class="text-end">
+                                        @product.SoldUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end">
+                                        @product.RefundedUnits.ToString("N0")
+                                    </td>
+
+                                    <td class="text-end fw-bold">
+                                        @product.RefundRate.ToString("0.00")%
+                                    </td>
+
+                                    <td>
+                                        <span style="
+                                                @severityStyle
+                                                padding:5px 10px;
+                                                border-radius:6px;
+                                                font-weight:600;">
+                                            @product.Severity
+                                        </span>
+                                    </td>
+
+                                    <td class="text-end">
+                                        $@product.NetRefundLoss.ToString("N2")
+                                    </td>
+
+                                </tr>
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
