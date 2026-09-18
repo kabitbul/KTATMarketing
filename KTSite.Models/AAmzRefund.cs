@@ -30,6 +30,7 @@ namespace KTSite.Models
         public DateTime? SaleDate { get; set; }
 
         public DateTime RefundDate { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public int Quantity { get; set; }
 

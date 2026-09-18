@@ -98,6 +98,9 @@ public DbSet<AAmzRefund> AAmzRefunds { get; set; }
         .HasDatabaseName(
             "IX_AAmzFBAReceivingAlerts_Handled_Date"
         );
+modelBuilder.Entity<AAmzRefund>()
+    .Property(x => x.DateCreated)
+    .HasDefaultValueSql("GETDATE()");
 }
 
     }

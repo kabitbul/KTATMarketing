@@ -295,12 +295,15 @@ private void FillMajorTrends(AAmzMainDashboardVM viewModel)
         .ToList();
 
     viewModel.MajorDecreases = allTrendItems
-        .Where(x =>
-            x.MajorDecrease &&
-            !x.MajorIncrease)
-        .OrderByDescending(GetDecreaseStrength)
-        .Take(10)
-        .ToList();
+    .Where(x =>
+        x.MajorDecrease &&
+        !x.MajorIncrease &&
+        (x.Avg3Days > 0 ||
+         x.Avg14Days > 0 ||
+         x.Avg30Days > 0))
+    .OrderByDescending(GetDecreaseStrength)
+    .Take(10)
+    .ToList();
 }
 private void AddStoreTrends(
     List<DashboardTrendItem> target,
@@ -379,6 +382,13 @@ private static decimal GetIncreaseStrength(DashboardTrendItem item)
 
 private static decimal GetDecreaseStrength(DashboardTrendItem item)
 {
+    if (item.Avg3Days <= 0 &&
+        item.Avg14Days <= 0 &&
+        item.Avg30Days <= 0)
+    {
+        return 0;
+    }
+
     if (item.Avg3Days <= 0 || item.Avg14Days <= 0)
         return decimal.MaxValue;
 
