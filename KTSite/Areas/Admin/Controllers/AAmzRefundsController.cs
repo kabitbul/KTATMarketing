@@ -4,6 +4,7 @@ using KTSite.Models;
 using KTSite.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -355,5 +356,45 @@ vm.Products = connection.Query<AAmzRefundProductSummaryVM>(
 ).ToList();
 return View(vm);
     }
+public IActionResult Details(string asin, int storeId, string marketplace)
+{
+    var connection = _db.Database.GetDbConnection();
+
+    string sql = @"
+        SELECT
+            r.OrderId,
+            r.Asin,
+            r.Quantity AS RefundedQty,
+            r.SaleDate,
+            r.RefundDate,
+            r.NetRefundLoss,
+            o.PurchaseDate,
+            o.Qty AS OrderedQty
+        FROM AAmzRefunds r
+        LEFT JOIN AAmzOrders o
+            ON o.AmazonOrdId = r.OrderId
+            AND o.Asin = r.Asin
+        WHERE r.Asin = @Asin
+          AND r.StoreId = @StoreId
+          AND r.Marketplace = @Marketplace
+        ORDER BY r.RefundDate DESC";
+
+    var vm = new AAmzRefundDetailsVM
+    {
+        Asin = asin,
+        StoreId = storeId,
+        Marketplace = marketplace,
+        Refunds = connection.Query<AAmzRefundDetailRow>(
+            sql,
+            new
+            {
+                Asin = asin,
+                StoreId = storeId,
+                Marketplace = marketplace
+            }).ToList()
+    };
+
+    return View(vm);
+}
 }
 }

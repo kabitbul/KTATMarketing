@@ -248,15 +248,29 @@
                                 </td>
 
                                 <td>
-                                    <div class="fw-bold">
-                                        @product.ProductName
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold">
+                                            @product.ProductName
+                                        </span>
+
+                                        <a asp-action="Details"
+                                           asp-route-asin="@product.Asin"
+                                           asp-route-storeId="@product.StoreId"
+                                           asp-route-marketplace="@product.Marketplace"
+                                           target="_blank"
+                                           class="btn btn-sm"
+                                           style="@severityStyle border:1px solid currentColor;">
+                                            Refund History
+                                        </a>
                                     </div>
 
-                                    <a href="@amazonUrl"
-                                       target="_blank"
-                                       class="text-decoration-none">
-                                        @product.Asin
-                                    </a>
+                                    <div class="mt-1">
+                                        <a href="@amazonUrl"
+                                           target="_blank"
+                                           class="small text-secondary text-decoration-none">
+                                            Amazon: @product.Asin ↗
+                                        </a>
+                                    </div>
                                 </td>
 
                                 <td>
@@ -285,10 +299,10 @@
 
                                     <td>
                                         <span style="
-                                                @severityStyle
-                                                padding:5px 10px;
-                                                border-radius:6px;
-                                                font-weight:600;">
+                    @severityStyle
+                    padding:5px 10px;
+                    border-radius:6px;
+                    font-weight:600;">
                                             @product.Severity
                                         </span>
                                     </td>

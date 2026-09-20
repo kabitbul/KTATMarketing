@@ -1,0 +1,87 @@
+﻿@model KTSite.Models.AAmzRefundDetailsVM
+
+@{
+    ViewData["Title"] = "Refund Details";
+}
+
+<div class="container-fluid mt-3">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="mb-1">Refund Details</h3>
+            <div>
+                <strong>ASIN:</strong> @Model.Asin
+                &nbsp; | &nbsp;
+                <strong>Marketplace:</strong> @Model.Marketplace
+            </div>
+        </div>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back
+        </a>
+    </div>
+
+    <div class="mb-3">
+        <strong>Refund Events:</strong> @Model.Refunds.Count
+        &nbsp; | &nbsp;
+
+        <strong>Total Refunded Units:</strong>
+        @Model.Refunds.Sum(x => x.RefundedQty)
+
+        &nbsp; | &nbsp;
+
+        <strong>Largest Refund:</strong>
+        @(Model.Refunds.Any() ? Model.Refunds.Max(x => x.RefundedQty) : 0)
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover table-sm align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Refund Date</th>
+                    <th>Purchase Date</th>
+                    <th>Order ID</th>
+                    <th class="text-center">Ordered Qty</th>
+                    <th class="text-center">Refunded Qty</th>
+                    <th class="text-end">Refund Loss</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.Refunds)
+                {
+                    <tr class="@(item.RefundedQty > 1 ? "table-warning" : "")">
+
+                        <td>
+                            @item.RefundDate.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td>
+                            @(item.PurchaseDate.HasValue
+                                                    ? item.PurchaseDate.Value.ToString("dd/MM/yyyy")
+                                                    : "-")
+                    </td>
+
+                        <td>
+                            @item.OrderId
+                        </td>
+
+                        <td class="text-center">
+                            @(item.OrderedQty?.ToString() ?? "-")
+                        </td>
+
+                        <td class="text-center fw-bold">
+                            @item.RefundedQty
+                        </td>
+
+                        <td class="text-end">
+                            $@item.NetRefundLoss.ToString("N2")
+                        </td>
+
+                    </tr>
+                                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
