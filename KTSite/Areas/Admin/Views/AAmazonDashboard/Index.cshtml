@@ -283,30 +283,14 @@
         }
 
     .restock-product-column {
-        width: 280px;
-        min-width: 280px;
-        max-width: 280px;
-    }
-
-    .restock-product-name {
-        line-height: 1.35;
-        white-space: normal;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-
-    .restock-product-column {
-        width: 280px;
-        min-width: 280px;
-        max-width: 280px;
+        width: 320px;
+        min-width: 320px;
+        max-width: 320px;
     }
 
     .restock-product-content {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
         min-width: 0;
     }
@@ -322,15 +306,33 @@
         padding: 2px;
     }
 
+    .restock-product-details {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .restock-product-name-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
     .restock-product-name {
         min-width: 0;
+        flex: 1 1 auto;
         line-height: 1.35;
         white-space: normal;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .restock-copy-btn {
+        flex: 0 0 auto;
+        padding: 1px 5px;
+        line-height: 1.2;
+        font-size: 12px;
     }
 
     .trend-product-column {
@@ -681,7 +683,7 @@
 
                                 <td class="text-center fw-bold"
                                     style="color:@(item.DaysSinceFirstPurchase > 30 ? "red" : "black");
-                                                   font-weight:@(item.DaysSinceFirstPurchase > 30 ? "bold" : "normal")">
+                                                           font-weight:@(item.DaysSinceFirstPurchase > 30 ? "bold" : "normal")">
                                     @item.DaysSinceFirstPurchase
                                 </td>
                             </tr>
@@ -1084,9 +1086,22 @@
                                                  onerror="this.style.display='none';" />
                                         }
 
-                                        <div class="restock-product-name"
-                                             title="@alert.ProductName">
-                                            @alert.ProductName
+                                        <div class="restock-product-details">
+                                            <div class="restock-product-name-row">
+                                                <div class="restock-product-name"
+                                                     title="@alert.ProductName">
+                                                    @alert.ProductName
+                                                </div>
+
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary restock-copy-btn"
+                                                        title="Copy full product name"
+                                                        aria-label="Copy full product name"
+                                                        data-product-name="@alert.ProductName"
+                                                        onclick="copyRestockProductName(this)">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -1421,6 +1436,52 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
     <script>
+        function copyRestockProductName(button) {
+            const productName = button.getAttribute("data-product-name") || "";
+            const originalHtml = button.innerHTML;
+            const originalTitle = button.title;
+
+            const showCopiedState = () => {
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.title = "Copied";
+                button.classList.remove("btn-outline-secondary");
+                button.classList.add("btn-success");
+
+                setTimeout(() => {
+                    button.innerHTML = originalHtml;
+                    button.title = originalTitle;
+                    button.classList.remove("btn-success");
+                    button.classList.add("btn-outline-secondary");
+                }, 1200);
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(productName)
+                    .then(showCopiedState)
+                    .catch(() => fallbackCopyProductName(productName, showCopiedState));
+            } else {
+                fallbackCopyProductName(productName, showCopiedState);
+            }
+        }
+
+        function fallbackCopyProductName(productName, onSuccess) {
+            const textArea = document.createElement("textarea");
+            textArea.value = productName;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                document.execCommand("copy");
+                onSuccess();
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
         const dailyLabels = @Html.Raw(dailyLabelsJson);
         const dailySeries = @Html.Raw(dailySeriesJson);
 
